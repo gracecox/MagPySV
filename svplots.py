@@ -11,6 +11,16 @@ import datetime as dt
 import matplotlib.pyplot as plt
                         
 def plot_eigenvalues(values):
+    
+    """ Plot eigenvalues of residuals
+    
+    Produces a plot of the eigenvalues obtained during the principal component
+    analysis of SV residuals. The largest value represents the noisy direction.
+    
+    Args:
+        values: list of eigenvalues from the PCA
+    """
+    
     plt.figure(figsize=(8, 6))
     plt.plot(values)
     plt.axis('tight')
@@ -18,6 +28,17 @@ def plot_eigenvalues(values):
     plt.ylabel('$\lambda_i$', fontsize=16)
         
 def plot_denoised(dates,denoised,model):
+    
+    """ Plot the denoised SV and model prediction for a single observatory
+    
+    Produces a plot of the x, y and z components of the denoised SV and field
+    model prediction for an observatory
+    
+    Args:
+        dates: list of datetime objects for the time series
+        denoised: x, y and z components of denoised SV at a single location
+        model: x, y and z components of predicted SV at that single location
+    """
     
     plt.figure(figsize=(8, 6))
     plt.subplot(3,1,1)
@@ -48,6 +69,19 @@ def plot_denoised(dates,denoised,model):
     #plt.legend(['denoised','cov-obs'],loc='upper right',frameon=False)
 
 def plot_dcx(date,signal):
+    
+    """ Compare the proxy used to denoise the SV data with the Dst index
+    
+    Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
+    used as a proxy for unmodelled external signal. Both time series are
+    reduced to zero mean and unit variance for plotting (i.e. their zscore)
+    
+    Args:
+        dates: list of datetime objects for the time series
+        signal: proxy for unmodelled external signal used in the denoising (PCA)
+        process. This will be the residual in the noisiest eigendirection(s).
+    """
+    
     dcx = pd.read_csv(
                      '~/Dropbox/BGS_data/monthly_means/Dcx/Dcx_mm_monthly_diff.txt',
                      sep='\s+',header=None)
@@ -71,6 +105,20 @@ def plot_dcx(date,signal):
     plt.legend(['Dcx','proxy'],loc='upper right',frameon=False)
 
 def plot_dcx_fft(dates,signal):
+    
+    """ Compare the DFTs of the proxy signal with that of the Dst index
+    
+    Loads Dcx data (extended, corrected Dst), calulates its DFT and plots it 
+    alongside the DFT of the signal used as a proxy for unmodelled external
+    signal. The length of the time series are padded with zeroes up to the next
+    power of two.
+    
+    Args:
+        dates: list of datetime objects for the time series
+        signal: proxy for unmodelled external signal used in the denoising (PCA)
+        process. This will be the residual in the noisiest eigendirection(s).
+    """
+    
     dcx = pd.read_csv(
                      '~/Dropbox/BGS_data/monthly_means/Dcx/Dcx_mm_monthly_diff.txt',
                      sep='\s+',header=None)

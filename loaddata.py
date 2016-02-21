@@ -11,6 +11,25 @@ import pandas as pd
 
 def load_monthly_means(obs_names,model_name):
     
+    """ Load SV values and calculate the residuals
+    
+    Loads secular variation data for the specified
+    observatories from file. Also loads the SV predicted at the same locations 
+    by the specified field model and calculates the SV residuals 
+    (model - prediction).
+    
+    Args: 
+        obs_names: List of observatory names (as 3-digit IAGA codes)
+        model_name: Name of field model used to calculate the residuals
+         
+    Returns:
+        A dataframe containing the residuals between the monthly means data and
+        model values. First column is a list of datetime objects (in the 
+        format yyyy-mm-01. The 01 is spcified because the datetime objects need
+        a day). Subsequent columns contain the SV residuals in x, y and z for
+        each observatory.              
+    """
+    
     for observatory in obs_names:
         
         # Load the SV data for a single observatory
