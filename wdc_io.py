@@ -16,10 +16,7 @@ import numpy as np
 obs_names = ['aqu'] #['aqu','clf','hrb','ngk']
 model_name = 'cov-obs'
 
-
-
-
-def wdc_to_dataframe(fname):
+def wdc_readfile(fname):
     
     try:
         cols = [(0,3),(3,5),(5,7),(7,8),(8,10),(14,16),(16,20),(116,120)]
@@ -43,15 +40,14 @@ def wdc_to_dataframe(fname):
         data = pd.read_fwf(fname,colspecs=cols,names=col_names,converters=types,
                            header=None)
         data['century'] = 19
+        
+    return data
                            
+def wdc_datetimes(data):
     
     # Convert the century/yr columns to a year
     data['year'] = 100*data['century'] + data['yr']
-    
-    #Replace missing values with NaNs
-    data.replace(9999, np.nan, inplace=True)
-
-    
+       
     # Create datetime objects from the century, year, month and day columns of
     # the WDC format data file
     dates = data.apply(
@@ -59,6 +55,12 @@ def wdc_to_dataframe(fname):
                       "{0} {1} {2}".format(x['year'],
                       x['month'],x['day']), "%Y %m %d"),axis=1)
     data.insert(0, 'date', dates)
+    return data
+    
+def data_averaging(data, sampling=True):
+    
+    #Replace missing values with NaNs
+    data.replace(9999, np.nan, inplace=True)
     
     data['daily_mean']=data.apply(daily_mean_conversion,axis=1)
     
@@ -76,7 +78,11 @@ def wdc_to_dataframe(fname):
     else:
         data.reset_index(inplace=True)
         
-    data.apply(data_resampling)
+    """Resample the daily data to a specified frequency. Default is 'M' (month end)
+       for monthly means. Another useful option is 'A' (year end) for annual means."""
+        
+    data = data.set_index(['date']).resample(sampling,how='mean') 
+    data.reset_index(inplace=True)
     
     return data.reindex_axis(['date','X','Y','Z'],axis=1) 
 
@@ -104,14 +110,14 @@ def angles_to_geographic(row):
       
     return pd.Series({'X':x, 'Y':y})                
                       
-def data_resampling(df, sampling='M'):
-    """Resample the daily data to a specified frequency. Default is 'M' (month end)
-       for monthly means. Another useful option is 'A' (year end) for annual means."""
-      
-    resampled = df.set_index('date').resample(sampling,how='mean')  
-                 
-    return resampled                 
-                      
+#def data_resampling(df, sampling='M'):
+#    """Resample the daily data to a specified frequency. Default is 'M' (month end)
+#       for monthly means. Another useful option is 'A' (year end) for annual means."""
+#      
+#    resampled = df.set_index('date', drop=False).resample(sampling,how='mean')  
+#                 
+#    return resampled                 
+#                      
 ##for observatory in obs_names:
 ##    path = '/Users/Grace/Dropbox/BGS_hourly/hourval/single_obs/%s/*.wdc' % observatory
 ##    print(path)
