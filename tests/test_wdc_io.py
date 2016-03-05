@@ -36,11 +36,12 @@ class WDCDatetimesTestCase(unittest.TestCase):
     
     def setUp(self):
         
-        self.data = pd.DataFrame(index=[0],columns = ['century', 'yr', 'month', 'day'])
+        self.data = pd.DataFrame(index=[0],columns = ['century', 'yr', 'month', 'day', 'code'])
         self.data['century'] = 19
         self.data['yr'] = 63
         self.data['month'] = 1
         self.data['day'] = 15
+        self.data['code'] = 'NGK'
     
     def test_wdc_datetimes(self):
         
@@ -51,20 +52,20 @@ class WDCDatetimesTestCase(unittest.TestCase):
     
     
     
-    
+#class DatatAveragingTestCase(unittest.TestCase):    
 #    def setUp(self):
 #        # Directory where the test files are located
 #        self.path = os.path.join(os.path.dirname(__file__), 'data')
 #        testfile = os.path.join(self.path, 'testdata.wdc')
 #        self.rawdata = wdc_io.wdc_readfile(testfile)
-#        self.df = wdc_io.datetimes(rawdata)
+#        self.data = wdc_io.wdc_datetimes(self.rawdata)
 #    
 #    def test_wdc_data_averaging(self):
 #        
-        
+#        self.averaged = self.data.apply(wdc_io.data_averaging)      
 #        # Daily mean (using the tabular base)
-#        self.assertAlmostEqual(data.daily_mean.values[-1],45113)
-#        self.assertAlmostEqual(data.daily_mean[3],800)
+#        self.assertAlmostEqual(self.averaged.daily_mean.values[-1],45113)
+#        self.assertAlmostEqual(self.averaged.daily_mean[3],800)
         
         
                 
