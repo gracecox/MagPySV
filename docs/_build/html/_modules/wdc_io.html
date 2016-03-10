@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>wdc_io &mdash; MagPy 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MagPy 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for wdc_io</h1><div class="highlight"><pre>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Feb 16 17:46:51 2016</span>
+
+<span class="sd">@author: Grace</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Need functions to:</span>
+<span class="c1"># 1. Remove stormy days, save to file</span>
+<span class="c1"># 2. Get monthly or annual differences of the monthly means (SV)</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">wdc_io</span>
+
+<span class="n">obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;aqu&#39;</span><span class="p">]</span>   <span class="c1"># [&#39;aqu&#39;,&#39;clf&#39;,&#39;hrb&#39;,&#39;ngk&#39;]</span>
+<span class="n">model_name</span> <span class="o">=</span> <span class="s1">&#39;cov-obs&#39;</span>
+
+
+<div class="viewcode-block" id="wdc_readfile"><a class="viewcode-back" href="../wdc_io.html#wdc_io.wdc_readfile">[docs]</a><span class="k">def</span> <span class="nf">wdc_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">)]</span>
+        <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">]</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;daily_mean&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
+                           <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># Old WDC format (century value is missing. col 15 = International D</span>
+        <span class="c1"># or Q days. )</span>
+
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">)]</span>
+        <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">]</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;daily_mean&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
+                           <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;century&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">19</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="wdc_datetimes"><a class="viewcode-back" href="../wdc_io.html#wdc_io.wdc_datetimes">[docs]</a><span class="k">def</span> <span class="nf">wdc_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+    <span class="c1"># Convert the century/yr columns to a year</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;century&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;yr&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Create datetime objects from the century, year, month and day columns of</span>
+    <span class="c1"># the WDC format data file</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+        <span class="s2">&quot;{0} {1} {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]),</span>
+        <span class="s2">&quot;%Y %m </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="wdc_xyz"><a class="viewcode-back" href="../wdc_io.html#wdc_io.wdc_xyz">[docs]</a><span class="k">def</span> <span class="nf">wdc_xyz</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+    <span class="c1"># Replace missing values with NaNs</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">wdc_io</span><span class="o">.</span><span class="n">daily_mean_conversion</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;daily_mean&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;D&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">wdc_io</span><span class="o">.</span><span class="n">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="daily_mean_conversion"><a class="viewcode-back" href="../wdc_io.html#wdc_io.daily_mean_conversion">[docs]</a><span class="k">def</span> <span class="nf">daily_mean_conversion</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the daily mean using the tabular base&quot;&quot;&quot;</span>
+    <span class="n">grp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;D&#39;</span> <span class="ow">or</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span>
+            <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;daily_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">600.0</span><span class="p">)</span><span class="o">*</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">]</span>
+            <span class="n">grp</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;daily_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span><span class="o">*</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">]</span>
+            <span class="n">grp</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">grp</span></div>
+
+
+<div class="viewcode-block" id="angles_to_geographic"><a class="viewcode-back" href="../wdc_io.html#wdc_io.angles_to_geographic">[docs]</a><span class="k">def</span> <span class="nf">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Use the declination and horizontal intensity to calculate X and Y&quot;&quot;&quot;</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span>
+        <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;D&#39;</span><span class="p">]))</span>
+
+    <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span>
+        <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;D&#39;</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../wdc_io.html#wdc_io.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resample the daily data to a specified frequency. Default is &#39;M&#39;</span>
+<span class="sd">    (month end) for monthly means. Another useful option is &#39;A&#39; (year end)</span>
+<span class="sd">    for annual means.&quot;&quot;&quot;</span>
+
+    <span class="n">resampled</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+    <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">resampled</span></div>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># df = pd.DataFrame()</span>
+<span class="c1"># for observatory in obs_names:</span>
+<span class="c1">#     path = &#39;/Users/Grace/Dropbox/BGS_hourly/hourval/single_obs/%s/*.wdc&#39; \</span>
+<span class="c1">#         % observatory</span>
+<span class="c1">#     print(path)</span>
+<span class="c1">#     filenames = glob.glob(path)</span>
+<span class="c1">#     for f in filenames:</span>
+<span class="c1">#         try:</span>
+<span class="c1">#             frame = wdc_io.wdc_to_dataframe(f)</span>
+<span class="c1">#             df = df.append(frame, ignore_index=True)</span>
+<span class="c1">#         except StopIteration:</span>
+<span class="c1">#             pass</span>
+<span class="c1"># =============================================================================</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Grace Cox.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
