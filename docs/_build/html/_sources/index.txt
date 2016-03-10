@@ -5,7 +5,7 @@
 
 Welcome to MagPy's documentation!
 =================================
-
+Test documentation
 Contents:
 
 .. toctree::
