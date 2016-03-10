@@ -11,7 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   MagPy
+   wdc_io.rst
+   svplots.rst
 
 Indices and tables
 ==================
