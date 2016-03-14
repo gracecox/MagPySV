@@ -41,9 +41,24 @@
   <h1>Source code for wdc_io</h1><div class="highlight"><pre>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Created on Tue Feb 16 17:46:51 2016</span>
+<span class="sd">Part of the MagPy package for geomagnetic data analysis. This module provides</span>
+<span class="sd">various functions to read, parse and manipulate the contents of World Data</span>
+<span class="sd">Centre (WDC) formatted files containing geomagnetic data.</span>
 
-<span class="sd">@author: Grace</span>
+<span class="sd">    Copyright (C) 2016  Grace Cox</span>
+
+<span class="sd">    This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">    it under the terms of the GNU General Public License as published by</span>
+<span class="sd">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    (at your option) any later version.</span>
+
+<span class="sd">    This program is distributed in the hope that it will be useful,</span>
+<span class="sd">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    GNU General Public License for more details.</span>
+
+<span class="sd">    You should have received a copy of the GNU General Public License along</span>
+<span class="sd">    with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># Need functions to:</span>
 <span class="c1"># 1. Remove stormy days, save to file</span>
@@ -59,8 +74,25 @@
 
 
 <div class="viewcode-block" id="wdc_readfile"><a class="viewcode-back" href="../wdc_io.html#wdc_io.wdc_readfile">[docs]</a><span class="k">def</span> <span class="nf">wdc_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Load a WDC datafile and place the contents into a dataframe.</span>
+
+<span class="sd">    Load a datafile of WDC hourly geomagnetic data for a single observatory and</span>
+<span class="sd">    extract the contents. Can parse both the current WDC file format and the</span>
+<span class="sd">    previous format containing international quiet (Q) or disturbed (D) day</span>
+<span class="sd">    designation in place of the century field.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fname (str): path to a WDC datafile.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        data (dataframe): dataframe containing averaged geomagnetic data. First</span>
+<span class="sd">        column is a series of datetime objects (in the format yyyy-mm-dd)</span>
+<span class="sd">        and subsequent columns are the X, Y and Z components of the</span>
+<span class="sd">        magnetic field at the specified times.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># New WDC file format</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span>
                 <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">)]</span>
         <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span>
@@ -72,9 +104,8 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
                            <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="c1"># Old WDC format (century value is missing. col 15 = International D</span>
-        <span class="c1"># or Q days. )</span>
-
+        <span class="c1"># Old WDC format (century value is missing. Col 15 = International D</span>
+        <span class="c1"># or Q days.)</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">120</span><span class="p">)]</span>
         <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">,</span>
@@ -90,6 +121,16 @@
 
 
 <div class="viewcode-block" id="wdc_datetimes"><a class="viewcode-back" href="../wdc_io.html#wdc_io.wdc_datetimes">[docs]</a><span class="k">def</span> <span class="nf">wdc_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create datetime objects from the fields extracted from a WDC datafile.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (dataframe): needs columns for century, year (yy format), month</span>
+<span class="sd">            and day. Called by wdc_readfile.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        data (dataframe): the same dataframe with a series of datetime objects</span>
+<span class="sd">        (in the format yyyy-mm-dd) in the first column.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Convert the century/yr columns to a year</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;century&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;yr&#39;</span><span class="p">]</span>
@@ -107,17 +148,30 @@
 
 
 <div class="viewcode-block" id="wdc_xyz"><a class="viewcode-back" href="../wdc_io.html#wdc_io.wdc_xyz">[docs]</a><span class="k">def</span> <span class="nf">wdc_xyz</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convert extracted WDC data to daily averages of X, Y and Z components.</span>
+
+<span class="sd">    Missing values (indicated by 9999 in the datafiles) are replaced with NaNs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (dataframe): dataframe containing columns for datetime objects,</span>
+<span class="sd">            magnetic field component (D, I, F, H, X, Y or Z), the tabular base</span>
+<span class="sd">            and daily mean.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        data (dataframe): the same dataframe with datetime objects in the first</span>
+<span class="sd">        column and columns for X, Y and Z components of magnetic field (in nT).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Replace missing values with NaNs</span>
     <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">wdc_io</span><span class="o">.</span><span class="n">daily_mean_conversion</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
     <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;daily_mean&#39;</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># Call helper function to convert D and H components to X and Y</span>
     <span class="k">if</span> <span class="s1">&#39;D&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">wdc_io</span><span class="o">.</span><span class="n">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
@@ -129,7 +183,27 @@
 
 
 <div class="viewcode-block" id="daily_mean_conversion"><a class="viewcode-back" href="../wdc_io.html#wdc_io.daily_mean_conversion">[docs]</a><span class="k">def</span> <span class="nf">daily_mean_conversion</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate the daily mean using the tabular base&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Use the tabular base to calculate daily means in nT or degrees (D, I)</span>
+
+<span class="sd">    Uses the tabular base and daily value from the WDC file to calculate the</span>
+<span class="sd">    daily means of magnetic field components. Value is in nT for H, F, X, Y or</span>
+<span class="sd">    Z components and in degrees for D or I components. Called by wdc_xyz.</span>
+
+<span class="sd">    daily_mean = tabular_base*100 + wdc_daily_value (for components in nT)</span>
+
+<span class="sd">    daily_mean = tabular_base + wdc_daily_value/600 (for D and I components)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (dataframe): dataframe containing columns for datetimeobjects,</span>
+<span class="sd">            magnetic field component (D, I, F, H, X, Y or Z), the tabular base</span>
+<span class="sd">            and daily mean.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        df (dataframe): the same dataframe with datetime objects in the first</span>
+<span class="sd">        column and daily means of the field components in either nT or degrees</span>
+<span class="sd">        (depending on the component).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">grp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">):</span>
 
@@ -145,7 +219,26 @@
 
 
 <div class="viewcode-block" id="angles_to_geographic"><a class="viewcode-back" href="../wdc_io.html#wdc_io.angles_to_geographic">[docs]</a><span class="k">def</span> <span class="nf">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Use the declination and horizontal intensity to calculate X and Y&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Use D and H values to calculate the X and Y field components.</span>
+
+<span class="sd">    The declination (D) and horizontal intensity (H) relate to the north (Y)</span>
+<span class="sd">    and east (X) components as follows:</span>
+
+<span class="sd">    X = H*cos(D)</span>
+
+<span class="sd">    Y = H*sin(D)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (dataframe): dataframe containing columns for datetimeobjects and</span>
+<span class="sd">            daily means of the magnetic field components (D, I, F, H, X, Y or</span>
+<span class="sd">            Z).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        data (dataframe): the same dataframe with datetime objects in the first</span>
+<span class="sd">        column and daily means of the field components in either nT or degrees</span>
+<span class="sd">        (depending on the component).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span>
         <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span>
             <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;D&#39;</span><span class="p">]))</span>
@@ -158,9 +251,24 @@
 
 
 <div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../wdc_io.html#wdc_io.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Resample the daily data to a specified frequency. Default is &#39;M&#39;</span>
-<span class="sd">    (month end) for monthly means. Another useful option is &#39;A&#39; (year end)</span>
-<span class="sd">    for annual means.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Resample the daily geomagnetic data to a specified frequency.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df (dataframe): dataframe containing datetime objects and daily</span>
+<span class="sd">                means of magnetic data.</span>
+<span class="sd">            sampling (str): new sampling frequency. Default value is &#39;M&#39;</span>
+<span class="sd">                (monthly means), which averages data for each month and sets</span>
+<span class="sd">                the datetime object to the final day of that month. Use &#39;MS&#39;</span>
+<span class="sd">                to set the datetime object to the first day of the month.</span>
+<span class="sd">                Another useful option is &#39;A&#39; (annual means), which averages</span>
+<span class="sd">                data for a whole year and sets the datetime object to the final</span>
+<span class="sd">                day of the year. Use &#39;AS&#39; to set the datetime object to the</span>
+<span class="sd">                first day of the year.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            df (dataframe): dataframe of datetime objects and monthly/annual</span>
+<span class="sd">            means of observatory data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">resampled</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
     <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>

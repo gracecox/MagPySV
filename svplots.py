@@ -1,160 +1,212 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Feb 16 17:04:47 2016
+Part of the MagPy package for geomagnetic data analysis. This module provides
+various plotting functions.
 
-@author: Grace
+    Copyright (C) 2016  Grace Cox
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+
 import numpy as np
 import scipy as sp
 import pandas as pd
 import datetime as dt
 import matplotlib.pyplot as plt
-                        
-def plot_eigenvalues(values):
-    
-    """ Plot eigenvalues of residuals
-    
+
+
+def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
+    """ Plot eigenvalues of the SV residuals.
+
     Produces a plot of the eigenvalues obtained during the principal component
-    analysis of SV residuals. The largest value represents the noisy direction.
-    
+    analysis (PCA) of SV residuals. The largest eigenvalue represents the
+    eigendirection with the largest contribution to the residuals (i.e. the
+    "noisy" direction.). The smallest eigenvalue represents the
+    eigendirection with the smallest contribution to the residuals (the "clean"
+    direction). See Wardinski & Holme (2011, GJI) for further details.
+
     Args:
-        values: list of eigenvalues from the PCA
+        values (array): the eigenvalues obtained from the principal component
+            analysis of the SV residuals.
+        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        **font_size (int): font size for axes. Defaults to 16 pt.
+        **label_size (int): font size for axis labels. Defaults to 20 pt.
     """
-    
-    plt.figure(figsize=(8, 6))
+
+    plt.figure(figsize=fig_size)
     plt.plot(values)
     plt.axis('tight')
-    plt.xlabel('$i$', fontsize=16)
-    plt.ylabel('$\lambda_i$', fontsize=16)
-        
-def plot_denoised(dates,denoised,model):
-    
-    """ Plot the denoised SV and model prediction for a single observatory
-    
-    Produces a plot of the x, y and z components of the denoised SV and field
-    model prediction for an observatory
-    
-    Args:
-        dates: list of datetime objects for the time series
-        denoised: x, y and z components of denoised SV at a single location
-        model: x, y and z components of predicted SV at that single location
-    """
-    
-    plt.figure(figsize=(8, 6))
-    plt.subplot(3,1,1)
-    plt.gca().xaxis_date()
-    plt.plot(
-             dates,denoised[:,0],'b',
-             dates,model[:,0],'r')
-    plt.gcf().autofmt_xdate()
-    plt.axis('tight')
-    plt.ylabel('$\dot{x}$ (nT/yr)', fontsize=16)
-    plt.subplot(3,1,2)
-    plt.gca().xaxis_date()
-    plt.plot(
-             dates,denoised[:,1],'b',
-             dates,model[:,1],'r')
-    plt.gcf().autofmt_xdate()
-    plt.axis('tight')
-    plt.ylabel('$\dot{y}$ (nT/yr)', fontsize=16)
-    plt.subplot(3,1,3)
-    plt.gca().xaxis_date()
-    plt.plot(
-             dates,denoised[:,2],'b',
-             dates,model[:,2],'r')
-    plt.gcf().autofmt_xdate()
-    plt.axis('tight')
-    plt.xlabel('Year', fontsize=16)
-    plt.ylabel('$\dot{z}$ (nT/yr)', fontsize=16)
-    #plt.legend(['denoised','cov-obs'],loc='upper right',frameon=False)
+    plt.xlabel('$i$', fontsize=font_size)
+    plt.ylabel('$\lambda_i$', fontsize=font_size)
 
-def plot_dcx(date,signal):
-    
-    """ Compare the proxy used to denoise the SV data with the Dst index
-    
+
+def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
+                  label_size=20, plot_legend=False):
+    """ Plot the denoised SV and model prediction for a single observatory.
+
+    Produces a plot of the X, Y and Z components of the denoised SV and field
+    model prediction for a single observatory.
+
+    Args:
+        dates (datetime series): dates of the time series measurements.
+            denoised (series): X, Y and Z components of
+            denoised SV at a single location.
+        model: time series of X, Y and Z components of the SV predicted by a
+            field model for the same location as the denoised data.
+        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        **font_size (int): font size for axes. Defaults to 16 pt.
+        **label_size (int): font size for axis labels. Defaults to 20 pt.
+        **plot_legend (bool): option to include a legend on the plot. Defaults
+            to False.
+    """
+
+    plt.figure(figsize=fig_size)
+    # X component
+    plt.subplot(3, 1, 1)
+    plt.gca().xaxis_date()
+    plt.plot(dates, denoised[:, 0], 'b', dates, model[:, 0], 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.ylabel('$\dot{x}$ (nT/yr)', fontsize=font_size)
+    # Y component
+    plt.subplot(3, 1, 2)
+    plt.gca().xaxis_date()
+    plt.plot(dates, denoised[:, 1], 'b', dates, model[:, 1], 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.ylabel('$\dot{y}$ (nT/yr)', fontsize=font_size)
+    # Z component
+    plt.subplot(3, 1, 3)
+    plt.gca().xaxis_date()
+    plt.plot(dates, denoised[:, 2], 'b', dates, model[:, 2], 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.xlabel('Year', fontsize=label_size)
+    plt.ylabel('$\dot{z}$ (nT/yr)', fontsize=font_size)
+    if plot_legend is True:
+        plt.legend(['denoised', 'cov-obs'], loc='upper right', frameon=False)
+
+
+def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
+             plot_legend=False):
+    """ Compare the proxy used to denoise the SV data with the Dst index.
+
     Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
     used as a proxy for unmodelled external signal. Both time series are
-    reduced to zero mean and unit variance for plotting (i.e. their zscore)
-    
+    reduced to zero mean and unit variance (i.e. their zscore) for plotting.
+
     Args:
-        dates: list of datetime objects for the time series
-        signal: proxy for unmodelled external signal used in the denoising (PCA)
-        process. This will be the residual in the noisiest eigendirection(s).
+        dates (datetime series): dates of the time series measurements.
+        signal (series): proxy for unmodelled external signal used in the
+            denoising process (principal component analysis). The proxy is the
+            residual in the noisiest eigendirection(s).
+        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        **font_size (int): font size for axes. Defaults to 16 pt.
+        **label_size (int): font size for axis labels. Defaults to 20 pt.
+        **plot_legend (bool): option to include a legend on the plot. Defaults
+            to False.
     """
-    
+
+    # Read the Dcx data and put into a dataframe
     dcx = pd.read_csv(
-                     '~/Dropbox/BGS_data/monthly_means/Dcx/Dcx_mm_monthly_diff.txt',
-                     sep='\s+',header=None)
+                     '~/Dropbox/BGS_data/monthly_means/Dcx/\
+                     Dcx_mm_monthly_diff.txt', sep='\s+', header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
     dates = dcx.apply(
-                     lambda x:dt.datetime.strptime(
-                     "{0} {1}".format(int(x['year']),
-                     int(x['month'])), "%Y %m"),axis=1)
-                               
+                     lambda x: dt.datetime.strptime(
+                      "{0} {1}".format(int(x['year']), int(x['month'])),
+                      "%Y %m"), axis=1)
+    # Create datetime objects for the series
     dcx.insert(0, 'date', dates)
     dcx.drop(dcx.columns[[1, 2]], axis=1, inplace=True)
-    plt.figure(figsize=(8, 6))
+
+    # Plot the zscore of the two time series
+    plt.figure(figsize=fig_size)
     plt.gca().xaxis_date()
     plt.plot(
-             dcx.date,sp.stats.mstats.zscore(dcx.monthly_mean),'b',
-             date,sp.stats.mstats.zscore(signal),'r')
+             dcx.date, sp.stats.mstats.zscore(dcx.monthly_mean), 'b',
+             date, sp.stats.mstats.zscore(signal), 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
-    plt.xlabel('Year', fontsize=16)
-    plt.ylabel('Dcx (nT/yr)', fontsize=16)
-    plt.legend(['Dcx','proxy'],loc='upper right',frameon=False)
+    plt.xlabel('Year', fontsize=label_size)
+    plt.ylabel('Dcx (nT/yr)', fontsize=font_size)
+    if plot_legend is True:
+        plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)
 
-def plot_dcx_fft(dates,signal):
-    
-    """ Compare the DFTs of the proxy signal with that of the Dst index
-    
-    Loads Dcx data (extended, corrected Dst), calulates its DFT and plots it 
+
+def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
+                 label_size=20, plot_legend=False):
+    """ Compare the DFTs of the proxy signal with that of the Dst index.
+
+    Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
     alongside the DFT of the signal used as a proxy for unmodelled external
     signal. The length of the time series are padded with zeroes up to the next
     power of two.
-    
+
     Args:
-        dates: list of datetime objects for the time series
-        signal: proxy for unmodelled external signal used in the denoising (PCA)
-        process. This will be the residual in the noisiest eigendirection(s).
+        dates (datetime series): dates of the time series measurements.
+        signal: proxy for unmodelled external signal used in the denoising
+            process (principal component analysis). The proxy is the residual
+            in the noisiest eigendirection(s).
+        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        **font_size (int): font size for axes. Defaults to 16 pt.
+        **label_size (int): font size for axis labels. Defaults to 20 pt.
+        **plot_legend (bool): option to include a legend on the plot. Defaults
+            to False.
     """
-    
+
     dcx = pd.read_csv(
-                     '~/Dropbox/BGS_data/monthly_means/Dcx/Dcx_mm_monthly_diff.txt',
-                     sep='\s+',header=None)
+                     '~/Dropbox/BGS_data/monthly_means/Dcx/\
+                     Dcx_mm_monthly_diff.txt', sep='\s+', header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
     dates = dcx.apply(
-                     lambda x:dt.datetime.strptime(
-                     "{0} {1}".format(int(x['year']),
-                     int(x['month'])), "%Y %m"),axis=1)
-                               
+                     lambda x: dt.datetime.strptime(
+                      "{0} {1}".format(int(x['year']), int(x['month'])),
+                      "%Y %m"), axis=1)
+
     dcx.insert(0, 'date', dates)
     dcx.drop(dcx.columns[[1, 2]], axis=1, inplace=True)
-    
+
     T = 1/12.0   # Sampling time in years
-    
+
     # Find the next power of two higher than the length of the time series and
     # perform the FFT with the series padded with zeroes to this length
-    N = int(pow(2,np.ceil(np.log2(len(signal)))))
-    
+    N = int(pow(2, np.ceil(np.log2(len(signal)))))
+
     dcx_fft = sp.fft(dcx.monthly_mean, N)
     proxy_fft = sp.fft(signal, N)
     freq = np.linspace(0.0, 1.0/(2.0*T), N/2)
     dcx_power = 2.0/N * np.abs(dcx_fft[:N/2])
     proxy_power = 2.0/N * np.abs(proxy_fft[:N/2])
-    
-    plt.figure(figsize=(10, 7))
-    plt.subplot(2,1,1)
+
+    plt.figure(figsize=fig_size)
+    # Time domain
+    plt.subplot(2, 1, 1)
     plt.gca().xaxis_date()
-    plt.plot(dcx.date,dcx.monthly_mean,'b',
-             dates,signal,'r')
+    plt.plot(dcx.date, dcx.monthly_mean, 'b', dates, signal, 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
-    plt.xlabel('Year', fontsize=16)
-    plt.ylabel('Dcx (nT/yr)', fontsize=16)
-    plt.subplot(2,1,2)
-    plt.plot(freq,dcx_power,'b',
-             freq,proxy_power,'r')
-    plt.xlabel('Frequency (cycles/year)', fontsize=16)
-    plt.ylabel('Power', fontsize=16)
-    plt.legend(['Dcx','proxy'],loc='upper right',frameon=False)
+    plt.xlabel('Year', fontsize=label_size)
+    plt.ylabel('Dcx (nT/yr)', fontsiz=label_size)
+    # Frequency domain
+    plt.subplot(2, 1, 2)
+    plt.plot(freq, dcx_power, 'b', freq, proxy_power, 'r')
+    plt.xlabel('Frequency (cycles/year)', fontsize=font_size)
+    plt.ylabel('Power', fontsize=font_size)
+    if plot_legend is True:
+        plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)

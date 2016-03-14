@@ -39,15 +39,15 @@
             
   <div class="section" id="module-denoise">
 <span id="denoise-module"></span><h1>denoise module<a class="headerlink" href="#module-denoise" title="Permalink to this headline">¶</a></h1>
-<p>Perform principal component analysis (PCA) on secular variation 
-residuals (the difference between the observed SV and that predicted by a 
-geomagnetic field model) calculated from annual differences of monthly 
-means at several observatories. Uses the imputer from sklearn.preprocessing to 
+<p>Perform principal component analysis (PCA) on secular variation
+residuals (the difference between the observed SV and that predicted by a
+geomagnetic field model) calculated from annual differences of monthly
+means at several observatories. Uses the imputer from sklearn.preprocessing to
 fill in missing data points and calculates the eigenvalues/vectors of the
 (3nx3n) covariance matrix for n observatories. The residuals are rotated
 into the eigendirections and denoised using the method detailed in
-Wardinski &amp; Holme (2011). The SV residuals of the noisy component for all 
-observatories combined are used as a proxy for the unmodelled external signal. 
+Wardinski &amp; Holme (2011). The SV residuals of the noisy component for all
+observatories combined are used as a proxy for the unmodelled external signal.
 The denoised data are then rotated back into geographic coordinates</p>
 <p>&#64;author: Grace</p>
 <dl class="function">

@@ -40,63 +40,135 @@
             
   <div class="section" id="module-svplots">
 <span id="svplots-module"></span><h1>svplots module<a class="headerlink" href="#module-svplots" title="Permalink to this headline">¶</a></h1>
-<p>Created on Tue Feb 16 17:04:47 2016</p>
-<p>&#64;author: Grace</p>
+<p>Part of the MagPy package for geomagnetic data analysis. This module provides
+various plotting functions.</p>
+<blockquote>
+<div><p>Copyright (C) 2016  Grace Cox</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along
+with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+</div></blockquote>
 <dl class="function">
 <dt id="svplots.plot_dcx">
-<code class="descclassname">svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>date</em>, <em>signal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the proxy used to denoise the SV data with the Dst index</p>
+<code class="descclassname">svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>date</em>, <em>signal</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the proxy used to denoise the SV data with the Dst index.</p>
 <p>Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
 used as a proxy for unmodelled external signal. Both time series are
-reduced to zero mean and unit variance for plotting (i.e. their zscore)</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>dates: list of datetime objects for the time series
-signal: proxy for unmodelled external signal used in the denoising (PCA)
-process. This will be the residual in the noisiest eigendirection(s).</dd>
-</dl>
+reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>signal</strong> (<em>series</em>) &#8211; proxy for unmodelled external signal used in the
+denoising process (principal component analysis). The proxy is the
+residual in the noisiest eigendirection(s).</li>
+<li><strong>**fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>**plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="svplots.plot_dcx_fft">
-<code class="descclassname">svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>dates</em>, <em>signal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the DFTs of the proxy signal with that of the Dst index</p>
-<p>Loads Dcx data (extended, corrected Dst), calulates its DFT and plots it 
+<code class="descclassname">svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>dates</em>, <em>signal</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the proxy signal with that of the Dst index.</p>
+<p>Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
 alongside the DFT of the signal used as a proxy for unmodelled external
 signal. The length of the time series are padded with zeroes up to the next
 power of two.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>dates: list of datetime objects for the time series
-signal: proxy for unmodelled external signal used in the denoising (PCA)
-process. This will be the residual in the noisiest eigendirection(s).</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>signal</strong> &#8211; proxy for unmodelled external signal used in the denoising
+process (principal component analysis). The proxy is the residual
+in the noisiest eigendirection(s).</li>
+<li><strong>**fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>**plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="svplots.plot_denoised">
-<code class="descclassname">svplots.</code><code class="descname">plot_denoised</code><span class="sig-paren">(</span><em>dates</em>, <em>denoised</em>, <em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_denoised"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_denoised" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the denoised SV and model prediction for a single observatory</p>
-<p>Produces a plot of the x, y and z components of the denoised SV and field
-model prediction for an observatory</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>dates: list of datetime objects for the time series
-denoised: x, y and z components of denoised SV at a single location
-model: x, y and z components of predicted SV at that single location</dd>
-</dl>
+<code class="descclassname">svplots.</code><code class="descname">plot_denoised</code><span class="sig-paren">(</span><em>dates</em>, <em>denoised</em>, <em>model</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_denoised"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_denoised" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the denoised SV and model prediction for a single observatory.</p>
+<p>Produces a plot of the X, Y and Z components of the denoised SV and field
+model prediction for a single observatory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.
+denoised (series): X, Y and Z components of
+denoised SV at a single location.</li>
+<li><strong>model</strong> &#8211; time series of X, Y and Z components of the SV predicted by a
+field model for the same location as the denoised data.</li>
+<li><strong>**fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>**plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="svplots.plot_eigenvalues">
-<code class="descclassname">svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot eigenvalues of residuals</p>
+<code class="descclassname">svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>values</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot eigenvalues of the SV residuals.</p>
 <p>Produces a plot of the eigenvalues obtained during the principal component
-analysis of SV residuals. The largest value represents the noisy direction.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>values: list of eigenvalues from the PCA</dd>
-</dl>
+analysis (PCA) of SV residuals. The largest eigenvalue represents the
+eigendirection with the largest contribution to the residuals (i.e. the
+&#8220;noisy&#8221; direction.). The smallest eigenvalue represents the
+eigendirection with the smallest contribution to the residuals (the &#8220;clean&#8221;
+direction). See Wardinski &amp; Holme (2011, GJI) for further details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal component
+analysis of the SV residuals.</li>
+<li><strong>**fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

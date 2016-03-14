@@ -36,7 +36,14 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon',
 ]
+
+# Add mappings
+intersphinx_mapping = {
+    'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None),
+#    'python': ('http://docs.python.org/3', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
