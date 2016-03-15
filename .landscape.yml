@@ -1,0 +1,11 @@
+doc-warnings: yes
+test-warnings: yes
+strictness: high
+max-line-length: 80
+autodetect: yes
+requirements:
+    - requirements.txt
+ignore-paths:
+    - docs/conf.py
+python-targets:
+    - 3
