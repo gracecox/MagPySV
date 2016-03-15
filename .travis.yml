@@ -9,15 +9,25 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda update --yes conda
 
+# commands to install R (statistical language) for use with the rpy2 python package
 addons:
   apt:
     sources:
     - r-packages-precise
     packages:
     - r-base
+
 # command to install dependencies
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose 
   - pip install -r requirements.txt
+  - pip install coverage
+  - pip install nose
+  - pip install python-coveralls
+
 # command to run tests
-script: nosetests
+script: 
+  - nosetests --with-coverage --cover-package=.
+
+after_success:
+  - coveralls
