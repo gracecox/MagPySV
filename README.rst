@@ -1,7 +1,7 @@
 Welcome to MagPy
 ========================
 
-|build-status| |docs|
+|build-status| |docs| |coverage| |license|
 
 Purpose
 -------
@@ -22,3 +22,11 @@ Documentation for MagPy is hosted by  Read The Docs at https://magpy.readthedocs
     :target: http://magpy.readthedocs.org/en/latest/?badge=latest
     :alt: Documentation Status
     :scale: 100%
+
+.. |coverage| image:: https://coveralls.io/repos/github/gracecox/MagPy/badge.svg?branch=master
+   :target: https://coveralls.io/github/gracecox/MagPy?branch=master
+   :alt: coverage
+   :scale: 100%
+
+.. |license| image:: http://img.shields.io/badge/license-GPLv3-4AC51C.svg?style=flat
+   :target: https://www.gnu.org/licenses/quick-guide-gplv3.html.en
