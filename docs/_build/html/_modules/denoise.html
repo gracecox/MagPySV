@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>denoise &mdash; MagPy 1.0 documentation</title>
+  <title>denoise &mdash; MagPy 0.1.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="MagPy 1.0 documentation" href="../index.html"/>
+    <link rel="top" title="MagPy 0.1.0 documentation" href="../index.html"/>
         <link rel="up" title="Module code" href="index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.0
+                0.1
               </div>
             
           
@@ -127,7 +127,8 @@
             
   <h1>Source code for denoise</h1><div class="highlight"><pre>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Module containing functions to remove external signal from geomagnetic data.</span>
+
 <span class="sd">Part of the MagPy package for geomagnetic data analysis. This module provides</span>
 <span class="sd">various functions to denoise geomagnetic data by performing principal component</span>
 <span class="sd">analysis.</span>
@@ -145,8 +146,7 @@
 <span class="sd">    GNU General Public License for more details.</span>
 
 <span class="sd">    You should have received a copy of the GNU General Public License along</span>
-<span class="sd">    with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span> <span class="k">as</span> <span class="n">sklearnPCA</span>
@@ -155,7 +155,7 @@
 
 <div class="viewcode-block" id="eigenvalue_analysis"><a class="viewcode-back" href="../denoise.html#denoise.eigenvalue_analysis">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
                         <span class="n">proxy_number</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Perform principal component analysis (PCA) on secular variation</span>
+    <span class="sd">&quot;&quot;&quot;Perform principal component analysis (PCA) on secular variation</span>
 <span class="sd">    residuals (the difference between the observed SV and that predicted by a</span>
 <span class="sd">    geomagnetic field model) calculated from annual differences of monthly</span>
 <span class="sd">    means at several observatories. Uses the imputer from sklearn.preprocessing</span>
@@ -179,23 +179,23 @@
 <span class="sd">    Args:</span>
 <span class="sd">        **dates (datetime series): dates of the time series measurements.</span>
 <span class="sd">        **obs_data (dataframe): dataframe containing columns for monthly/annual</span>
-<span class="sd">        means of the X, Y and Z components of the secular variation at the</span>
-<span class="sd">        observatories of interest.</span>
+<span class="sd">            means of the X, Y and Z components of the secular variation at the</span>
+<span class="sd">            observatories of interest.</span>
 <span class="sd">        **model_data (dataframe): dataframe containing columns for field model</span>
-<span class="sd">        prediction of the X, Y and Z components of the secular variation at the</span>
-<span class="sd">        same observatories as in obs_data.</span>
+<span class="sd">            prediction of the X, Y and Z components of the secular variation at</span>
+<span class="sd">            the same observatories as in obs_data.</span>
 <span class="sd">        **residuals (dataframe): dataframe containing the residuals of the SV</span>
-<span class="sd">        (difference between the observed data and model prediction).</span>
+<span class="sd">            (difference between the observed data and model prediction).</span>
 <span class="sd">        **proxy_number (int): the number of &#39;noisy&#39; used to create the proxy</span>
-<span class="sd">        for theexternal signal removal. Default value is 1 (only the residual</span>
-<span class="sd">        in the direction of the largest eigenvalue is used). Using n directions</span>
-<span class="sd">        means that proxy is the sum of the SV residuals in the n noisiest</span>
-<span class="sd">        eigendirections.</span>
+<span class="sd">            for theexternal signal removal. Default value is 1 (only the</span>
+<span class="sd">            residual in the direction of the largest eigenvalue is used). Using</span>
+<span class="sd">            n directions means that proxy is the sum of the SV residuals in the</span>
+<span class="sd">            n noisiest eigendirections.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        denoised_sv (dataframe): dataframe with datetime objects in the first</span>
 <span class="sd">        column and columns for the denoised X, Y and Z SV components at each of</span>
-<span class="sd">        the observatories for which data were provided.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the observatories for which data were provided.&quot;&quot;&quot;</span>
+
     <span class="c1"># Fill in missing SV values (indicated as NaN in the data files)</span>
     <span class="n">imp</span> <span class="o">=</span> <span class="n">Imputer</span><span class="p">(</span><span class="n">missing_values</span><span class="o">=</span><span class="s1">&#39;NaN&#39;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">imputed_residuals</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
@@ -262,7 +262,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

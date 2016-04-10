@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Module containing plotting functions.
+
 Part of the MagPy package for geomagnetic data analysis. This module provides
 various plotting functions.
 
@@ -16,8 +17,7 @@ various plotting functions.
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License along
-    with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
+    with this program.  If not, see <http://www.gnu.org/licenses/>."""
 
 import numpy as np
 import scipy as sp
@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
-    """ Plot eigenvalues of the SV residuals.
+    """Plot eigenvalues of the SV residuals.
 
     Produces a plot of the eigenvalues obtained during the principal component
     analysis (PCA) of SV residuals. The largest eigenvalue represents the
@@ -42,19 +42,18 @@ def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
         **fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt.
-    """
+        **label_size (int): font size for axis labels. Defaults to 20 pt."""
 
     plt.figure(figsize=fig_size)
     plt.plot(values)
     plt.axis('tight')
-    plt.xlabel('$i$', fontsize=font_size)
-    plt.ylabel('$\lambda_i$', fontsize=font_size)
+    plt.xlabel(r'$i$', fontsize=font_size)
+    plt.ylabel('r$\lambda_i$', fontsize=label_size)
 
 
 def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
                   label_size=20, plot_legend=False):
-    """ Plot the denoised SV and model prediction for a single observatory.
+    """Plot the denoised SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the denoised SV and field
     model prediction for a single observatory.
@@ -70,8 +69,7 @@ def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
         **font_size (int): font size for axes. Defaults to 16 pt.
         **label_size (int): font size for axis labels. Defaults to 20 pt.
         **plot_legend (bool): option to include a legend on the plot. Defaults
-            to False.
-    """
+            to False."""
 
     plt.figure(figsize=fig_size)
     # X component
@@ -80,14 +78,14 @@ def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
     plt.plot(dates, denoised[:, 0], 'b', dates, model[:, 0], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
-    plt.ylabel('$\dot{x}$ (nT/yr)', fontsize=font_size)
+    plt.ylabel(r'$\dot{x}$ (nT/yr)', fontsize=font_size)
     # Y component
     plt.subplot(3, 1, 2)
     plt.gca().xaxis_date()
     plt.plot(dates, denoised[:, 1], 'b', dates, model[:, 1], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
-    plt.ylabel('$\dot{y}$ (nT/yr)', fontsize=font_size)
+    plt.ylabel(r'$\dot{y}$ (nT/yr)', fontsize=font_size)
     # Z component
     plt.subplot(3, 1, 3)
     plt.gca().xaxis_date()
@@ -95,14 +93,14 @@ def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xlabel('Year', fontsize=label_size)
-    plt.ylabel('$\dot{z}$ (nT/yr)', fontsize=font_size)
+    plt.ylabel(r'$\dot{z}$ (nT/yr)', fontsize=font_size)
     if plot_legend is True:
         plt.legend(['denoised', 'cov-obs'], loc='upper right', frameon=False)
 
 
 def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
              plot_legend=False):
-    """ Compare the proxy used to denoise the SV data with the Dst index.
+    """Compare the proxy used to denoise the SV data with the Dst index.
 
     Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
     used as a proxy for unmodelled external signal. Both time series are
@@ -118,8 +116,7 @@ def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
         **font_size (int): font size for axes. Defaults to 16 pt.
         **label_size (int): font size for axis labels. Defaults to 20 pt.
         **plot_legend (bool): option to include a legend on the plot. Defaults
-            to False.
-    """
+            to False."""
 
     # Read the Dcx data and put into a dataframe
     dcx = pd.read_csv(
@@ -150,7 +147,7 @@ def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
 
 def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
                  label_size=20, plot_legend=False):
-    """ Compare the DFTs of the proxy signal with that of the Dst index.
+    """Compare the DFTs of the proxy signal with that of the Dst index.
 
     Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
     alongside the DFT of the signal used as a proxy for unmodelled external
@@ -167,12 +164,11 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
         **font_size (int): font size for axes. Defaults to 16 pt.
         **label_size (int): font size for axis labels. Defaults to 20 pt.
         **plot_legend (bool): option to include a legend on the plot. Defaults
-            to False.
-    """
+            to False."""
 
     dcx = pd.read_csv(
                      '~/Dropbox/BGS_data/monthly_means/Dcx/\
-                     Dcx_mm_monthly_diff.txt', sep='\s+', header=None)
+                     Dcx_mm_monthly_diff.txt', sep=r'\s+', header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
     dates = dcx.apply(
                      lambda x: dt.datetime.strptime(

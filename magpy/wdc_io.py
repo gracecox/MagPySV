@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+"""Module containing functions to parse World Data Centre (WDC) files
+
 Part of the MagPy package for geomagnetic data analysis. This module provides
 various functions to read, parse and manipulate the contents of World Data
 Centre (WDC) formatted files containing geomagnetic data.
@@ -17,8 +18,7 @@ Centre (WDC) formatted files containing geomagnetic data.
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License along
-    with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
+    with this program.  If not, see <http://www.gnu.org/licenses/>."""
 # Need functions to:
 # 1. Remove stormy days, save to file
 # 2. Get monthly or annual differences of the monthly means (SV)
@@ -26,14 +26,11 @@ Centre (WDC) formatted files containing geomagnetic data.
 import datetime as dt
 import pandas as pd
 import numpy as np
-import wdc_io
-
-obs_names = ['aqu']   # ['aqu','clf','hrb','ngk']
-model_name = 'cov-obs'
+import glob
 
 
-def wdc_readfile(fname):
-    """ Load a WDC datafile and place the contents into a dataframe.
+def wdc_parsefile(fname):
+    """Load a WDC datafile and place the contents into a dataframe.
 
     Load a datafile of WDC hourly geomagnetic data for a single observatory and
     extract the contents. Can parse both the current WDC file format and the
@@ -47,8 +44,7 @@ def wdc_readfile(fname):
         data (dataframe): dataframe containing averaged geomagnetic data. First
         column is a series of datetime objects (in the format yyyy-mm-dd)
         and subsequent columns are the X, Y and Z components of the
-        magnetic field at the specified times.
-    """
+        magnetic field at the specified times."""
 
     try:
         # New WDC file format
@@ -64,7 +60,7 @@ def wdc_readfile(fname):
                            converters=types, header=None)
     except ValueError:
         # Old WDC format (century value is missing. Col 15 = International D
-        # or Q days.)
+        # or Q days. Col 16 = Blank for data since 1900, 8 for data before.)
         cols = [(0, 3), (3, 5), (5, 7), (7, 8), (8, 10), (16, 20), (116, 120)]
         col_names = [
             'code', 'yr', 'month', 'component', 'day', 'base',
@@ -80,16 +76,15 @@ def wdc_readfile(fname):
 
 
 def wdc_datetimes(data):
-    """ Create datetime objects from the fields extracted from a WDC datafile.
+    """Create datetime objects from the fields extracted from a WDC datafile.
 
     Args:
         data (dataframe): needs columns for century, year (yy format), month
-            and day. Called by wdc_readfile.
+            and day. Called by wdc_parsefile.
 
     Returns:
         data (dataframe): the same dataframe with a series of datetime objects
-        (in the format yyyy-mm-dd) in the first column.
-    """
+        (in the format yyyy-mm-dd) in the first column."""
 
     # Convert the century/yr columns to a year
     data['year'] = 100*data['century'] + data['yr']
@@ -107,7 +102,7 @@ def wdc_datetimes(data):
 
 
 def wdc_xyz(data):
-    """ Convert extracted WDC data to daily averages of X, Y and Z components.
+    """Convert extracted WDC data to daily averages of X, Y and Z components.
 
     Missing values (indicated by 9999 in the datafiles) are replaced with NaNs.
 
@@ -124,7 +119,7 @@ def wdc_xyz(data):
     # Replace missing values with NaNs
     data.replace(9999, np.nan, inplace=True)
 
-    data = data.groupby('component').apply(wdc_io.daily_mean_conversion)
+    data = data.groupby('component').apply(daily_mean_conversion)
     data.reset_index(drop=True, inplace=True)
     data.drop(['base', 'daily_mean_temp'], axis=1, inplace=True)
     data = data.pivot(index='date', columns='component', values='daily_mean')
@@ -132,7 +127,7 @@ def wdc_xyz(data):
 
     # Call helper function to convert D and H components to X and Y
     if 'D' in data.columns and 'H' in data.columns:
-        data = wdc_io.angles_to_geographic(data)
+        data = angles_to_geographic(data)
         data = data[['date', 'X', 'Y', 'Z']]
 
     else:
@@ -141,7 +136,7 @@ def wdc_xyz(data):
     return data
 
 
-def daily_mean_conversion(df):
+def daily_mean_conversion(data):
     """ Use the tabular base to calculate daily means in nT or degrees (D, I)
 
     Uses the tabular base and daily value from the WDC file to calculate the
@@ -153,18 +148,18 @@ def daily_mean_conversion(df):
     daily_mean = tabular_base + wdc_daily_value/600 (for D and I components)
 
     Args:
-        df (dataframe): dataframe containing columns for datetimeobjects,
+        data (dataframe): dataframe containing columns for datetimeobjects,
             magnetic field component (D, I, F, H, X, Y or Z), the tabular base
             and daily mean.
 
     Returns:
-        df (dataframe): the same dataframe with datetime objects in the first
+        data (dataframe): the same dataframe with datetime objects in the first
         column and daily means of the field components in either nT or degrees
         (depending on the component).
     """
 
     grp = pd.DataFrame()
-    for group in df.groupby('component'):
+    for group in data.groupby('component'):
 
         if group[0] == 'D' or group[0] == 'I':
             group[1]['daily_mean'] = group[1]['base'] + \
@@ -178,7 +173,7 @@ def daily_mean_conversion(df):
 
 
 def angles_to_geographic(data):
-    """ Use D and H values to calculate the X and Y field components.
+    """Use D and H values to calculate the X and Y field components.
 
     The declination (D) and horizontal intensity (H) relate to the north (Y)
     and east (X) components as follows:
@@ -195,8 +190,7 @@ def angles_to_geographic(data):
     Returns:
         data (dataframe): the same dataframe with datetime objects in the first
         column and daily means of the field components in either nT or degrees
-        (depending on the component).
-    """
+        (depending on the component)."""
 
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'X'] = data.loc[(
         ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H']*np.cos(np.deg2rad(
@@ -209,11 +203,11 @@ def angles_to_geographic(data):
     return data
 
 
-def data_resampling(df, sampling='M'):
-    """ Resample the daily geomagnetic data to a specified frequency.
+def data_resampling(data, sampling='M'):
+    """Resample the daily geomagnetic data to a specified frequency.
 
         Args:
-            df (dataframe): dataframe containing datetime objects and daily
+            data (dataframe): dataframe containing datetime objects and daily
                 means of magnetic data.
             sampling (str): new sampling frequency. Default value is 'M'
                 (monthly means), which averages data for each month and sets
@@ -225,26 +219,47 @@ def data_resampling(df, sampling='M'):
                 first day of the year.
 
         Returns:
-            df (dataframe): dataframe of datetime objects and monthly/annual
-            means of observatory data.
-    """
+            data (dataframe): dataframe of datetime objects and monthly/annual
+            means of observatory data."""
 
-    resampled = df.set_index('date', drop=False).resample(sampling, how='mean')
+    resampled = data.set_index('date', drop=False).resample(
+            sampling, how='mean')
     resampled.reset_index(inplace=True)
 
     return resampled
 
-# =============================================================================
-# df = pd.DataFrame()
-# for observatory in obs_names:
-#     path = '/Users/Grace/Dropbox/BGS_hourly/hourval/single_obs/%s/*.wdc' \
-#         % observatory
-#     print(path)
-#     filenames = glob.glob(path)
-#     for f in filenames:
-#         try:
-#             frame = wdc_io.wdc_to_dataframe(f)
-#             df = df.append(frame, ignore_index=True)
-#         except StopIteration:
-#             pass
-# =============================================================================
+
+def wdc_readfile(fname, *, save_csv=False):
+
+    rawdata = wdc_parsefile(fname)
+    rawdata = wdc_datetimes(rawdata)
+    data = wdc_xyz(rawdata)
+
+    return data
+
+
+def append_wdc_data(obs_name,
+                    path='/Users/Grace/Dropbox/BGS_data/hourval/\
+single_obs/%s/*.wdc'):
+
+    """ Find all data for a particular observatory
+
+    Args:
+        obs_name: Observatory name (as 3-digit IAGA codes)
+
+    Returns:
+        data"""
+
+    df = pd.DataFrame()
+
+    data_path = path % obs_name
+
+    filenames = glob.glob(data_path)
+    for f in filenames:
+        try:
+            frame = wdc_readfile(f)
+            df = df.append(frame, ignore_index=True)
+        except StopIteration:
+            pass
+
+    return df
