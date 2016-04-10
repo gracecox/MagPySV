@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>loaddata &mdash; MagPy 1.0 documentation</title>
+  <title>loaddata &mdash; MagPy 0.1.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="MagPy 1.0 documentation" href="../index.html"/>
+    <link rel="top" title="MagPy 0.1.0 documentation" href="../index.html"/>
         <link rel="up" title="Module code" href="index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.0
+                0.1
               </div>
             
           
@@ -140,7 +140,7 @@
 
 <div class="viewcode-block" id="load_monthly_means"><a class="viewcode-back" href="../loaddata.html#loaddata.load_monthly_means">[docs]</a><span class="k">def</span> <span class="nf">load_monthly_means</span><span class="p">(</span><span class="n">obs_names</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
 
-    <span class="sd">&quot;&quot;&quot; Load SV values and calculate the residuals</span>
+    <span class="sd">&quot;&quot;&quot;Load SV values and calculate the residuals</span>
 
 <span class="sd">    Loads secular variation data for the specified</span>
 <span class="sd">    observatories from file. Also loads the SV predicted at the same locations</span>
@@ -156,8 +156,7 @@
 <span class="sd">        model values. First column is a list of datetime objects (in the</span>
 <span class="sd">        format yyyy-mm-01. The 01 is spcified because the datetime objects need</span>
 <span class="sd">        a day). Subsequent columns contain the SV residuals in x, y and z for</span>
-<span class="sd">        each observatory.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        each observatory.&quot;&quot;&quot;</span>
 
     <span class="k">for</span> <span class="n">observatory</span> <span class="ow">in</span> <span class="n">obs_names</span><span class="p">:</span>
 
@@ -274,7 +273,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

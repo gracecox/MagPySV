@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>wdc_io module &mdash; MagPy 1.0 documentation</title>
+  <title>wdc_io module &mdash; MagPy 0.1.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="MagPy 1.0 documentation" href="index.html"/> 
+    <link rel="top" title="MagPy 0.1.0 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.0
+                0.1
               </div>
             
           
@@ -126,6 +126,7 @@
             
   <div class="section" id="module-wdc_io">
 <span id="wdc-io-module"></span><h1>wdc_io module<a class="headerlink" href="#module-wdc_io" title="Permalink to this headline">¶</a></h1>
+<p>Module containing functions to parse World Data Centre (WDC) files</p>
 <p>Part of the MagPy package for geomagnetic data analysis. This module provides
 various functions to read, parse and manipulate the contents of World Data
 Centre (WDC) formatted files containing geomagnetic data.</p>
@@ -170,8 +171,24 @@ column and daily means of the field components in either nT or degrees
 </dd></dl>
 
 <dl class="function">
+<dt id="wdc_io.append_wdc_data">
+<code class="descclassname">wdc_io.</code><code class="descname">append_wdc_data</code><span class="sig-paren">(</span><em>obs_name</em>, <em>path='/Users/Grace/Dropbox/BGS_data/hourval/single_obs/%s/*.wdc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#append_wdc_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.append_wdc_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all data for a particular observatory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obs_name</strong> &#8211; Observatory name (as 3-digit IAGA codes)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="wdc_io.daily_mean_conversion">
-<code class="descclassname">wdc_io.</code><code class="descname">daily_mean_conversion</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#daily_mean_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.daily_mean_conversion" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">wdc_io.</code><code class="descname">daily_mean_conversion</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#daily_mean_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.daily_mean_conversion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use the tabular base to calculate daily means in nT or degrees (D, I)</p>
 <p>Uses the tabular base and daily value from the WDC file to calculate the
 daily means of magnetic field components. Value is in nT for H, F, X, Y or
@@ -182,11 +199,11 @@ Z components and in degrees for D or I components. Called by wdc_xyz.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for datetimeobjects,
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for datetimeobjects,
 magnetic field component (D, I, F, H, X, Y or Z), the tabular base
 and daily mean.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>df</strong> &#8211;
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
 the same dataframe with datetime objects in the first
 column and daily means of the field components in either nT or degrees
 (depending on the component).</td>
@@ -199,14 +216,14 @@ column and daily means of the field components in either nT or degrees
 
 <dl class="function">
 <dt id="wdc_io.data_resampling">
-<code class="descclassname">wdc_io.</code><code class="descname">data_resampling</code><span class="sig-paren">(</span><em>df</em>, <em>sampling='M'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#data_resampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.data_resampling" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">wdc_io.</code><code class="descname">data_resampling</code><span class="sig-paren">(</span><em>data</em>, <em>sampling='M'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#data_resampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.data_resampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resample the daily geomagnetic data to a specified frequency.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>dataframe</em>) &#8211; dataframe containing datetime objects and daily
+<li><strong>data</strong> (<em>dataframe</em>) &#8211; dataframe containing datetime objects and daily
 means of magnetic data.</li>
 <li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; new sampling frequency. Default value is &#8216;M&#8217;
 (monthly means), which averages data for each month and sets
@@ -219,7 +236,7 @@ first day of the year.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>df</strong> &#8211;
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> &#8211;
 dataframe of datetime objects and monthly/annual
 means of observatory data.</p>
 </td>
@@ -240,7 +257,7 @@ means of observatory data.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>dataframe</em>) &#8211; needs columns for century, year (yy format), month
-and day. Called by wdc_readfile.</td>
+and day. Called by wdc_parsefile.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
 the same dataframe with a series of datetime objects
@@ -253,8 +270,8 @@ the same dataframe with a series of datetime objects
 </dd></dl>
 
 <dl class="function">
-<dt id="wdc_io.wdc_readfile">
-<code class="descclassname">wdc_io.</code><code class="descname">wdc_readfile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#wdc_readfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.wdc_readfile" title="Permalink to this definition">¶</a></dt>
+<dt id="wdc_io.wdc_parsefile">
+<code class="descclassname">wdc_io.</code><code class="descname">wdc_parsefile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#wdc_parsefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.wdc_parsefile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a WDC datafile and place the contents into a dataframe.</p>
 <p>Load a datafile of WDC hourly geomagnetic data for a single observatory and
 extract the contents. Can parse both the current WDC file format and the
@@ -277,6 +294,11 @@ magnetic field at the specified times.</td>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="function">
+<dt id="wdc_io.wdc_readfile">
+<code class="descclassname">wdc_io.</code><code class="descname">wdc_readfile</code><span class="sig-paren">(</span><em>fname</em>, <em>*</em>, <em>save_csv=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wdc_io.html#wdc_readfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#wdc_io.wdc_readfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="wdc_io.wdc_xyz">
@@ -335,7 +357,7 @@ column and columns for X, Y and Z components of magnetic field (in nT).</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0',
+            VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
