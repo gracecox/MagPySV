@@ -41,10 +41,10 @@ def wdc_parsefile(fname):
         fname (str): path to a WDC datafile.
 
     Returns:
-        data (dataframe): dataframe containing averaged geomagnetic data. First
-        column is a series of datetime objects (in the format yyyy-mm-dd)
-        and subsequent columns are the X, Y and Z components of the
-        magnetic field at the specified times."""
+        data (pandas.DataFrame): dataframe containing daily geomagnetic
+            data. First column is a series of datetime objects (in the format
+            yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
+            the magnetic field at the specified times."""
 
     try:
         # New WDC file format
@@ -79,12 +79,12 @@ def wdc_datetimes(data):
     """Create datetime objects from the fields extracted from a WDC datafile.
 
     Args:
-        data (dataframe): needs columns for century, year (yy format), month
-            and day. Called by wdc_parsefile.
+        data (pandas.DataFrame): needs columns for century, year (yy format),
+            month and day. Called by wdc_parsefile.
 
     Returns:
-        data (dataframe): the same dataframe with a series of datetime objects
-        (in the format yyyy-mm-dd) in the first column."""
+        data (pandas.DataFrame): the same dataframe with a series of datetime
+            objects (in the format yyyy-mm-dd) in the first column."""
 
     # Convert the century/yr columns to a year
     data['year'] = 100*data['century'] + data['yr']
@@ -107,14 +107,14 @@ def wdc_xyz(data):
     Missing values (indicated by 9999 in the datafiles) are replaced with NaNs.
 
     Args:
-        data (dataframe): dataframe containing columns for datetime objects,
-            magnetic field component (D, I, F, H, X, Y or Z), the tabular base
-            and daily mean.
+        data (pandas.DataFrame): dataframe containing columns for datetime
+            objects, magnetic field component (D, I, F, H, X, Y or Z), the
+            tabular base and daily mean.
 
     Returns:
-        data (dataframe): the same dataframe with datetime objects in the first
-        column and columns for X, Y and Z components of magnetic field (in nT).
-    """
+        data (pandas.DataFrame): the same dataframe with datetime objects in
+            the first column and columns for X, Y and Z components of magnetic
+            field (in nT)."""
 
     # Replace missing values with NaNs
     data.replace(9999, np.nan, inplace=True)
@@ -137,7 +137,7 @@ def wdc_xyz(data):
 
 
 def daily_mean_conversion(data):
-    """ Use the tabular base to calculate daily means in nT or degrees (D, I)
+    """Use the tabular base to calculate daily means in nT or degrees (D, I)
 
     Uses the tabular base and daily value from the WDC file to calculate the
     daily means of magnetic field components. Value is in nT for H, F, X, Y or
@@ -148,15 +148,14 @@ def daily_mean_conversion(data):
     daily_mean = tabular_base + wdc_daily_value/600 (for D and I components)
 
     Args:
-        data (dataframe): dataframe containing columns for datetimeobjects,
-            magnetic field component (D, I, F, H, X, Y or Z), the tabular base
-            and daily mean.
+        data (pandas.DataFrame): dataframe containing columns for datetime
+            objects, magnetic field component (D, I, F, H, X, Y or Z), the
+            tabular base and daily mean.
 
     Returns:
-        data (dataframe): the same dataframe with datetime objects in the first
-        column and daily means of the field components in either nT or degrees
-        (depending on the component).
-    """
+        data (pandas.DataFrame): the same dataframe with datetime objects in
+            the first column and daily means of the field components in either
+            nT or degrees (depending on the component)."""
 
     grp = pd.DataFrame()
     for group in data.groupby('component'):
@@ -183,14 +182,14 @@ def angles_to_geographic(data):
     Y = H*sin(D)
 
     Args:
-        data (dataframe): dataframe containing columns for datetimeobjects and
-            daily means of the magnetic field components (D, I, F, H, X, Y or
-            Z).
+        data (pandas.DataFrame): dataframe containing columns for datetime
+            objects and daily means of the magnetic field components (D, I, F,
+            H, X, Y or Z).
 
     Returns:
-        data (dataframe): the same dataframe with datetime objects in the first
-        column and daily means of the field components in either nT or degrees
-        (depending on the component)."""
+        data (pandas.DataFrame): the same dataframe with datetime objects in
+            the first column and daily means of the field components in either
+            nT or degrees (depending on the component)."""
 
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'X'] = data.loc[(
         ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H']*np.cos(np.deg2rad(
@@ -207,8 +206,8 @@ def data_resampling(data, sampling='M'):
     """Resample the daily geomagnetic data to a specified frequency.
 
         Args:
-            data (dataframe): dataframe containing datetime objects and daily
-                means of magnetic data.
+            data (pandas.DataFrame): dataframe containing datetime objects and
+                daily means of magnetic data.
             sampling (str): new sampling frequency. Default value is 'M'
                 (monthly means), which averages data for each month and sets
                 the datetime object to the final day of that month. Use 'MS'
@@ -219,8 +218,8 @@ def data_resampling(data, sampling='M'):
                 first day of the year.
 
         Returns:
-            data (dataframe): dataframe of datetime objects and monthly/annual
-            means of observatory data."""
+            data (pandas.DataFrame): dataframe of datetime objects and
+                monthly/annual means of observatory data."""
 
     resampled = data.set_index('date', drop=False).resample(
             sampling, how='mean')
@@ -229,7 +228,17 @@ def data_resampling(data, sampling='M'):
     return resampled
 
 
-def wdc_readfile(fname, *, save_csv=False):
+def wdc_readfile(fname):
+    """Wrapper function to call wdc_parsefile, wdc_readfile and wdc_xyz.
+
+    Args:
+        fname (str): path to a WDC datafile.
+
+    Returns:
+        data (pandas.DataFrame): dataframe containing the data read from the
+            WDC file. First column is a series of datetime objects (in the
+            format yyyy-mm-dd) and subsequent columns are the X, Y and Z
+            components of the magnetic field at the specified times."""
 
     rawdata = wdc_parsefile(fname)
     rawdata = wdc_datetimes(rawdata)
@@ -242,13 +251,17 @@ def append_wdc_data(obs_name,
                     path='/Users/Grace/Dropbox/BGS_data/hourval/\
 single_obs/%s/*.wdc'):
 
-    """ Find all data for a particular observatory
+    """Append all WDC data for an observatory into a single dataframe.
 
     Args:
-        obs_name: Observatory name (as 3-digit IAGA codes)
+        obs_name (str): observatory name (as 3-digit IAGA code).
 
     Returns:
-        data"""
+        data (pandas.DataFrame): dataframe containing all available daily
+            geomagnetic data at a single observatory. First column is a series
+            of datetime objects (in the format yyyy-mm-dd) and subsequent
+            columns are the X, Y and Z components of the magnetic field at the
+            specified times."""
 
     df = pd.DataFrame()
 
@@ -263,3 +276,122 @@ single_obs/%s/*.wdc'):
             pass
 
     return df
+
+
+def covobs_parsefile(fname):
+    """Load a datafile containing SV predictions from a field model.
+
+    Args:
+        fname (str): path to a COV-OBS datafile.
+
+    Returns:
+        data (pandas.DataFrame): dataframe containing daily geomagnetic
+            data. First column is a series of datetime objects (in the format
+            yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
+            the SV at the specified times."""
+
+    model_data = pd.read_csv(fname, sep='\s+', header=None,
+                             usecols=[0, 1, 2, 3])
+
+    model_data.columns = ["year_decimal", "dx", "dy", "dz"]
+
+
+def covobs_datetimes(data):
+    """Create datetime objects from the year column of a COV-OBS output file.
+
+    The format output by the field model is year.decimalmonth e.g. 1960.08 is
+    Jan 1960
+
+    Args:
+        data (pandas.DataFrame): needs a column for decimal year (in yyyy.mm
+            format). Called by covobs_parsefile.
+
+    Returns:
+        data (pandas.DataFrame): the same dataframe with the decimal year
+            column replced with a series of datetime objects in the format
+            yyyy-mm-dd"""
+
+    year_temp = np.floor(data.year_decimal.values.astype(
+            'float64')).astype('int')
+
+    months = (12*(data.year_decimal - year_temp) + 1).round().astype('int')
+
+    data.drop(data.columns[[0]], axis=1, inplace=True)
+    data.insert(0, 'year', year_temp)
+    data.insert(1, 'month', months)
+
+    date = data.apply(lambda x: dt.datetime.strptime(
+            "{0} {1}".format(int(x['year']), int(x['month'])), "%Y %m"),
+            axis=1)
+
+    data.insert(0, 'date', date)
+    data.drop(data.columns[[1, 2]], axis=1, inplace=True)
+
+    # Convert the century/yr columns to a year
+    data['year'] = 100*data['century'] + data['yr']
+
+    # Create datetime objects from the century, year, month and day columns of
+    # the WDC format data file
+    dates = data.apply(lambda x: dt.datetime.strptime(
+        "{0} {1} {2}".format(x['year'], x['month'], x['day']),
+        "%Y %m %d"), axis=1)
+    data.insert(0, 'date', dates)
+    data.drop(['year', 'yr', 'century', 'code', 'day', 'month'], axis=1,
+              inplace=True)
+
+    return data
+
+
+def covobs_readfile(fname):
+    """Wrapper function to call covobs_parsefile and covobs_datetimes.
+
+    Args:
+        fname (str): path to a COV-OBS format datafile.
+
+    Returns:
+        data (pandas.DataFrame): dataframe containing the data read from the
+            file. First column is a series of datetime objects (in the
+            format yyyy-mm-dd) and subsequent columns are the X, Y and Z
+            components of the SV at the specified times."""
+
+    rawdata = covobs_parsefile(fname)
+    data = covobs_datetimes(rawdata)
+
+    return data
+
+
+def write_csv_data(data, data_path, obs_name):
+
+            fpath = data_path + obs_name + '.csv'
+            data.to_csv(fpath, sep=' ', header=True, index=False)
+
+
+def read_csv_data(fname):
+
+    col_names = ['date', 'component', 'mean']
+    data = pd.read_csv(fname, sep=' ', header=0, names=col_names,
+                       parse_dates=[0], dayfirst=True)
+    return data
+
+
+def combine_csv_data(obs_list, data_path, model_path):
+
+    for observatory in obs_list:
+
+        obs_fname = data_path + observatory + '.csv'
+        model_fname = model_path + observatory + '.csv'
+        obs_data_temp = read_csv_data(obs_fname)
+        model_data_temp = read_csv_data(model_fname)
+        # Combine the current observatory data with those of other
+        # observatories
+        if observatory == obs_list[0]:
+            obs_data = obs_data_temp
+            model_data = model_data_temp
+
+        else:
+            obs_data = pd.merge(
+                               left=obs_data, right=obs_data_temp,
+                               how='left', on='date', suffixes=obs_list)
+            model_data = pd.merge(
+                               left=model_data, right=model_data_temp,
+                               how='left', on='date', suffixes=obs_list)

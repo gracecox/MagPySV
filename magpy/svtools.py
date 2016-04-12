@@ -1,50 +1,25 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 23 21:40:59 2016
+"""Module containing functions to parse files output by magnetic field models.
 
-@author: Grace
-"""
+Part of the MagPy package for geomagnetic data analysis. This module provides
+various functions to read SV files output by geomagnetic field models.
+
+    Copyright (C) 2016  Grace Cox
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <http://www.gnu.org/licenses/>."""
 
 import pandas as pd
-import glob
-import wdc_io
-
-
-def write_csv_data(data, data_path, obs_name):
-
-            fpath = data_path + obs_name + '.csv'
-            data.to_csv(fpath, sep=' ', header=True, index=False)
-
-
-def read_csv_data(fname):
-
-    col_names = ['date', 'component', 'mean']
-    data = pd.read_csv(fname, sep=' ', header=0, names=col_names,
-                       parse_dates=[0], dayfirst=True)
-    return data
-
-
-def combine_csv_data(obs_list, data_path, model_path):
-
-    for observatory in obs_list:
-
-        obs_fname = data_path + observatory + '.csv'
-        model_fname = model_path + observatory + '.csv'
-        obs_data_temp = read_csv_data(obs_fname)
-        model_data_temp = read_csv_data(model_fname)
-        # Combine the current observatory data with those of other
-        # observatories
-        if observatory == obs_list[0]:
-            obs_data = obs_data_temp
-            model_data = model_data_temp
-
-        else:
-            obs_data = pd.merge(
-                               left=obs_data, right=obs_data_temp,
-                               how='left', on='date', suffixes=obs_list)
-            model_data = pd.merge(
-                               left=model_data, right=model_data_temp,
-                               how='left', on='date', suffixes=obs_list)
 
 
 def calculate_sv(obs_data, mean_spacing=1):

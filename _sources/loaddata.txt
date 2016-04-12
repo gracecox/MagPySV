@@ -1,7 +1,7 @@
-wdc_io module
-=============
+loaddata module
+===============
 
-.. automodule:: wdc_io
+.. automodule:: loaddata
     :members:
     :undoc-members:
     :show-inheritance:

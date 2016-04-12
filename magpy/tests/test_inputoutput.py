@@ -6,7 +6,7 @@ Created on Sun Feb 21 13:26:22 2016
 """
 import unittest
 import os
-import wdc_io
+import inputoutput
 import pandas as pd
 import datetime as dt
 import numpy as np
@@ -22,7 +22,7 @@ class WDCParsefileTestCase(unittest.TestCase):
 
         testfile = os.path.join(self.path, 'testdata1.wdc')
 
-        data = wdc_io.wdc_parsefile(testfile)
+        data = inputoutput.wdc_parsefile(testfile)
         # Observatory code
         self.assertEqual(data.code[0], 'NGK')
         self.assertEqual(len(data.code.unique()), 1)
@@ -36,7 +36,7 @@ class WDCParsefileTestCase(unittest.TestCase):
 
         testfile = os.path.join(self.path, 'testdata2.wdc')
 
-        data = wdc_io.wdc_parsefile(testfile)
+        data = inputoutput.wdc_parsefile(testfile)
         # Observatory code
         self.assertEqual(data.code[0], 'NGK')
         self.assertEqual(len(data.code.unique()), 1)
@@ -61,7 +61,7 @@ class WDCDatetimesTestCase(unittest.TestCase):
 
     def test_wdc_datetimes(self):
 
-        df = wdc_io.wdc_datetimes(self.data)
+        df = inputoutput.wdc_datetimes(self.data)
 
         self.assertTrue(isinstance(df.date[0], pd.datetime))
         self.assertEqual(df.date[0], dt.datetime(day=15, month=1, year=1963))
@@ -80,7 +80,7 @@ class DailyMeanConversionTestCase(unittest.TestCase):
 
     def test_daily_mean_conversion(self):
 
-        df = wdc_io.daily_mean_conversion(self.data)
+        df = inputoutput.daily_mean_conversion(self.data)
 
         self.assertAlmostEqual(df.iloc[0].daily_mean, 55)
         self.assertAlmostEqual(df.iloc[1].daily_mean, 20530)
@@ -102,7 +102,7 @@ class AnglesToGeographicTestCase(unittest.TestCase):
 
     def test_angles_to_geographic(self):
 
-        df = wdc_io.angles_to_geographic(self.data)
+        df = inputoutput.angles_to_geographic(self.data)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -123,7 +123,7 @@ class WDCXYZTestCase(unittest.TestCase):
 
     def test_wdc_xyz(self):
 
-        df = wdc_io.wdc_xyz(self.data)
+        df = inputoutput.wdc_xyz(self.data)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -143,7 +143,7 @@ class DataResamplingTestCase(unittest.TestCase):
 
     def test_data_resampling(self):
 
-        self.averaged = wdc_io.data_resampling(self.data)
+        self.averaged = inputoutput.data_resampling(self.data)
 
         self.assertAlmostEqual(self.averaged.daily_mean.values[0], 801.000000)
         self.assertAlmostEqual(self.averaged.daily_mean.values[7],
