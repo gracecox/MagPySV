@@ -12,8 +12,8 @@ cpm = importr('cpm')
 
 def change_point_analysis(signal, cpm_method):
     res = cpm.detectChangePoint(
-                                ro.FloatVector(signal), cpmType=cpm_method,
-                                ARL0=500, startup=20)
+        ro.FloatVector(signal), cpmType=cpm_method,
+        ARL0=500, startup=20)
     # Convert the ListVector returned by cpm to a python dictionary
     results = {key: res.rx2(key)[0] for key in res.names}
 

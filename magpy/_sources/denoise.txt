@@ -1,7 +1,7 @@
-loaddata module
-===============
+denoise module
+==============
 
-.. automodule:: loaddata
+.. automodule:: denoise
     :members:
     :undoc-members:
     :show-inheritance:

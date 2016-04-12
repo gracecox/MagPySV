@@ -4,26 +4,27 @@
 Part of the MagPy package for geomagnetic data analysis. This module provides
 various plotting functions.
 
-    Copyright (C) 2016  Grace Cox
+Copyright (C) 2016  Grace Cox
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License along
-    with this program.  If not, see <http://www.gnu.org/licenses/>."""
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 
-import numpy as np
-import scipy as sp
-import pandas as pd
 import datetime as dt
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scipy as sp
 
 
 def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
@@ -42,13 +43,14 @@ def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
         **fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt."""
+        **label_size (int): font size for axis labels. Defaults to 20 pt.
+    """
 
     plt.figure(figsize=fig_size)
     plt.plot(values)
     plt.axis('tight')
     plt.xlabel(r'$i$', fontsize=font_size)
-    plt.ylabel('r$\lambda_i$', fontsize=label_size)
+    plt.ylabel(r'$\lambda_i$', fontsize=label_size)
 
 
 def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
@@ -69,7 +71,8 @@ def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
         **font_size (int): font size for axes. Defaults to 16 pt.
         **label_size (int): font size for axis labels. Defaults to 20 pt.
         **plot_legend (bool): option to include a legend on the plot. Defaults
-            to False."""
+            to False.
+    """
 
     plt.figure(figsize=fig_size)
     # X component
@@ -116,17 +119,16 @@ def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
         **font_size (int): font size for axes. Defaults to 16 pt.
         **label_size (int): font size for axis labels. Defaults to 20 pt.
         **plot_legend (bool): option to include a legend on the plot. Defaults
-            to False."""
+            to False.
+    """
 
     # Read the Dcx data and put into a dataframe
-    dcx = pd.read_csv(
-                     '~/Dropbox/BGS_data/monthly_means/Dcx/\
-                     Dcx_mm_monthly_diff.txt', sep='\s+', header=None)
+    dcx = pd.read_csv('~/Dropbox/BGS_data/monthly_means/Dcx/\
+        Dcx_mm_monthly_diff.txt', sep=r'\s+', header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
-    dates = dcx.apply(
-                     lambda x: dt.datetime.strptime(
-                      "{0} {1}".format(int(x['year']), int(x['month'])),
-                      "%Y %m"), axis=1)
+    dates = dcx.apply(lambda x: dt.datetime.strptime(
+        "{0} {1}".format(int(x['year']), int(x['month'])), "%Y %m"), axis=1)
+
     # Create datetime objects for the series
     dcx.insert(0, 'date', dates)
     dcx.drop(dcx.columns[[1, 2]], axis=1, inplace=True)
@@ -134,8 +136,7 @@ def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
     # Plot the zscore of the two time series
     plt.figure(figsize=fig_size)
     plt.gca().xaxis_date()
-    plt.plot(
-             dcx.date, sp.stats.mstats.zscore(dcx.monthly_mean), 'b',
+    plt.plot(dcx.date, sp.stats.mstats.zscore(dcx.monthly_mean), 'b',
              date, sp.stats.mstats.zscore(signal), 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
@@ -164,31 +165,30 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
         **font_size (int): font size for axes. Defaults to 16 pt.
         **label_size (int): font size for axis labels. Defaults to 20 pt.
         **plot_legend (bool): option to include a legend on the plot. Defaults
-            to False."""
+            to False.
+    """
 
-    dcx = pd.read_csv(
-                     '~/Dropbox/BGS_data/monthly_means/Dcx/\
-                     Dcx_mm_monthly_diff.txt', sep=r'\s+', header=None)
+    dcx = pd.read_csv('~/Dropbox/BGS_data/monthly_means/Dcx/\
+        Dcx_mm_monthly_diff.txt', sep=r'\s+', header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
-    dates = dcx.apply(
-                     lambda x: dt.datetime.strptime(
-                      "{0} {1}".format(int(x['year']), int(x['month'])),
-                      "%Y %m"), axis=1)
+    dates = dcx.apply(lambda x: dt.datetime.strptime(
+        "{0} {1}".format(int(x['year']), int(x['month'])),
+        "%Y %m"), axis=1)
 
     dcx.insert(0, 'date', dates)
     dcx.drop(dcx.columns[[1, 2]], axis=1, inplace=True)
 
-    T = 1/12.0   # Sampling time in years
+    sampling_period = 1/12.0   # Sampling time in years
 
     # Find the next power of two higher than the length of the time series and
     # perform the FFT with the series padded with zeroes to this length
-    N = int(pow(2, np.ceil(np.log2(len(signal)))))
+    sample_length = int(pow(2, np.ceil(np.log2(len(signal)))))
 
-    dcx_fft = sp.fft(dcx.monthly_mean, N)
-    proxy_fft = sp.fft(signal, N)
-    freq = np.linspace(0.0, 1.0/(2.0*T), N/2)
-    dcx_power = 2.0/N * np.abs(dcx_fft[:N/2])
-    proxy_power = 2.0/N * np.abs(proxy_fft[:N/2])
+    dcx_fft = sp.fft(dcx.monthly_mean, sample_length)
+    proxy_fft = sp.fft(signal, sample_length)
+    freq = np.linspace(0.0, 1.0/(2.0*sampling_period), sample_length/2)
+    dcx_power = 2.0/sample_length * np.abs(dcx_fft[:sample_length/2])
+    proxy_power = 2.0/sample_length * np.abs(proxy_fft[:sample_length/2])
 
     plt.figure(figsize=fig_size)
     # Time domain

@@ -23,6 +23,27 @@ import pandas as pd
 
 
 def calculate_sv(obs_data, mean_spacing=1):
+    """Calculate the secular variation from the observed magnetic field values.
+
+    Uses monthly means of geomagnetic observatory data to calculate the SV
+    according to user-specified sampling. The typical choices are monthly
+    differences of monthly means and annual differences of monthly means. For
+    samplings other than monthly differences, the datetime objects of the
+    calculated SV are taken the midpoint of the datetime objects of the field
+    data. E.g. differencing the means of the field January 1999 and in January
+    2000 yields the SV for August 1999.
+
+    Args:
+        obs_data (pandas.DataFrame): dataframe containing means (usually
+            monthly) of observed geomagnetic field values.
+        mean_spacing (int): the number of months separating the monthly mean
+            values used to calculate the SV. Set to 1 to use adjacent months of
+            data (monthly differences of monthly means) or set to 12 to
+            calculate annual differences of monthly means.
+
+    Returns:
+        obs_data (pandas.DataFrame): dataframe containing SV data.
+    """
 
     # write function to calculate sv here
     obs_sv = pd.DataFrame()
@@ -32,15 +53,22 @@ def calculate_sv(obs_data, mean_spacing=1):
     obs_sv['dy'] = obs_data['Y'].diff(periods=mean_spacing)
     obs_sv['dz'] = obs_data['Z'].diff(periods=mean_spacing)
     obs_sv.drop(obs_sv.head(mean_spacing).index, inplace=True)
+
     return obs_sv
 
 
-def calculate_residuals(obs_data, model_data):
-    """ Calculate residuals between model and observatory data.
+def calculate_residuals(*, obs_data, model_data):
+    """Calculate SV residuals (observed - prediction) using datetime objects.
 
-    Use datetime objects to ensure that we have both an observatory SV value
-    and a model prediction for each date in the analysis, and that these values
-    are located in the same position within their respective dataframes """
+    Args:
+        obs_data (pandas.DataFrame): dataframe containing means (usually
+            monthly) of SV calculated from observed geomagnetic field values.
+        model_data (pandas.DataFrame): dataframe containing the SV predicted by
+        a geomagnetic field model.
+
+    Returns:
+        residuals (pandas.DataFrame): dataframe containing SV residuals.
+    """
 
     model_data = model_data[model_data['date'].isin(obs_data['date'])]
     obs_data.drop(obs_data.columns[[0]], axis=1, inplace=True)
@@ -48,6 +76,6 @@ def calculate_residuals(obs_data, model_data):
 
     # Calculate SV residuals (data - model prediction) for all observatories
     residuals = pd.DataFrame(
-                            obs_data.values-model_data.values,
-                            columns=obs_data.columns)
+        obs_data.values-model_data.values,
+        columns=obs_data.columns)
     return residuals
