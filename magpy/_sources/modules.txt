@@ -1,0 +1,6 @@
+MagPy
+=====
+
+.. toctree::
+   :maxdepth: 4
+

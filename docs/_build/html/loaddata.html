@@ -124,39 +124,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-loaddata">
-<span id="loaddata-module"></span><h1>loaddata module<a class="headerlink" href="#module-loaddata" title="Permalink to this headline">¶</a></h1>
-<p>Created on Tue Feb 16 17:29:31 2016</p>
-<p>&#64;author: Grace</p>
-<dl class="function">
-<dt id="loaddata.load_monthly_means">
-<code class="descclassname">loaddata.</code><code class="descname">load_monthly_means</code><span class="sig-paren">(</span><em>obs_names</em>, <em>model_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loaddata.html#load_monthly_means"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#loaddata.load_monthly_means" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load SV values and calculate the residuals</p>
-<p>Loads secular variation data for the specified
-observatories from file. Also loads the SV predicted at the same locations
-by the specified field model and calculates the SV residuals
-(model - prediction).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>obs_names</strong> &#8211; List of observatory names (as 3-digit IAGA codes)</li>
-<li><strong>model_name</strong> &#8211; Name of field model used to calculate the residuals</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dataframe containing the residuals between the monthly means data and
-model values. First column is a list of datetime objects (in the
-format yyyy-mm-01. The 01 is spcified because the datetime objects need
-a day). Subsequent columns contain the SV residuals in x, y and z for
-each observatory.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="loaddata-module">
+<h1>loaddata module<a class="headerlink" href="#loaddata-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
