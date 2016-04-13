@@ -176,7 +176,7 @@
     <span class="c1"># write function to calculate sv here</span>
     <span class="n">obs_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
-        <span class="n">months</span><span class="o">=</span><span class="n">mean_spacing</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">months</span><span class="o">=</span><span class="n">mean_spacing</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
@@ -204,7 +204,7 @@
 
     <span class="c1"># Calculate SV residuals (data - model prediction) for all observatories</span>
     <span class="n">residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="n">obs_data</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">obs_data</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
         <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">residuals</span></div>
 </pre></div>

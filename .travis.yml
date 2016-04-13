@@ -27,7 +27,7 @@ install:
 
 # command to run tests
 script: 
-  - nosetests --with-coverage --cover-package=magpy
+  - nosetests --with-coverage --cover-package=./magpy/
 
 after_success:
   - coveralls

@@ -178,7 +178,7 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
     dcx.insert(0, 'date', dates)
     dcx.drop(dcx.columns[[1, 2]], axis=1, inplace=True)
 
-    sampling_period = 1/12.0   # Sampling time in years
+    sampling_period = 1 / 12.0   # Sampling time in years
 
     # Find the next power of two higher than the length of the time series and
     # perform the FFT with the series padded with zeroes to this length
@@ -186,9 +186,9 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
 
     dcx_fft = sp.fft(dcx.monthly_mean, sample_length)
     proxy_fft = sp.fft(signal, sample_length)
-    freq = np.linspace(0.0, 1.0/(2.0*sampling_period), sample_length/2)
-    dcx_power = 2.0/sample_length * np.abs(dcx_fft[:sample_length/2])
-    proxy_power = 2.0/sample_length * np.abs(proxy_fft[:sample_length/2])
+    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
+    dcx_power = (2.0 / sample_length) * np.abs(dcx_fft[:sample_length / 2])
+    proxy_power = (2.0 / sample_length) * np.abs(proxy_fft[:sample_length / 2])
 
     plt.figure(figsize=fig_size)
     # Time domain

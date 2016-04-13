@@ -48,7 +48,7 @@ def calculate_sv(obs_data, mean_spacing=1):
     # write function to calculate sv here
     obs_sv = pd.DataFrame()
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
-        months=mean_spacing-1)
+        months=mean_spacing - 1)
     obs_sv['dx'] = obs_data['X'].diff(periods=mean_spacing)
     obs_sv['dy'] = obs_data['Y'].diff(periods=mean_spacing)
     obs_sv['dz'] = obs_data['Z'].diff(periods=mean_spacing)
@@ -76,6 +76,6 @@ def calculate_residuals(*, obs_data, model_data):
 
     # Calculate SV residuals (data - model prediction) for all observatories
     residuals = pd.DataFrame(
-        obs_data.values-model_data.values,
+        obs_data.values - model_data.values,
         columns=obs_data.columns)
     return residuals
