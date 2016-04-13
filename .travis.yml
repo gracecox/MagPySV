@@ -24,10 +24,12 @@ install:
   - pip install coverage
   - pip install nose
   - pip install python-coveralls
+  - pip install rednose
 
 # command to run tests
-script: 
-  - nosetests --with-coverage --cover-package=./magpy/
+script:
+  - cd magpy 
+  - nosetests --rednose --with-coverage --cover-package=.
 
 after_success:
   - coveralls
