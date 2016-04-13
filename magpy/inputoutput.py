@@ -90,7 +90,7 @@ def wdc_datetimes(data):
     """
 
     # Convert the century/yr columns to a year
-    data['year'] = 100*data['century'] + data['yr']
+    data['year'] = 100 * data['century'] + data['yr']
 
     # Create datetime objects from the century, year, month and day columns of
     # the WDC format data file
@@ -167,10 +167,10 @@ def daily_mean_conversion(data):
 
         if group[0] == 'D' or group[0] == 'I':
             group[1]['daily_mean'] = group[1]['base'] + \
-                (1/600.0)*group[1]['daily_mean_temp']
+                (1 / 600.0) * group[1]['daily_mean_temp']
             grp = grp.append(group[1], ignore_index=True)
         else:
-            group[1]['daily_mean'] = 100.0*group[1]['base'] + \
+            group[1]['daily_mean'] = 100.0 * group[1]['base'] + \
                 group[1]['daily_mean_temp']
             grp = grp.append(group[1], ignore_index=True)
     return grp
@@ -198,11 +198,11 @@ def angles_to_geographic(data):
     """
 
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'X'] = data.loc[(
-        ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H']*np.cos(np.deg2rad(
+        ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H'] * np.cos(np.deg2rad(
             data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'D']))
 
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'Y'] = data.loc[(
-        ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H']*np.sin(np.deg2rad(
+        ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H'] * np.sin(np.deg2rad(
             data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'D']))
 
     return data
@@ -327,7 +327,7 @@ def covobs_datetimes(data):
     year_temp = np.floor(data.year_decimal.values.astype(
         'float64')).astype('int')
 
-    months = (12*(data.year_decimal - year_temp) + 1).round().astype('int')
+    months = (12 * (data.year_decimal - year_temp) + 1).round().astype('int')
 
     data.drop(data.columns[[0]], axis=1, inplace=True)
     data.insert(0, 'year', year_temp)
@@ -335,13 +335,13 @@ def covobs_datetimes(data):
 
     date = data.apply(lambda x: dt.datetime.strptime(
         "{0} {1}".format(int(x['year']), int(x['month'])), "%Y %m"),
-                      axis=1)
+        axis=1)
 
     data.insert(0, 'date', date)
     data.drop(data.columns[[1, 2]], axis=1, inplace=True)
 
     # Convert the century/yr columns to a year
-    data['year'] = 100*data['century'] + data['yr']
+    data['year'] = 100 * data['century'] + data['yr']
 
     # Create datetime objects from the century, year, month and day columns of
     # the WDC format data file

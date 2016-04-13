@@ -195,7 +195,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        denoised_sv (dataframe): dataframe with datetime objects in the first</span>
 <span class="sd">        column and columns for the denoised X, Y and Z SV components at each of</span>
-<span class="sd">        the observatories for which data were provided.&quot;&quot;&quot;</span>
+<span class="sd">        the observatories for which data were provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Fill in missing SV values (indicated as NaN in the data files)</span>
     <span class="n">imp</span> <span class="o">=</span> <span class="n">Imputer</span><span class="p">(</span><span class="n">missing_values</span><span class="o">=</span><span class="s1">&#39;NaN&#39;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -220,12 +221,12 @@
 
     <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proxy</span><span class="p">)):</span>
         <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">imputed_residuals</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">*</span><span class="n">noisy_direction</span><span class="p">)</span>
+            <span class="n">imputed_residuals</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">)</span>
 
     <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corrected_residuals</span><span class="p">,</span>
                                        <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">denoised_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">values</span><span class="o">+</span><span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
         <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">denoised_sv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
 

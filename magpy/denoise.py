@@ -67,7 +67,8 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
     Returns:
         denoised_sv (dataframe): dataframe with datetime objects in the first
         column and columns for the denoised X, Y and Z SV components at each of
-        the observatories for which data were provided."""
+        the observatories for which data were provided.
+    """
 
     # Fill in missing SV values (indicated as NaN in the data files)
     imp = Imputer(missing_values='NaN', strategy='mean', axis=1)
@@ -92,12 +93,12 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
 
     for idx in range(len(proxy)):
         corrected_residuals.append(
-            imputed_residuals[idx, :] - proxy[idx]*noisy_direction)
+            imputed_residuals[idx, :] - proxy[idx] * noisy_direction)
 
     corrected_residuals = pd.DataFrame(corrected_residuals,
                                        columns=obs_data.columns)
     denoised_sv = pd.DataFrame(
-        corrected_residuals.values+model_data.values,
+        corrected_residuals.values + model_data.values,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
