@@ -6,7 +6,7 @@ Created on Sun Feb 21 13:26:22 2016
 """
 import unittest
 import os
-import inputoutput
+from .. import inputoutput
 import pandas as pd
 import datetime as dt
 import numpy as np
