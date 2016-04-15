@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>svtools &mdash; MagPy 0.1.0 documentation</title>
+  <title>magpy.svtools &mdash; MagPy 0.1.0 documentation</title>
   
 
   
@@ -24,17 +24,17 @@
 
   
   
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   
 
   
 
   
-    <link rel="top" title="MagPy 0.1.0 documentation" href="../index.html"/>
-        <link rel="up" title="Module code" href="index.html"/> 
+    <link rel="top" title="MagPy 0.1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
 
   
-  <script src="../_static/js/modernizr.min.js"></script>
+  <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -49,7 +49,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> MagPy
+            <a href="../../index.html" class="icon icon-home"> MagPy
           
 
           
@@ -66,7 +66,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -94,7 +94,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">MagPy</a>
+        <a href="../../index.html">MagPy</a>
       </nav>
 
 
@@ -109,11 +109,11 @@
 
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
       
-          <li><a href="index.html">Module code</a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
       
-    <li>svtools</li>
+    <li>magpy.svtools</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -125,7 +125,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for svtools</h1><div class="highlight"><pre>
+  <h1>Source code for magpy.svtools</h1><div class="highlight"><pre>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Module containing functions to parse files output by magnetic field models.</span>
 
@@ -150,7 +150,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../svtools.html#svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../magpy.html#magpy.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the secular variation from the observed magnetic field values.</span>
 
 <span class="sd">    Uses monthly means of geomagnetic observatory data to calculate the SV</span>
@@ -185,7 +185,7 @@
     <span class="k">return</span> <span class="n">obs_sv</span></div>
 
 
-<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../svtools.html#svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../magpy.html#magpy.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate SV residuals (observed - prediction) using datetime objects.</span>
 
 <span class="sd">    Args:</span>
@@ -239,23 +239,23 @@
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
+            URL_ROOT:'../../',
             VERSION:'0.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
         };
     </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
       <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
   
   
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
   
 
   

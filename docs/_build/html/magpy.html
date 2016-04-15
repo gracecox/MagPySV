@@ -132,8 +132,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="magpy.tests.html">magpy.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="magpy.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="magpy.tests.html#magpy-tests-test-inputoutput-module">magpy.tests.test_inputoutput module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="magpy.tests.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magpy.tests.html#module-magpy.tests.test_inputoutput">magpy.tests.test_inputoutput module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magpy.tests.html#module-magpy.tests">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -142,23 +142,697 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="magpy-changepoint-module">
-<h2>magpy.changepoint module<a class="headerlink" href="#magpy-changepoint-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-magpy.changepoint">
+<span id="magpy-changepoint-module"></span><h2>magpy.changepoint module<a class="headerlink" href="#module-magpy.changepoint" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Feb 16 17:22:26 2016</p>
+<p>&#64;author: Grace</p>
+<dl class="function">
+<dt id="magpy.changepoint.change_point_analysis">
+<code class="descclassname">magpy.changepoint.</code><code class="descname">change_point_analysis</code><span class="sig-paren">(</span><em>signal</em>, <em>cpm_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/changepoint.html#change_point_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.changepoint.change_point_analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="magpy.changepoint.plot_cpa_results">
+<code class="descclassname">magpy.changepoint.</code><code class="descname">plot_cpa_results</code><span class="sig-paren">(</span><em>dates</em>, <em>signal</em>, <em>results</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/changepoint.html#plot_cpa_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.changepoint.plot_cpa_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="magpy-denoise-module">
-<h2>magpy.denoise module<a class="headerlink" href="#magpy-denoise-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-magpy.denoise">
+<span id="magpy-denoise-module"></span><h2>magpy.denoise module<a class="headerlink" href="#module-magpy.denoise" title="Permalink to this headline">¶</a></h2>
+<p>Module containing functions to remove external signal from geomagnetic data.</p>
+<p>Part of the MagPy package for geomagnetic data analysis. This module provides
+various functions to denoise geomagnetic data by performing principal component
+analysis.</p>
+<p>Copyright (C) 2016  Grace Cox</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along
+with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<dl class="function">
+<dt id="magpy.denoise.eigenvalue_analysis">
+<code class="descclassname">magpy.denoise.</code><code class="descname">eigenvalue_analysis</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>obs_data</em>, <em>model_data</em>, <em>residuals</em>, <em>proxy_number=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/denoise.html#eigenvalue_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.denoise.eigenvalue_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform principal component analysis (PCA) on secular variation
+residuals (the difference between the observed SV and that predicted by a
+geomagnetic field model) calculated from annual differences of monthly
+means at several observatories. Uses the imputer from sklearn.preprocessing
+to fill in missing data points and calculates the eigenvalues/vectors of
+the (3nx3n) covariance matrix for n observatories. The residuals are
+rotated into the eigendirections and denoised using the method detailed in
+Wardinski &amp; Holme (2011). The SV residuals of the noisy component for all
+observatories combined are used as a proxy for the unmodelled external
+signal.The denoised data are then rotated back into geographic coordinates.
+Principal component analysis - find the eigenvalues and eigenvectors of
+the covariance matrix of the residuals. Project the SV residuals into the
+eigenvector directions. The pca algorithm outputs the eigenvalues sorted
+from largest to smallest, so the corresponding eigenvector matrix has the
+&#8216;noisy&#8217; direction in the first column and the &#8216;clean&#8217; direction in the
+final column.</p>
+<p>Smallest eigenvalue: &#8216;quiet&#8217; direction</p>
+<p>Largest eiegenvalue: &#8216;noisy&#8217; direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>**obs_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for monthly/annual
+means of the X, Y and Z components of the secular variation at the
+observatories of interest.</li>
+<li><strong>**model_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for field model
+prediction of the X, Y and Z components of the secular variation at
+the same observatories as in obs_data.</li>
+<li><strong>**residuals</strong> (<em>dataframe</em>) &#8211; dataframe containing the residuals of the SV
+(difference between the observed data and model prediction).</li>
+<li><strong>**proxy_number</strong> (<em>int</em>) &#8211; the number of &#8216;noisy&#8217; used to create the proxy
+for theexternal signal removal. Default value is 1 (only the
+residual in the direction of the largest eigenvalue is used). Using
+n directions means that proxy is the sum of the SV residuals in the
+n noisiest eigendirections.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>denoised_sv</strong> &#8211;
+dataframe with datetime objects in the first
+column and columns for the denoised X, Y and Z SV components at each of
+the observatories for which data were provided.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dataframe</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="magpy-inputoutput-module">
-<h2>magpy.inputoutput module<a class="headerlink" href="#magpy-inputoutput-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-magpy.inputoutput">
+<span id="magpy-inputoutput-module"></span><h2>magpy.inputoutput module<a class="headerlink" href="#module-magpy.inputoutput" title="Permalink to this headline">¶</a></h2>
+<p>Module containing functions to parse World Data Centre (WDC) files</p>
+<p>Part of the MagPy package for geomagnetic data analysis. This module provides
+various functions to read, parse and manipulate the contents of World Data
+Centre (WDC) formatted files containing geomagnetic data.</p>
+<p>Copyright (C) 2016  Grace Cox</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along
+with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<dl class="function">
+<dt id="magpy.inputoutput.angles_to_geographic">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">angles_to_geographic</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#angles_to_geographic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.angles_to_geographic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use D and H values to calculate the X and Y field components.</p>
+<p>The declination (D) and horizontal intensity (H) relate to the north (Y)
+and east (X) components as follows:</p>
+<p>X = H*cos(D)</p>
+<p>Y = H*sin(D)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for datetime
+objects and daily means of the magnetic field components (D, I, F,
+H, X, Y or Z).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with datetime objects in<blockquote>
+<div>the first column and daily means of the field components in either
+nT or degrees (depending on the component).</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.append_wdc_data">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">append_wdc_data</code><span class="sig-paren">(</span><em>obs_name</em>, <em>path='/Users/Grace/Dropbox/BGS_data/hourval/single_obs/%s/*.wdc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#append_wdc_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.append_wdc_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append all WDC data for an observatory into a single dataframe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obs_name</strong> (<em>str</em>) &#8211; observatory name (as 3-digit IAGA code).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing all available daily<blockquote>
+<div>geomagnetic data at a single observatory. First column is a series
+of datetime objects (in the format yyyy-mm-dd) and subsequent
+columns are the X, Y and Z components of the magnetic field at the
+specified times.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.combine_csv_data">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">combine_csv_data</code><span class="sig-paren">(</span><em>obs_list</em>, <em>data_path</em>, <em>model_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#combine_csv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.combine_csv_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and combine observatory and model SV data for several locations.</p>
+<p>Calls read_csv_data to read observatory data and field model predictions
+for each observatory in a list. The data and predictions for individual
+observatories are combined into their respective large dataframes. The
+first column contains datetime objects and subsequent columns contain X, Y
+and Z secular variation components (in groups of three) for all
+observatories.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs_list</strong> (<em>list</em>) &#8211; list of observatory names (as 3-digit IAGA codes).</li>
+<li><strong>data_path</strong> (<em>str</em>) &#8211; path to the CSV files containing observatory data.</li>
+<li><strong>model_path</strong> (<em>str</em>) &#8211; path to the CSV files containing model SV data.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>obs_data</strong> &#8211;
+dataframe containing SV data for all</p>
+<blockquote>
+<div><p>observatories in obs_list.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>model_data (pandas.DataFrame): dataframe containing SV predictions for</dt>
+<dd><p class="first last">all observatories in obs_list.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.covobs_datetimes">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">covobs_datetimes</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#covobs_datetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.covobs_datetimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create datetime objects from the year column of a COV-OBS output file.</p>
+<p>The format output by the field model is year.decimalmonth e.g. 1960.08 is
+Jan 1960</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; needs a column for decimal year (in yyyy.mm
+format).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with the decimal year<blockquote>
+<div>column replced with a series of datetime objects in the format
+yyyy-mm-dd.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.covobs_parsefile">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">covobs_parsefile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#covobs_parsefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.covobs_parsefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a datafile containing SV predictions from a field model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) &#8211; path to a COV-OBS datafile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing daily geomagnetic<blockquote>
+<div>data. First column is a series of datetime objects (in the format
+yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
+the SV at the specified times.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.covobs_readfile">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">covobs_readfile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#covobs_readfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.covobs_readfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to call covobs_parsefile and covobs_datetimes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) &#8211; path to a COV-OBS format datafile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing the data read from the<blockquote>
+<div>file. First column is a series of datetime objects (in the
+format yyyy-mm-dd) and subsequent columns are the X, Y and Z
+components of the SV at the specified times.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.daily_mean_conversion">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">daily_mean_conversion</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#daily_mean_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.daily_mean_conversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the tabular base to calculate daily means in nT or degrees (D, I).</p>
+<p>Uses the tabular base and daily value from the WDC file to calculate the
+daily means of magnetic field components. Value is in nT for H, F, X, Y or
+Z components and in degrees for D or I components. Called by wdc_xyz.</p>
+<p>daily_mean = tabular_base*100 + wdc_daily_value (for components in nT)</p>
+<p>daily_mean = tabular_base + wdc_daily_value/600 (for D and I components)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for datetime
+objects, magnetic field component (D, I, F, H, X, Y or Z), the
+tabular base and daily mean.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with datetime objects in<blockquote>
+<div>the first column and daily means of the field components in either
+nT or degrees (depending on the component).</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.data_resampling">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">data_resampling</code><span class="sig-paren">(</span><em>data</em>, <em>sampling='M'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#data_resampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.data_resampling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the daily geomagnetic data to a specified frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing datetime objects and
+daily means of magnetic data.</li>
+<li><strong>sampling</strong> (<em>str</em>) &#8211; new sampling frequency. Default value is &#8216;M&#8217;
+(monthly means), which averages data for each month and sets
+the datetime object to the final day of that month. Use &#8216;MS&#8217;
+to set the datetime object to the first day of the month.
+Another useful option is &#8216;A&#8217; (annual means), which averages
+data for a whole year and sets the datetime object to the final
+day of the year. Use &#8216;AS&#8217; to set the datetime object to the
+first day of the year.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>data</strong> &#8211;
+dataframe of datetime objects and</p>
+<blockquote>
+<div><p>monthly/annual means of observatory data.</p>
+</div></blockquote>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.read_csv_data">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">read_csv_data</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#read_csv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.read_csv_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read dataframe from a CSV file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) &#8211; path to a CSV datafile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing the data read from the<blockquote>
+<div>CSV file.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.wdc_datetimes">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">wdc_datetimes</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#wdc_datetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.wdc_datetimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create datetime objects from the fields extracted from a WDC datafile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; needs columns for century, year (yy format),
+month and day. Called by wdc_parsefile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with a series of datetime<blockquote>
+<div>objects (in the format yyyy-mm-dd) in the first column.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.wdc_parsefile">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">wdc_parsefile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#wdc_parsefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.wdc_parsefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a WDC datafile and place the contents into a dataframe.</p>
+<p>Load a datafile of WDC hourly geomagnetic data for a single observatory and
+extract the contents. Can parse both the current WDC file format and the
+previous format containing international quiet (Q) or disturbed (D) day
+designation in place of the century field.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) &#8211; path to a WDC datafile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing daily geomagnetic<blockquote>
+<div>data. First column is a series of datetime objects (in the format
+yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
+the magnetic field at the specified times.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.wdc_readfile">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">wdc_readfile</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#wdc_readfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.wdc_readfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper function to call wdc_parsefile, wdc_readfile and wdc_xyz.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) &#8211; path to a WDC datafile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing the data read from the<blockquote>
+<div>WDC file. First column is a series of datetime objects (in the
+format yyyy-mm-dd) and subsequent columns are the X, Y and Z
+components of the magnetic field at the specified times.</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.wdc_xyz">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">wdc_xyz</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#wdc_xyz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.wdc_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert extracted WDC data to daily averages of X, Y and Z components.</p>
+<p>Missing values (indicated by 9999 in the datafiles) are replaced with NaNs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for datetime
+objects, magnetic field component (D, I, F, H, X, Y or Z), the
+tabular base and daily mean.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with datetime objects in<blockquote>
+<div>the first column and columns for X, Y and Z components of magnetic
+field (in nT).</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.inputoutput.write_csv_data">
+<code class="descclassname">magpy.inputoutput.</code><code class="descname">write_csv_data</code><span class="sig-paren">(</span><em>data</em>, <em>data_path</em>, <em>obs_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/inputoutput.html#write_csv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.inputoutput.write_csv_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write dataframe to a CSV file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; data to be written to file.</li>
+<li><strong>data_path</strong> (<em>str</em>) &#8211; path to which the CSV file is written.</li>
+<li><strong>obs_name</strong> (<em>str</em>) &#8211; name of observatory at which the data were obtained.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="magpy-svplots-module">
-<h2>magpy.svplots module<a class="headerlink" href="#magpy-svplots-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-magpy.svplots">
+<span id="magpy-svplots-module"></span><h2>magpy.svplots module<a class="headerlink" href="#module-magpy.svplots" title="Permalink to this headline">¶</a></h2>
+<p>Module containing plotting functions.</p>
+<p>Part of the MagPy package for geomagnetic data analysis. This module provides
+various plotting functions.</p>
+<p>Copyright (C) 2016  Grace Cox</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along
+with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<dl class="function">
+<dt id="magpy.svplots.plot_dcx">
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>date</em>, <em>signal</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the proxy used to denoise the SV data with the Dst index.</p>
+<p>Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
+used as a proxy for unmodelled external signal. Both time series are
+reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>signal</strong> (<em>series</em>) &#8211; proxy for unmodelled external signal used in the
+denoising process (principal component analysis). The proxy is the
+residual in the noisiest eigendirection(s).</li>
+<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>**plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.svplots.plot_dcx_fft">
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>dates</em>, <em>signal</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the proxy signal with that of the Dst index.</p>
+<p>Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
+alongside the DFT of the signal used as a proxy for unmodelled external
+signal. The length of the time series are padded with zeroes up to the next
+power of two.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>signal</strong> &#8211; proxy for unmodelled external signal used in the denoising
+process (principal component analysis). The proxy is the residual
+in the noisiest eigendirection(s).</li>
+<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>**plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.svplots.plot_denoised">
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_denoised</code><span class="sig-paren">(</span><em>dates</em>, <em>denoised</em>, <em>model</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_denoised"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_denoised" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the denoised SV and model prediction for a single observatory.</p>
+<p>Produces a plot of the X, Y and Z components of the denoised SV and field
+model prediction for a single observatory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.
+denoised (series): X, Y and Z components of
+denoised SV at a single location.</li>
+<li><strong>model</strong> &#8211; time series of X, Y and Z components of the SV predicted by a
+field model for the same location as the denoised data.</li>
+<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>**plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.svplots.plot_eigenvalues">
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>values</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot eigenvalues of the SV residuals.</p>
+<p>Produces a plot of the eigenvalues obtained during the principal component
+analysis (PCA) of SV residuals. The largest eigenvalue represents the
+eigendirection with the largest contribution to the residuals (i.e. the
+&#8220;noisy&#8221; direction.). The smallest eigenvalue represents the
+eigendirection with the smallest contribution to the residuals (the &#8220;clean&#8221;
+direction). See Wardinski &amp; Holme (2011, GJI) for further details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<em>array</em>) &#8211; the eigenvalues obtained from the principal component
+analysis of the SV residuals.</li>
+<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="magpy-svtools-module">
-<h2>magpy.svtools module<a class="headerlink" href="#magpy-svtools-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-magpy.svtools">
+<span id="magpy-svtools-module"></span><h2>magpy.svtools module<a class="headerlink" href="#module-magpy.svtools" title="Permalink to this headline">¶</a></h2>
+<p>Module containing functions to parse files output by magnetic field models.</p>
+<p>Part of the MagPy package for geomagnetic data analysis. This module provides
+various functions to read SV files output by geomagnetic field models.</p>
+<blockquote>
+<div><p>Copyright (C) 2016  Grace Cox</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along
+with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+</div></blockquote>
+<dl class="function">
+<dt id="magpy.svtools.calculate_residuals">
+<code class="descclassname">magpy.svtools.</code><code class="descname">calculate_residuals</code><span class="sig-paren">(</span><em>*</em>, <em>obs_data</em>, <em>model_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svtools.html#calculate_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svtools.calculate_residuals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate SV residuals (observed - prediction) using datetime objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing means (usually
+monthly) of SV calculated from observed geomagnetic field values.</li>
+<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV predicted by</li>
+<li><strong>geomagnetic field model.</strong> (<em>a</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>residuals</strong> &#8211;
+dataframe containing SV residuals.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.svtools.calculate_sv">
+<code class="descclassname">magpy.svtools.</code><code class="descname">calculate_sv</code><span class="sig-paren">(</span><em>obs_data</em>, <em>mean_spacing=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svtools.html#calculate_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svtools.calculate_sv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the secular variation from the observed magnetic field values.</p>
+<p>Uses monthly means of geomagnetic observatory data to calculate the SV
+according to user-specified sampling. The typical choices are monthly
+differences of monthly means and annual differences of monthly means. For
+samplings other than monthly differences, the datetime objects of the
+calculated SV are taken the midpoint of the datetime objects of the field
+data. E.g. differencing the means of the field January 1999 and in January
+2000 yields the SV for August 1999.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing means (usually
+monthly) of observed geomagnetic field values.</li>
+<li><strong>mean_spacing</strong> (<em>int</em>) &#8211; the number of months separating the monthly mean
+values used to calculate the SV. Set to 1 to use adjacent months of
+data (monthly differences of monthly means) or set to 12 to
+calculate annual differences of monthly means.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>obs_data</strong> &#8211;
+dataframe containing SV data.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-magpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-magpy" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

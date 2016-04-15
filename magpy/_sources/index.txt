@@ -39,6 +39,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+.. automodule:: magpy
+   :members:
 
 Indices and tables
 ==================
