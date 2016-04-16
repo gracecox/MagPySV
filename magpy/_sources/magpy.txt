@@ -6,8 +6,6 @@ Subpackages
 
 .. toctree::
 
-    magpy.tests
-
 Submodules
 ----------
 

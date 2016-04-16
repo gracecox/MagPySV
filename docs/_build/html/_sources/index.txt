@@ -39,8 +39,11 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: magpy
-   :members:
+   denoise
+   changepoint
+   inputoutput
+   svplots
+   svtools
 
 Indices and tables
 ==================

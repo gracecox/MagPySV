@@ -80,7 +80,12 @@
           
             
             
-                <ul class="simple">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">changepoint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../svplots.html">svplots module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../svtools.html">svtools module</a></li>
 </ul>
 
             
@@ -150,7 +155,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../magpy.html#magpy.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the secular variation from the observed magnetic field values.</span>
 
 <span class="sd">    Uses monthly means of geomagnetic observatory data to calculate the SV</span>
@@ -185,7 +190,7 @@
     <span class="k">return</span> <span class="n">obs_sv</span></div>
 
 
-<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../magpy.html#magpy.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate SV residuals (observed - prediction) using datetime objects.</span>
 
 <span class="sd">    Args:</span>

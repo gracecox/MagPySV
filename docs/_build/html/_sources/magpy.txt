@@ -1,15 +1,7 @@
 magpy package
 =============
 
-Subpackages
------------
-
 .. toctree::
-
-    magpy.tests
-
-Submodules
-----------
 
 magpy.changepoint module
 ------------------------
@@ -47,15 +39,6 @@ magpy.svtools module
 --------------------
 
 .. automodule:: magpy.svtools
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: magpy
     :members:
     :undoc-members:
     :show-inheritance:
