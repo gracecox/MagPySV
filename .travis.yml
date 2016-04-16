@@ -21,14 +21,13 @@ addons:
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose 
   - pip install -r requirements.txt
-  - pip install nose
-  - pip install nosexcover
+  - pip install pytest
+  - pip install pytest-cov
   - pip install python-coveralls
-  - pip install rednose
 
 # command to run tests
 script:
-  - nosetests --rednose --with-xcoverage --cover-package=magpy --cover-tests
+  - py.test --cov-report term-missing --cov=magpy
 
 after_success:
   - coveralls
