@@ -1,7 +1,7 @@
 svtools module
 ==============
 
-.. automodule:: svtools
+.. automodule:: magpy.svtools
     :members:
     :undoc-members:
     :show-inheritance:

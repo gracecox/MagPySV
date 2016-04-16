@@ -1,7 +1,7 @@
 inputoutput module
 ==================
 
-.. automodule:: inputoutput
+.. automodule:: magpy.inputoutput
     :members:
     :undoc-members:
     :show-inheritance:
