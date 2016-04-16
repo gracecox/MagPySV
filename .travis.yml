@@ -28,7 +28,8 @@ install:
 
 # command to run tests
 script:
-  - nosetests --rednose --with-coverage --cover-package=magpy/
+  - nosetests --rednose
+  - coverage run --source=magpy
 
 after_success:
   - coveralls
