@@ -1,31 +1,32 @@
 # -*- coding: utf-8 -*-
+#    Copyright (C) 2016  Grace Cox
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program.  If not, see <http://www.gnu.org/licenses/>."""
 """Module containing functions to parse World Data Centre (WDC) files
 
 Part of the MagPy package for geomagnetic data analysis. This module provides
 various functions to read, parse and manipulate the contents of World Data
-Centre (WDC) formatted files containing geomagnetic data.
+Centre (WDC) formatted files containing geomagnetic data."""
 
-Copyright (C) 2016  Grace Cox
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
 # Need functions to:
 # 1. Remove stormy days, save to file
 # 2. Get monthly or annual differences of the monthly means (SV)
 
 import datetime as dt
 import glob
+import os
 import pandas as pd
 import numpy as np
 
@@ -329,7 +330,6 @@ def covobs_datetimes(data):
 
     months = (12 * (data.year_decimal - year_temp) + 1).round().astype('int')
 
-    data.drop(data.columns[[0]], axis=1, inplace=True)
     data.insert(0, 'year', year_temp)
     data.insert(1, 'month', months)
 
@@ -338,19 +338,8 @@ def covobs_datetimes(data):
         axis=1)
 
     data.insert(0, 'date', date)
-    data.drop(data.columns[[1, 2]], axis=1, inplace=True)
 
-    # Convert the century/yr columns to a year
-    data['year'] = 100 * data['century'] + data['yr']
-
-    # Create datetime objects from the century, year, month and day columns of
-    # the WDC format data file
-    dates = data.apply(lambda x: dt.datetime.strptime(
-        "{0} {1} {2}".format(x['year'], x['month'], x['day']),
-        "%Y %m %d"), axis=1)
-    data.insert(0, 'date', dates)
-    data.drop(['year', 'yr', 'century', 'code', 'day', 'month'], axis=1,
-              inplace=True)
+    data.drop(['year', 'year_decimal', 'month'], axis=1, inplace=True)
 
     return data
 
@@ -398,13 +387,13 @@ def read_csv_data(fname):
             CSV file.
     """
 
-    col_names = ['date', 'component', 'mean']
+    col_names = ['date', 'X', 'Y', 'Z']
     data = pd.read_csv(fname, sep=' ', header=0, names=col_names,
-                       parse_dates=[0], dayfirst=True)
+                       parse_dates=[0])
     return data
 
 
-def combine_csv_data(obs_list, data_path, model_path):
+def combine_csv_data(*, obs_list, data_path, model_path):
     """Read and combine observatory and model SV data for several locations.
 
     Calls read_csv_data to read observatory data and field model predictions
@@ -428,8 +417,10 @@ def combine_csv_data(obs_list, data_path, model_path):
 
     for observatory in obs_list:
 
-        obs_fname = data_path + observatory + '.csv'
-        model_fname = model_path + observatory + '.csv'
+        obs_file = observatory + '.csv'
+        obs_fname = os.path.join(data_path, obs_file)
+        model_file = 'sv_' + observatory + '.dat'
+        model_fname = os.path.join(model_path, model_file)
         obs_data_temp = read_csv_data(obs_fname)
         model_data_temp = read_csv_data(model_fname)
         # Combine the current observatory data with those of other

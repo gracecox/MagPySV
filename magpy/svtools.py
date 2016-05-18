@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
+#    Copyright (C) 2016  Grace Cox
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program.  If not, see <http://www.gnu.org/licenses/>."""
 """Module containing functions to parse files output by magnetic field models.
 
 Part of the MagPy package for geomagnetic data analysis. This module provides
-various functions to read SV files output by geomagnetic field models.
+various functions to read SV files output by geomagnetic field models."""
 
-    Copyright (C) 2016  Grace Cox
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program.  If not, see <http://www.gnu.org/licenses/>."""
 
 import pandas as pd
 
@@ -49,9 +49,11 @@ def calculate_sv(obs_data, mean_spacing=1):
     obs_sv = pd.DataFrame()
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
         months=mean_spacing - 1)
-    obs_sv['dx'] = obs_data['X'].diff(periods=mean_spacing)
-    obs_sv['dy'] = obs_data['Y'].diff(periods=mean_spacing)
-    obs_sv['dz'] = obs_data['Z'].diff(periods=mean_spacing)
+    # Calculate scale required to give SV in nT/yr
+    scaling_factor = 12/mean_spacing
+    obs_sv['dx'] = scaling_factor * obs_data['X'].diff(periods=mean_spacing)
+    obs_sv['dy'] = scaling_factor * obs_data['Y'].diff(periods=mean_spacing)
+    obs_sv['dz'] = scaling_factor * obs_data['Z'].diff(periods=mean_spacing)
     obs_sv.drop(obs_sv.head(mean_spacing).index, inplace=True)
 
     return obs_sv
