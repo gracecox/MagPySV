@@ -22,6 +22,7 @@ various plotting functions."""
 import datetime as dt
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 import scipy as sp
 
@@ -52,19 +53,18 @@ def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
     plt.ylabel(r'$\lambda_i$', fontsize=label_size)
 
 
-def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
-                  label_size=20, plot_legend=False):
-    """Plot the denoised SV and model prediction for a single observatory.
+def plot_sv(dates, sv, model, obs, *, fig_size=(8, 6), font_size=16,
+            label_size=20, plot_legend=False):
+    """Plot the SV and model prediction for a single observatory.
 
-    Produces a plot of the X, Y and Z components of the denoised SV and field
+    Produces a plot of the X, Y and Z components of the SV and field
     model prediction for a single observatory.
 
     Args:
         dates (datetime series): dates of the time series measurements.
-            denoised (series): X, Y and Z components of
-            denoised SV at a single location.
+            sv (series): X, Y and Z components of SV at a single location.
         model: time series of X, Y and Z components of the SV predicted by a
-            field model for the same location as the denoised data.
+            field model for the same location as the data.
         **fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         **font_size (int): font size for axes. Defaults to 16 pt.
@@ -77,30 +77,30 @@ def plot_denoised(dates, denoised, model, *, fig_size=(8, 6), font_size=16,
     # X component
     plt.subplot(3, 1, 1)
     plt.gca().xaxis_date()
-    plt.plot(dates, denoised[:, 0], 'b', dates, model[:, 0], 'r')
+    plt.plot(dates, sv.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.ylabel(r'$\dot{x}$ (nT/yr)', fontsize=font_size)
     # Y component
     plt.subplot(3, 1, 2)
     plt.gca().xaxis_date()
-    plt.plot(dates, denoised[:, 1], 'b', dates, model[:, 1], 'r')
+    plt.plot(dates, sv.ix[:, 1], 'b', dates, model.ix[:, 1], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.ylabel(r'$\dot{y}$ (nT/yr)', fontsize=font_size)
     # Z component
     plt.subplot(3, 1, 3)
     plt.gca().xaxis_date()
-    plt.plot(dates, denoised[:, 2], 'b', dates, model[:, 2], 'r')
+    plt.plot(dates, sv.ix[:, 2], 'b', dates, model.ix[:, 2], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xlabel('Year', fontsize=label_size)
     plt.ylabel(r'$\dot{z}$ (nT/yr)', fontsize=font_size)
     if plot_legend is True:
-        plt.legend(['denoised', 'cov-obs'], loc='upper right', frameon=False)
+        plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
 
 
-def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
+def plot_dcx(dates, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
              plot_legend=False):
     """Compare the proxy used to denoise the SV data with the Dst index.
 
@@ -122,8 +122,10 @@ def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
     """
 
     # Read the Dcx data and put into a dataframe
-    dcx = pd.read_csv('~/Dropbox/BGS_data/monthly_means/Dcx/\
-        Dcx_mm_monthly_diff.txt', sep=r'\s+', header=None)
+    data_path = '/Users/Grace/Dropbox/BGS_data/monthly_means/Dcx/'
+    data_file = 'Dcx_mm_monthly_diff.txt'
+    dcx = pd.read_csv(os.path.join(data_path, data_file), sep=r'\s+',
+                      header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
     dates = dcx.apply(lambda x: dt.datetime.strptime(
         "{0} {1}".format(int(x['year']), int(x['month'])), "%Y %m"), axis=1)
@@ -136,7 +138,7 @@ def plot_dcx(date, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
     plt.figure(figsize=fig_size)
     plt.gca().xaxis_date()
     plt.plot(dcx.date, sp.stats.mstats.zscore(dcx.monthly_mean), 'b',
-             date, sp.stats.mstats.zscore(signal), 'r')
+             dates, sp.stats.mstats.zscore(signal), 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xlabel('Year', fontsize=label_size)
@@ -166,9 +168,10 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
         **plot_legend (bool): option to include a legend on the plot. Defaults
             to False.
     """
-
-    dcx = pd.read_csv('~/Dropbox/BGS_data/monthly_means/Dcx/\
-        Dcx_mm_monthly_diff.txt', sep=r'\s+', header=None)
+    data_path = '/Users/Grace/Dropbox/BGS_data/monthly_means/Dcx/'
+    data_file = 'Dcx_mm_monthly_diff.txt'
+    dcx = pd.read_csv(os.path.join(data_path, data_file), sep=r'\s+',
+                      header=None)
     dcx.columns = ["year", "month", "monthly_mean"]
     dates = dcx.apply(lambda x: dt.datetime.strptime(
         "{0} {1}".format(int(x['year']), int(x['month'])),
@@ -197,7 +200,7 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xlabel('Year', fontsize=label_size)
-    plt.ylabel('Dcx (nT/yr)', fontsiz=label_size)
+    plt.ylabel('Dcx (nT/yr)', fontsize=label_size)
     # Frequency domain
     plt.subplot(2, 1, 2)
     plt.plot(freq, dcx_power, 'b', freq, proxy_power, 'r')

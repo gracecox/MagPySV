@@ -209,33 +209,6 @@ def angles_to_geographic(data):
     return data
 
 
-def data_resampling(data, sampling='M'):
-    """Resample the daily geomagnetic data to a specified frequency.
-
-    Args:
-        data (pandas.DataFrame): dataframe containing datetime objects and
-            daily means of magnetic data.
-        sampling (str): new sampling frequency. Default value is 'M'
-            (monthly means), which averages data for each month and sets
-            the datetime object to the final day of that month. Use 'MS'
-            to set the datetime object to the first day of the month.
-            Another useful option is 'A' (annual means), which averages
-            data for a whole year and sets the datetime object to the final
-            day of the year. Use 'AS' to set the datetime object to the
-            first day of the year.
-
-    Returns:
-        data (pandas.DataFrame): dataframe of datetime objects and
-            monthly/annual means of observatory data.
-    """
-
-    resampled = data.set_index('date', drop=False).resample(
-        sampling, how='mean')
-    resampled.reset_index(inplace=True)
-
-    return resampled
-
-
 def wdc_readfile(fname):
     """Wrapper function to call wdc_parsefile, wdc_readfile and wdc_xyz.
 
@@ -418,11 +391,9 @@ def combine_csv_data(*, obs_list, data_path, model_path):
     for observatory in obs_list:
 
         obs_file = observatory + '.csv'
-        obs_fname = os.path.join(data_path, obs_file)
         model_file = 'sv_' + observatory + '.dat'
-        model_fname = os.path.join(model_path, model_file)
-        obs_data_temp = read_csv_data(obs_fname)
-        model_data_temp = read_csv_data(model_fname)
+        obs_data_temp = read_csv_data(os.path.join(data_path, obs_file))
+        model_data_temp = covobs_readfile(os.path.join(model_path, model_file))
         # Combine the current observatory data with those of other
         # observatories
         if observatory == obs_list[0]:

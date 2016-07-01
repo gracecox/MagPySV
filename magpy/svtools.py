@@ -20,6 +20,8 @@ various functions to read SV files output by geomagnetic field models."""
 
 
 import pandas as pd
+import datetime as dt
+import numpy as np
 
 
 def calculate_sv(obs_data, mean_spacing=1):
@@ -81,3 +83,65 @@ def calculate_residuals(*, obs_data, model_data):
         obs_data.values - model_data.values,
         columns=obs_data.columns)
     return residuals
+
+
+def data_resampling(data, sampling='MS'):
+    """Resample the daily geomagnetic data to a specified frequency.
+
+    Args:
+        data (pandas.DataFrame): dataframe containing datetime objects and
+            daily means of magnetic data.
+        sampling (str): new sampling frequency. Default value is 'MS'
+            (monthly means), which averages data for each month and sets
+            the datetime object to the first day of that month. Use 'M'
+            to set the datetime object to the final day of the month.
+            Another useful option is 'A' (annual means), which averages
+            data for a whole year and sets the datetime object to the final
+            day of the year. Use 'AS' to set the datetime object to the
+            first day of the year.
+
+    Returns:
+        data (pandas.DataFrame): dataframe of datetime objects and
+            monthly/annual means of observatory data.
+    """
+
+    resampled = data.set_index('date', drop=False).resample(
+        sampling, how='mean')
+    resampled.reset_index(inplace=True)
+
+    return resampled
+
+
+def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
+    """Remove observatory data for days with Ap values above a threshold value.
+
+    Args:
+        obs_data (pandas.DataFrame): dataframe containing daily means of
+        observed geomagnetic field values.
+        threshold (int): the threshold Ap value. Data for days with a higher Ap
+        value will be replaced with NaNs and omitted from monthly (or annual)
+        means.
+
+    Returns:
+        residuals (pandas.DataFrame): dataframe containing SV residuals.
+    """
+    Ap_daily = pd.read_csv(Ap_path, sep=' ',
+                           names=['year', 'month', 'day', 'Ap'])
+
+    date = Ap_daily.apply(lambda x: dt.datetime.strptime(
+        "{0} {1} {2}".format(int(x['year']), int(x['month']), int(x['day'])),
+        "%Y %m %d"),
+        axis=1)
+    Ap_daily.insert(0, 'date', date)
+    Ap_daily.drop(['year', 'month', 'day'], axis=1, inplace=True)
+    # Merge the two dataframes so that only dates contained within both are
+    # retained
+    obs_data = pd.merge(obs_data, Ap_daily, on='date', how='inner')
+    # Use the threshold to discard data from days with high external field
+    # activity
+    obs_data.loc[obs_data.Ap > threshold, 'X'] = np.NaN
+    obs_data.loc[obs_data.Ap > threshold, 'Y'] = np.NaN
+    obs_data.loc[obs_data.Ap > threshold, 'Z'] = np.NaN
+    obs_data.drop(['Ap'], axis=1, inplace=True)
+
+    return obs_data

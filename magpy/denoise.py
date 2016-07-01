@@ -101,4 +101,4 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv
+    return denoised_sv, proxy, eig_values
