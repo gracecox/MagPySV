@@ -1,0 +1,405 @@
+Some WDC files are not in the correct format
+ann
+sed -i.bak 's/./19/15' *.wdc
+sed -i.bak 's/.//17' *.wdc
+
+bde
+sed -i.bak 's/./   /12' bde1959.wdc
+sed -i.bak 's/.//17' bde1959.wdc
+sed -i.bak 's/./ /17' bde1957.wdc
+
+blt
+sed -i.bak 's/./   /12' blt1959.wdc
+sed -i.bak 's/.//17' blt1959.wdc
+sed -i.bak 's/.//17' blt1959.wdc
+
+bng
+sed -i.bak 's/./19/15' bng1992.wdc
+sed -i.bak 's/.//17' bng1992.wdc
+
+cax
+sed -i.bak 's/./   /12' cax1959.wdc
+sed -i.bak 's/.//17' cax1959.wdc
+sed -i.bak 's/.//17' cax1959.wdc
+
+cbi
+sed -i.bak 's/./19/15' cbi1997.wdc
+sed -i.bak 's/.//17' cbi1997.wdc
+
+coi
+sed -i.bak 's/./19/15' coi1979.wdc
+sed -i.bak 's/.//17' coi1979.wdc
+sed -i.bak 's/./19/15' coi198*.wdc
+sed -i.bak 's/.//17' coi198*.wdc
+
+csy
+sed -i.bak 's/./19/15' csy1995.wdc
+sed -i.bak 's/.//17' csy1995.wdc
+
+cts
+blank line at top of cts1999.wdc
+data included for April 31st in cts2008.wdc (I deleted it since that day doesn't exist...)
+spurious - signs and values in place of hourly values or daily means in cts2010.wdc (I don't know what the values are supposed to be so replaced them with 9999 and also replaced the corresponding daily mean with 9999). Lines 368, 382, 455, 457, 458, 463, 464, 471, 483, 487, 544, 563, 638, 662, 752, 753, 782( Y component), 825. Line 782 is Y component but all other errors are in X values.
+
+dou
+sed -i.bak 's/./19/15' dou1995.wdc
+sed -i.bak 's/.//17' dou1995.wdc
+
+ebr
+sed -i.bak 's/./19/15' ebr1995.wdc
+sed -i.bak 's/.//17' ebr1995.wdc
+sed -i.bak 's/./19/15' ebr1996.wdc
+sed -i.bak 's/.//17' ebr1996.wdc
+sed -i.bak 's/./19/15' ebr1997.wdc
+sed -i.bak 's/.//17' ebr1997.wdc
+sed -i.bak 's/./19/15' ebr1998.wdc
+sed -i.bak 's/.//17' ebr1998.wdc
+sed -i.bak 's/./19/15' ebr1999.wdc
+sed -i.bak 's/.//17' ebr1999.wdc
+
+fan
+sed -i.bak 's/./   /12' fan1959.wdc
+sed -i.bak 's/.//17' fan1959.wdc
+sed -i.bak 's/.//17' fan1959.wdc
+
+fra
+sed -i.bak 's/./   /12' fra1964.wdc
+sed -i.bak 's/.//17' fra1964.wdc
+sed -i.bak 's/.//17' fra1964.wdc
+
+fsp
+sed -i.bak 's/./19/15' fsp1992.wdc (this file has loads of erroneous(?) entries in so I removed the whole file).
+sed -i.bak 's/./19/15' fsp1994.wdc
+sed -i.bak 's/./ /12' fsp1994.wdc
+sed -i.bak 's/.//17' fsp1994.wdc
+
+fuq
+fuq2002.wdc has a blank line separating each line of data. Removed all odd lines with sed -i.bak '1d; n; d' fuq2002.wdc
+
+fur
+sed -i.bak 's/./19/15' fur1992.wdc
+sed -i.bak 's/.//17' fur1992.wdc
+sed -i.bak 's/./19/15' fur1993.wdc
+sed -i.bak 's/.//17' fur1993.wdc
+sed -i.bak 's/./19/15' fur1994.wdc
+sed -i.bak 's/.//17' fur1994.wdc
+
+gdh
+sed -i.bak 's/.//17' gdh1964.wdc
+sed -i.bak 's/./19/15' gdh1965.wdc
+sed -i.bak 's/.//17' gdh1965.wdc
+sed -i.bak 's/.//17' gdh1966.wdc
+
+hbk
+sed -i.bak 's/./19/15' hbk1995.wdc
+sed -i.bak 's/.//17' hbk1995.wdc
+sed -i.bak 's/./19/15' hbk1996.wdc
+sed -i.bak 's/.//17' hbk1996.wdc
+
+jrvn
+sed -i.bak 's/./   /12' jrv1959.wdc
+sed -i.bak 's/.//17' jrv1959.wdc
+sed -i.bak 's/.//17' jrv1959.wdc
+
+kny
+sed -i.bak 's/./19/15' kny1995.wdc
+sed -i.bak 's/.//17' kny1995.wdc
+sed -i.bak 's/./19/15' kny1996.wdc
+sed -i.bak 's/.//17' kny1996.wdc
+sed -i.bak 's/./19/15' kny1997.wdc
+sed -i.bak 's/.//17' kny1997.wdc
+
+knz
+sed -i.bak 's/./19/15' knz1999.wdc
+sed -i.bak 's/.//17' knz1999.wdc
+
+liv
+sed -i.bak 's/./19/15' liv1997.wdc
+sed -i.bak 's/.//17' liv1997.wdc
+
+lnp
+sed -i.bak 's/./19/15' lnp1965.wdc
+sed -i.bak 's/.//17' lnp1965.wdc
+sed -i.bak 's/./19/15' lnp1966.wdc
+sed -i.bak 's/.//17' lnp1966.wdc
+sed -i.bak 's/./19/15' lnp1967.wdc
+sed -i.bak 's/.//17' lnp1967.wdc
+sed -i.bak 's/./19/15' lnp1968.wdc
+sed -i.bak 's/.//17' lnp1968.wdc
+sed -i.bak 's/./19/15' lnp1969.wdc
+sed -i.bak 's/.//17' lnp1969.wdc
+sed -i.bak 's/./19/15' lnp1996.wdc
+sed -i.bak 's/.//17' lnp1996.wdc
+
+lpb
+sed -i.bak 's/./   /12' lpb1964.wdc
+sed -i.bak 's/.//17' lpb1964.wdc
+sed -i.bak 's/.//17' lpb1964.wdc
+
+lua
+sed -i.bak 's/./19/15' lua1963.wdc
+sed -i.bak 's/.//17' lua1963.wdc
+sed -i.bak 's/./19/15' lua1971.wdc
+sed -i.bak 's/.//17' lua1971.wdc
+
+mab
+sed -i.bak 's/./19/15' mab1995.wdc
+sed -i.bak 's/.//17' mab1995.wdc
+
+mfp
+sed -i.bak 's/./19/15' mfp1958.wdc
+sed -i.bak 's/.//17' mfp1958.wdc
+sed -i.bak 's/./19/15' mfp1959.wdc
+sed -i.bak 's/.//17' mfp1959.wdc
+sed -i.bak 's/./19/15' mfp1960.wdc
+sed -i.bak 's/.//17' mfp1960.wdc
+sed -i.bak 's/./19/15' mfp1961.wdc
+sed -i.bak 's/.//17' mfp1961.wdc
+sed -i.bak 's/./19/15' mfp1962.wdc
+sed -i.bak 's/.//17' mfp1962.wdc
+sed -i.bak 's/./19/15' mfp1963.wdc
+sed -i.bak 's/.//17' mfp1963.wdc
+sed -i.bak 's/./19/15' mfp1970.wdc
+sed -i.bak 's/.//17' mfp1970.wdc
+sed -i.bak 's/./19/15' mfp1971.wdc
+sed -i.bak 's/.//17' mfp1971.wdc
+
+mir
+sed -i.bak 's/./19/15' mir1995.wdc
+sed -i.bak 's/.//17' mir1995.wdc
+sed -i.bak 's/./19/15' mir1996.wdc
+sed -i.bak 's/.//17' mir1996.wdc
+sed -i.bak 's/./19/15' mir1997.wdc
+sed -i.bak 's/.//17' mir1997.wdc
+
+miz
+sed -i.bak 's/./19/15' miz1999.wdc
+sed -i.bak 's/.//17' miz1999.wdc
+
+mos
+sed -i.bak 's/.//17' mos2005.wdc
+
+mrn
+sed -i.bak 's/./19/15' mrn1973.wdc
+sed -i.bak 's/.//17' mrn1973.wdc
+sed -i.bak 's/./19/15' mrn1974.wdc
+sed -i.bak 's/.//17' mrn1974.wdc
+sed -i.bak 's/./19/15' mrn1975.wdc
+sed -i.bak 's/.//17' mrn1975.wdc
+sed -i.bak 's/./19/15' mrn1976.wdc
+sed -i.bak 's/.//17' mrn1976.wdc
+
+ngp
+sed -i.bak 's/./19/15' ngp1995.wdc
+sed -i.bak 's/.//17' ngp1995.wdc
+
+nrd
+sed -i.bak 's/./19/15' nrd1966.wdc
+sed -i.bak 's/.//17' nrd1966.wdc
+sed -i.bak 's/./19/15' nrd1969.wdc
+sed -i.bak 's/.//17' nrd1969.wdc
+sed -i.bak 's/./19/15' nrd1970.wdc
+sed -i.bak 's/.//17' nrd1970.wdc
+
+pnd
+sed -i.bak 's/./19/15' pnd1995.wdc
+sed -i.bak 's/.//17' pnd1995.wdc
+
+rsv
+sed -i.bak 's/./   /12' rsv1981.wdc
+sed -i.bak 's/.//17' rsv1981.wdc
+sed -i.bak 's/.//17' rsv1981.wdc
+
+sco
+sed -i.bak 's/./19/15' sco1932.wdc
+sed -i.bak 's/.//17' sco1932.wdc
+sed -i.bak 's/./19/15' sco1933.wdc
+sed -i.bak 's/.//17' sco1933.wdc
+
+sso
+sed -i.bak 's/./19/15' sso1960.wdc
+sed -i.bak 's/.//17' sso1960.wdc
+sed -i.bak 's/./19/15' sso1961.wdc
+sed -i.bak 's/.//17' sso1961.wdc
+sed -i.bak 's/./19/15' sso1962.wdc
+sed -i.bak 's/.//17' sso1962.wdc
+sed -i.bak 's/./19/15' sso1963.wdc
+sed -i.bak 's/.//17' sso1963.wdc
+sed -i.bak 's/./19/15' sso1966.wdc
+sed -i.bak 's/.//17' sso1966.wdc
+sed -i.bak 's/./19/15' sso1967.wdc
+sed -i.bak 's/.//17' sso1967.wdc
+sed -i.bak 's/./19/15' sso1968.wdc
+sed -i.bak 's/.//17' sso1968.wdc
+sed -i.bak 's/./19/15' sso1969.wdc
+sed -i.bak 's/.//17' sso1969.wdc
+sed -i.bak 's/./19/15' sso1970.wdc
+sed -i.bak 's/.//17' sso1970.wdc
+sed -i.bak 's/./19/15' sso1971.wdc
+sed -i.bak 's/.//17' sso1971.wdc
+sed -i.bak 's/./19/15' sso1972.wdc
+sed -i.bak 's/.//17' sso1972.wdc
+sed -i.bak 's/./19/15' sso1973.wdc
+sed -i.bak 's/.//17' sso1973.wdc
+sed -i.bak 's/./19/15' sso1974.wdc
+sed -i.bak 's/.//17' sso1974.wdc
+sed -i.bak 's/./19/15' sso1975.wdc
+sed -i.bak 's/.//17' sso1975.wdc
+
+sua
+sed -i.bak 's/./19/15' sua1995.wdc
+sed -i.bak 's/.//17' sua1995.wdc
+
+szt
+sed -i.bak 's/./19/15' *.wdc
+sed -i.bak 's/.//17' *.wdc
+
+tan
+sed -i.bak 's/./19/15' tan195*.wdc
+sed -i.bak 's/.//17' tan195*.wdc
+
+teh
+sed -i.bak 's/./19/15' teh1968.wdc
+sed -i.bak 's/.//17' teh1968.wdc
+sed -i.bak 's/./19/15' teh1969.wdc
+sed -i.bak 's/.//17' teh1969.wdc
+sed -i.bak 's/./19/15' teh197*.wdc
+sed -i.bak 's/.//17' teh197*.wdc
+
+ten
+sed -i.bak 's/./19/15' ten1961.wdc
+sed -i.bak 's/.//17' ten1961.wdc
+sed -i.bak 's/./19/15' ten1962.wdc
+sed -i.bak 's/.//17' ten1962.wdc
+sed -i.bak 's/./19/15' ten1963.wdc
+sed -i.bak 's/.//17' ten1963.wdc
+sed -i.bak 's/./   /12' ten1964.wdc
+sed -i.bak 's/.//17' ten1964.wdc
+sed -i.bak 's/.//17' ten1964.wdc
+sed -i.bak 's/./   /12' ten1965.wdc
+sed -i.bak 's/.//17' ten1965.wdc
+sed -i.bak 's/.//17' ten1965.wdc
+sed -i.bak 's/./19/15' ten1966.wdc
+sed -i.bak 's/.//17' ten1966.wdc
+sed -i.bak 's/./19/15' ten1967.wdc
+sed -i.bak 's/.//17' ten1967.wdc
+sed -i.bak 's/./19/15' ten1968.wdc
+sed -i.bak 's/.//17' ten1968.wdc
+sed -i.bak 's/./19/15' ten1969.wdc
+sed -i.bak 's/.//17' ten1969.wdc
+sed -i.bak 's/./19/15' ten197*.wdc
+sed -i.bak 's/.//17' ten197*.wdc
+sed -i.bak 's/./19/15' ten198*.wdc
+sed -i.bak 's/.//17' ten198*.wdc
+sed -i.bak 's/./19/15' ten199*.wdc
+sed -i.bak 's/.//17' ten199*.wdc
+
+teo
+sed -i.bak 's/./19/15' teo1966.wdc
+sed -i.bak 's/.//17' teo1966.wdc
+sed -i.bak 's/./19/15' teo1967.wdc
+sed -i.bak 's/.//17' teo1967.wdc
+sed -i.bak 's/./19/15' teo1968.wdc
+sed -i.bak 's/.//17' teo1968.wdc
+sed -i.bak 's/./19/15' teo1969.wdc
+sed -i.bak 's/.//17' teo1969.wdc
+sed -i.bak 's/./19/15' teo197*.wdc
+sed -i.bak 's/.//17' teo197*.wdc
+sed -i.bak 's/./19/15' teo198*.wdc
+sed -i.bak 's/.//17' teo198*.wdc
+sed -i.bak 's/./19/15' teo199*.wdc
+sed -i.bak 's/.//17' teo199*.wdc
+
+thl
+sed -i.bak 's/./19/15' thl1955.wdc
+sed -i.bak 's/.//17' thl1955.wdc
+sed -i.bak 's/.//17' thl1956.wdc
+thl1956.wdc lines 84,492 and 764: spurious digit in col 20, removed it and changed the first hourly value to 999
+
+tol
+sed -i.bak 's/./   /12' tol1963.wdc
+sed -i.bak 's/.//17' tol1963.wdc
+sed -i.bak 's/.//17' tol1963.wdc
+sed -i.bak 's/./19/15' tol1972.wdc
+sed -i.bak 's/.//17' tol1972.wdc
+sed -i.bak 's/./19/15' tol1973.wdc
+sed -i.bak 's/.//17' tol1973.wdc
+
+trd
+sed -i.bak 's/./19/15' trd1960.wdc
+sed -i.bak 's/.//17' trd1960.wdc
+sed -i.bak 's/./19/15' trd1961.wdc
+sed -i.bak 's/.//17' trd1961.wdc
+sed -i.bak 's/./19/15' trd1962.wdc
+sed -i.bak 's/.//17' trd1962.wdc
+sed -i.bak 's/./19/15' trd1963.wdc
+sed -i.bak 's/.//17' trd1963.wdc
+sed -i.bak 's/./19/15' trd1966.wdc
+sed -i.bak 's/.//17' trd1966.wdc
+sed -i.bak 's/./19/15' trd1967.wdc
+sed -i.bak 's/.//17' trd1967.wdc
+sed -i.bak 's/./19/15' trd1968.wdc
+sed -i.bak 's/.//17' trd1968.wdc
+sed -i.bak 's/./19/15' trd1969.wdc
+sed -i.bak 's/.//17' trd1969.wdc
+sed -i.bak 's/./19/15' trd197*.wdc
+sed -i.bak 's/.//17' trd197*.wdc
+sed -i.bak 's/./19/15' trd1991.wdc
+sed -i.bak 's/.//17' trd1991.wdc
+sed -i.bak 's/./19/15' trd1992.wdc
+sed -i.bak 's/.//17' trd1992.wdc
+
+tsu
+sed -i.bak 's/./19/15' tsu1995.wdc
+sed -i.bak 's/.//17' tsu1995.wdc
+
+ttb
+sed -i.bak 's/./19/15' ttb1992.wdc
+sed -i.bak 's/.//17' ttb1992.wdc
+sed -i.bak 's/./19/15' ttb1993.wdc
+sed -i.bak 's/.//17' ttb1993.wdc
+sed -i.bak 's/./19/15' ttb1994.wdc
+sed -i.bak 's/.//17' ttb1994.wdc
+sed -i.bak 's/./19/15' ttb1995.wdc
+sed -i.bak 's/.//17' ttb1995.wdc
+
+uba
+sed -i.bak 's/./19/15' uba1966.wdc
+sed -i.bak 's/.//17' uba1966.wdc
+sed -i.bak 's/./19/15' uba1967.wdc
+sed -i.bak 's/.//17' uba1967.wdc
+
+ujj
+sed -i.bak 's/./19/15' ujj1993.wdc
+sed -i.bak 's/.//17' ujj1993.wdc
+
+val
+sed -i.bak 's/./19/15' val1995.wdc
+sed -i.bak 's/.//17' val1995.wdc
+
+vos
+sed -i.bak 's/./19/15' vos1994.wdc
+sed -i.bak 's/.//17' vos1994.wdc
+sed -i.bak 's/./19/15' vos1996.wdc
+sed -i.bak 's/.//17' vos1996.wdc
+sed -i.bak 's/./19/15' vos1997.wdc
+sed -i.bak 's/.//17' vos1997.wdc
+
+vss
+sed -i.bak 's/./19/15' vss1949.wdc
+sed -i.bak 's/.//17' vss1949.wdc
+sed -i.bak 's/./19/15' vss1950.wdc
+sed -i.bak 's/.//17' vss1950.wdc
+sed -i.bak 's/./19/15' vss1951.wdc
+sed -i.bak 's/.//17' vss1951.wdc
+sed -i.bak 's/./19/15' vss1952.wdc
+sed -i.bak 's/.//17' vss1952.wdc
+sed -i.bak 's/./19/15' vss1953.wdc
+sed -i.bak 's/.//17' vss1953.wdc
+
+wik
+sed -i.bak 's/./19/15' wik1995.wdc
+sed -i.bak 's/.//17' wik1995.wdc
+sed -i.bak 's/./19/15' wik1996.wdc
+sed -i.bak 's/.//17' wik1996.wdc
+

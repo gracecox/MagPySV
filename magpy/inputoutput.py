@@ -127,16 +127,27 @@ def wdc_xyz(data):
     data = data.groupby('component').apply(daily_mean_conversion)
     data.reset_index(drop=True, inplace=True)
     data.drop(['base', 'daily_mean_temp'], axis=1, inplace=True)
-    data = data.pivot(index='date', columns='component', values='daily_mean')
+    data = data.pivot_table(index='date', columns='component',
+                            values='daily_mean')
     data.reset_index(inplace=True)
 
     # Call helper function to convert D and H components to X and Y
     if 'D' in data.columns and 'H' in data.columns:
         data = angles_to_geographic(data)
-        data = data[['date', 'X', 'Y', 'Z']]
+        if 'X' in data.columns and 'Y' in data.columns and 'Z' in data.columns:
+            data = data[['date', 'X', 'Y', 'Z']]
 
     else:
-        data = data[['date', 'X', 'Y', 'Z']]
+        if 'X' in data.columns and 'Y' in data.columns and 'Z' in data.columns:
+            data = data[['date', 'X', 'Y', 'Z']]
+    # Make sure that the dataframe contains for X, Y and Z, and infill with NaN
+    # values if not.
+    if 'X' not in data.columns:
+        data['X'] = np.NaN
+    if 'Y' not in data.columns:
+        data['Y'] = np.NaN
+    if 'Z' not in data.columns:
+        data['Z'] = np.NaN
 
     return data
 
@@ -229,9 +240,8 @@ def wdc_readfile(fname):
     return data
 
 
-def append_wdc_data(obs_name,
-                    path='/Users/Grace/Dropbox/BGS_data/hourval/\
-single_obs/%s/*.wdc'):
+def append_wdc_data(*, obs_name,
+                    path='./data/BGS_data/hourval/single_obs/%s/*.wdc'):
 
     """Append all WDC data for an observatory into a single dataframe.
 
@@ -252,6 +262,7 @@ single_obs/%s/*.wdc'):
 
     filenames = glob.glob(data_path)
     for file in filenames:
+        print(file)
         try:
             frame = wdc_readfile(file)
             data = data.append(frame, ignore_index=True)
@@ -262,7 +273,7 @@ single_obs/%s/*.wdc'):
 
 
 def covobs_parsefile(fname):
-    """Load a datafile containing SV predictions from a field model.
+    """Load a datafile containing SV/MF predictions from a field model.
 
     Args:
         fname (str): path to a COV-OBS datafile.
@@ -271,7 +282,7 @@ def covobs_parsefile(fname):
         data (pandas.DataFrame): dataframe containing daily geomagnetic
             data. First column is a series of datetime objects (in the format
             yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
-            the SV at the specified times.
+            the SV/MF at the specified times.
     """
 
     model_data = pd.read_csv(fname, sep=r'\s+', header=None,
@@ -327,13 +338,48 @@ def covobs_readfile(fname):
         data (pandas.DataFrame): dataframe containing the data read from the
             file. First column is a series of datetime objects (in the
             format yyyy-mm-dd) and subsequent columns are the X, Y and Z
-            components of the SV at the specified times.
+            components of the SV/MF at the specified times.
     """
 
     rawdata = covobs_parsefile(fname)
     data = covobs_datetimes(rawdata)
 
     return data
+
+
+def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/hourval/single_obs/*',
+                     print_obs=True):
+    """Converts hourly WDC data to X, Y and Z daily means and save to CSV file.
+
+    Finds WDC hourly data files for all observatories in a directory path
+    (assumes data for each observatory is located inside a directory named
+    after the observatory). The WDC distributes data inside directories
+    with the naming convention /hourval/single_obs/obs/obsyear.wdc where obs is
+    a three digit observatory name, year is a four digit year and the string
+    /hourval/single_obs prepends each directory name. e.g.
+    /hourval/single_obs/ngk/ngk1990.wdc or /hourval/single_obs/clf/clf2013.wdc.
+    This function converts the hourly data to daily X, Y and Z means, appends
+    all years of data for a single observatory into a single dataframe and
+    saves the dataframe to a CSV file.
+
+    Args:
+        fpath (str): path to the datafiles. Assumes data for each observatory
+            is stored in a directory named after the observatory.
+        print_obs (bool): choose whether to print each observatory name as the
+            function goes through the directories. Useful for checking progress
+            as it can take a while to read the whole WDC dataset.
+    Returns:
+        None
+    """
+
+    dir_list = glob.glob(fpath)
+    obs_names = [os.path.basename(obs_path) for obs_path in dir_list]
+    for observatory in obs_names:
+        print(observatory)
+        wdc_data = append_wdc_data(
+            obs_name=observatory,
+            path='./data/BGS_hourly/hourval/single_obs/%s/*.wdc')
+        write_csv_data(wdc_data, "./data/wdc_daily/", observatory)
 
 
 def write_csv_data(data, data_path, obs_name):

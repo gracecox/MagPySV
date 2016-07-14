@@ -1,0 +1,54 @@
+DIGITAL WDC EXCHANGE FORMAT FOR OBSERVATORY HOURLY MEAN VALUES
+
+Magnetic data organized in 1-year files, with the information coded in ASCII.
+
+
+COLUMNS   FORMAT   DESCRIPTION
+
+1-3       A3       Observatory 3-letter code
+4-5       I2       Year. Last 2 digits, 1996 = 96. See also columns 15-16.
+6-7       I2       Month (01-12)
+8         Al       Element (D,I,H,X,Y,Z, or F)
+9-10      I2       Day of month (01-31)
+11-12     A2       Blanks
+13        A1       Arbitrary   
+14        A1       Arbitrary
+15-16     I2       Century digits
+                   Year = 1889, Century digits = 18
+                   Year = 1996, Century digits = 19
+                   Year = 2014, Century digits = 20
+17-20     I4       Tabular base.
+                   The values are in degrees for D and I, and in 
+                   hundreds of nanoTeslas for the intensity elements. 
+21-116    24I4     24 4-digit hourly mean values for the day. 
+                   The values are in tenth-minutes for D and I, and in
+                   nanoTeslas for the intensity elements.
+                   The first hourly mean value represents the mean value 
+                   between 00:00 UT and 01:00 UT, ..., the 24th value 
+                   represents the mean between 23:00 UT and 24:00 UT.
+                   A missing value is identified by 9999.
+117-120   I4       Daily Mean. 
+                   If any of the hourly mean values for the day are missing 
+                   9999 will appear as the daily mean.
+121-122            Record end marker.
+                   Two chars 'cr'= 13 and 'nl'= 10.
+
+The tabular bases, hourly mean values and daily means are right adjusted and 
+signed if negative. 
+Negative values are identified with a minus sign either adjacent to the first 
+significant digit or in the high-order position  of the field. 
+NOTE: A blank digit will not appear between a (-) sign and the first 
+significant digit. For example, a value may appear as -050 or b-50 but not 
+as -b50 (b=blank).
+
+The 25 values in positions 21-120 will have the range -999 to 9998, with 9999 
+reserved for missing values. 
+
+The records are sorted according to observatory code, year, month, element,
+day (positions 1-10).
+
+For the intensity elements we have that
+     hourly value (nanoTeslas) = tab.base*100 + tab.value
+
+For the angles D and I we have that
+     hourly value (Degrees) = tab.base + tab.value/600
