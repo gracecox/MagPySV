@@ -1,2 +1,3 @@
-./magpy/data/BGS_hourly
-./magpy/data/wdc_daily
+./magpy/data/BGS_hourly/
+./magpy/data/wdc_daily/
+*.bak
