@@ -43,7 +43,7 @@ def plot_cpa_results(dates, signal, results):
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xlabel('Year', fontsize=16)
-        plt.ylabel('SV (nT/yr)', fontsize=16)
+        plt.ylabel('MF (nT)', fontsize=16)
         # Draw vertical lines at each change point location
         if isinstance(results['changePoint'], int):     # Only 1 change point
             plt.axvline(dates[results['changePoint']], color='r',

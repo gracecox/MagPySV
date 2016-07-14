@@ -53,6 +53,54 @@ def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
     plt.ylabel(r'$\lambda_i$', fontsize=label_size)
 
 
+def plot_mf(dates, mf, model, obs, *, fig_size=(8, 6), font_size=16,
+            label_size=20, plot_legend=False):
+    """Plot the SV and model prediction for a single observatory.
+
+    Produces a plot of the X, Y and Z components of the SV and field
+    model prediction for a single observatory.
+
+    Args:
+        dates (datetime series): dates of the time series measurements.
+        mf (series): X, Y and Z components of magnetic field at a single
+            location.
+        model: time series of X, Y and Z components of the field predicted by a
+            field model for the same location as the data.
+        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        **font_size (int): font size for axes. Defaults to 16 pt.
+        **label_size (int): font size for axis labels. Defaults to 20 pt.
+        **plot_legend (bool): option to include a legend on the plot. Defaults
+            to False.
+    """
+
+    plt.figure(figsize=fig_size)
+    # X component
+    plt.subplot(3, 1, 1)
+    plt.gca().xaxis_date()
+    plt.plot(dates, mf.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.ylabel(r'$X$ (nT)', fontsize=font_size)
+    # Y component
+    plt.subplot(3, 1, 2)
+    plt.gca().xaxis_date()
+    plt.plot(dates, mf.ix[:, 1], 'b', dates, model.ix[:, 1], 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.ylabel(r'$Y$ (nT)', fontsize=font_size)
+    # Z component
+    plt.subplot(3, 1, 3)
+    plt.gca().xaxis_date()
+    plt.plot(dates, mf.ix[:, 2], 'b', dates, model.ix[:, 2], 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.xlabel('Year', fontsize=label_size)
+    plt.ylabel(r'$Z$ (nT)', fontsize=font_size)
+    if plot_legend is True:
+        plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
+
+
 def plot_sv(dates, sv, model, obs, *, fig_size=(8, 6), font_size=16,
             label_size=20, plot_legend=False):
     """Plot the SV and model prediction for a single observatory.
@@ -62,7 +110,7 @@ def plot_sv(dates, sv, model, obs, *, fig_size=(8, 6), font_size=16,
 
     Args:
         dates (datetime series): dates of the time series measurements.
-            sv (series): X, Y and Z components of SV at a single location.
+        sv (series): X, Y and Z components of SV at a single location.
         model: time series of X, Y and Z components of the SV predicted by a
             field model for the same location as the data.
         **fig_size (array): figure size in inches. Defaults to 8 inches by 6
