@@ -82,7 +82,7 @@
             
             
                 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">denoise module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changepoint.html">changepoint module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="svplots.html">svplots module</a></li>
@@ -109,7 +109,7 @@
         <div class="rst-content">
           
 
- 
+
 
 
 
@@ -131,67 +131,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-magpy.denoise">
-<span id="denoise-module"></span><h1>denoise module<a class="headerlink" href="#module-magpy.denoise" title="Permalink to this headline">¶</a></h1>
-<p>Module containing functions to remove external signal from geomagnetic data.</p>
-<p>Part of the MagPy package for geomagnetic data analysis. This module provides
-various functions to denoise geomagnetic data by performing principal component
-analysis.</p>
-<dl class="function">
-<dt id="magpy.denoise.eigenvalue_analysis">
-<code class="descclassname">magpy.denoise.</code><code class="descname">eigenvalue_analysis</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>obs_data</em>, <em>model_data</em>, <em>residuals</em>, <em>proxy_number=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/denoise.html#eigenvalue_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.denoise.eigenvalue_analysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform principal component analysis (PCA) on secular variation
-residuals (the difference between the observed SV and that predicted by a
-geomagnetic field model) calculated from annual differences of monthly
-means at several observatories. Uses the imputer from sklearn.preprocessing
-to fill in missing data points and calculates the eigenvalues/vectors of
-the (3nx3n) covariance matrix for n observatories. The residuals are
-rotated into the eigendirections and denoised using the method detailed in
-Wardinski &amp; Holme (2011). The SV residuals of the noisy component for all
-observatories combined are used as a proxy for the unmodelled external
-signal.The denoised data are then rotated back into geographic coordinates.
-Principal component analysis - find the eigenvalues and eigenvectors of
-the covariance matrix of the residuals. Project the SV residuals into the
-eigenvector directions. The pca algorithm outputs the eigenvalues sorted
-from largest to smallest, so the corresponding eigenvector matrix has the
-&#8216;noisy&#8217; direction in the first column and the &#8216;clean&#8217; direction in the
-final column.</p>
-<p>Smallest eigenvalue: &#8216;quiet&#8217; direction</p>
-<p>Largest eiegenvalue: &#8216;noisy&#8217; direction</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>**dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
-<li><strong>**obs_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for monthly/annual
-means of the X, Y and Z components of the secular variation at the
-observatories of interest.</li>
-<li><strong>**model_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for field model
-prediction of the X, Y and Z components of the secular variation at
-the same observatories as in obs_data.</li>
-<li><strong>**residuals</strong> (<em>dataframe</em>) &#8211; dataframe containing the residuals of the SV
-(difference between the observed data and model prediction).</li>
-<li><strong>**proxy_number</strong> (<em>int</em>) &#8211; the number of &#8216;noisy&#8217; used to create the proxy
-for theexternal signal removal. Default value is 1 (only the
-residual in the direction of the largest eigenvalue is used). Using
-n directions means that proxy is the sum of the SV residuals in the
-n noisiest eigendirections.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>denoised_sv</strong> &#8211; dataframe with datetime objects in the first
-column and columns for the denoised X, Y and Z SV components at each of
-the observatories for which data were provided.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dataframe</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="denoise-module">
+<h1>denoise module<a class="headerlink" href="#denoise-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

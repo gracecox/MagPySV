@@ -68,7 +68,7 @@ def calculate_residuals(*, obs_data, model_data):
         obs_data (pandas.DataFrame): dataframe containing means (usually
             monthly) of SV calculated from observed geomagnetic field values.
         model_data (pandas.DataFrame): dataframe containing the SV predicted by
-        a geomagnetic field model.
+            a geomagnetic field model.
 
     Returns:
         residuals (pandas.DataFrame): dataframe containing SV residuals.
@@ -101,8 +101,9 @@ def data_resampling(data, sampling='MS'):
             first day of the year.
 
     Returns:
-        data (pandas.DataFrame): dataframe of datetime objects and
-            monthly/annual means of observatory data.
+        data (pandas.DataFrame):
+            dataframe of datetime objects and monthly/annual means of
+                observatory data.
     """
 
     resampled = data.set_index('date', drop=False).resample(
@@ -119,8 +120,8 @@ def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
         obs_data (pandas.DataFrame): dataframe containing daily means of
         observed geomagnetic field values.
         threshold (int): the threshold Ap value. Data for days with a higher Ap
-        value will be replaced with NaNs and omitted from monthly (or annual)
-        means.
+            value will be replaced with NaNs and omitted from monthly (or
+            annual etc) means.
 
     Returns:
         residuals (pandas.DataFrame): dataframe containing SV residuals.
@@ -145,3 +146,19 @@ def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
     obs_data.drop(['Ap'], axis=1, inplace=True)
 
     return obs_data
+
+
+def remove_selected_points(*, data, fname):
+    col_names = ['date', 'observatory', 'component']
+    points = pd.read_csv(fname, sep=',', header=0, names=col_names,
+                         parse_dates=[0])
+
+    for data_point in points.itertuples():
+        col_name = data_point.component + '_' + data_point.observatory
+        try:
+            data.loc[data['date'] == data_point.date, col_name] = np.nan
+            pass
+        except KeyError:
+            pass
+
+    return data

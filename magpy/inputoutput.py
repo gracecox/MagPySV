@@ -17,12 +17,11 @@
 
 Part of the MagPy package for geomagnetic data analysis. This module provides
 various functions to read, parse and manipulate the contents of World Data
-Centre (WDC) formatted files containing geomagnetic data."""
+Centre (WDC) formatted files containing geomagnetic data and output data to
+comma separated values (CSV) files. Also contains functions to read output of
+the COV-OBS magnetic field model series by Gillet et al. (2013, Geochem.
+Geophys. Geosyst.; 2015, Earth, Planets and Space)"""
 
-
-# Need functions to:
-# 1. Remove stormy days, save to file
-# 2. Get monthly or annual differences of the monthly means (SV)
 
 import datetime as dt
 import glob
@@ -43,10 +42,11 @@ def wdc_parsefile(fname):
         fname (str): path to a WDC datafile.
 
     Returns:
-        data (pandas.DataFrame): dataframe containing daily geomagnetic
-            data. First column is a series of datetime objects (in the format
-            yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
-            the magnetic field at the specified times.
+        data (pandas.DataFrame):
+            dataframe containing daily geomagnetic data. First column is a
+            series of datetime objects (in the format yyyy-mm-dd) and
+            subsequent columns are the X, Y and Z components of the magnetic
+            field at the specified times.
     """
 
     try:
@@ -86,8 +86,9 @@ def wdc_datetimes(data):
             month and day. Called by wdc_parsefile.
 
     Returns:
-        data (pandas.DataFrame): the same dataframe with a series of datetime
-            objects (in the format yyyy-mm-dd) in the first column.
+        data (pandas.DataFrame):
+            the same dataframe with a series of datetime objects (in the format
+            yyyy-mm-dd) in the first column.
     """
 
     # Convert the century/yr columns to a year
@@ -116,14 +117,15 @@ def wdc_xyz(data):
             tabular base and daily mean.
 
     Returns:
-        data (pandas.DataFrame): the same dataframe with datetime objects in
-            the first column and columns for X, Y and Z components of magnetic
-            field (in nT).
+        data (pandas.DataFrame):
+            the same dataframe with datetime objects in the first column and
+            columns for X, Y and Z components of magnetic field (in nT).
     """
 
     # Replace missing values with NaNs
     data.replace(9999, np.nan, inplace=True)
-
+    # Group the data by field component, calculate the daily means and form
+    # a dataframe with separate columns for each field component
     data = data.groupby('component').apply(daily_mean_conversion)
     data.reset_index(drop=True, inplace=True)
     data.drop(['base', 'daily_mean_temp'], axis=1, inplace=True)
@@ -140,8 +142,8 @@ def wdc_xyz(data):
     else:
         if 'X' in data.columns and 'Y' in data.columns and 'Z' in data.columns:
             data = data[['date', 'X', 'Y', 'Z']]
-    # Make sure that the dataframe contains for X, Y and Z, and infill with NaN
-    # values if not.
+    # Make sure that the dataframe contains columns for X, Y and Z components,
+    # and create a column of NaN values if a component is missing
     if 'X' not in data.columns:
         data['X'] = np.NaN
     if 'Y' not in data.columns:
@@ -169,9 +171,10 @@ def daily_mean_conversion(data):
             tabular base and daily mean.
 
     Returns:
-        data (pandas.DataFrame): the same dataframe with datetime objects in
-            the first column and daily means of the field components in either
-            nT or degrees (depending on the component).
+        data (pandas.DataFrame):
+            the same dataframe with datetime objects in the first column and
+            daily means of the field components in either nT or degrees
+            (depending on the component).
     """
 
     grp = pd.DataFrame()
@@ -204,9 +207,10 @@ def angles_to_geographic(data):
             H, X, Y or Z).
 
     Returns:
-        data (pandas.DataFrame): the same dataframe with datetime objects in
-            the first column and daily means of the field components in either
-            nT or degrees (depending on the component).
+        data (pandas.DataFrame):
+            the same dataframe with datetime objects in the first column and
+            daily means of the field components in either nT or degrees
+            (depending on the component).
     """
 
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'X'] = data.loc[(
@@ -227,10 +231,11 @@ def wdc_readfile(fname):
         fname (str): path to a WDC datafile.
 
     Returns:
-        data (pandas.DataFrame): dataframe containing the data read from the
-            WDC file. First column is a series of datetime objects (in the
-            format yyyy-mm-dd) and subsequent columns are the X, Y and Z
-            components of the magnetic field at the specified times.
+        data (pandas.DataFrame):
+            dataframe containing the data read from the WDC file. First column
+            is a series of datetime objects (in the format yyyy-mm-dd) and
+            subsequent columns are the X, Y and Z components of the magnetic
+            field at the specified times.
     """
 
     rawdata = wdc_parsefile(fname)
@@ -247,13 +252,15 @@ def append_wdc_data(*, obs_name,
 
     Args:
         obs_name (str): observatory name (as 3-digit IAGA code).
+        path (str): path to a directory containing WDC datafiles for a single
+            observatory.
 
     Returns:
-        data (pandas.DataFrame): dataframe containing all available daily
-            geomagnetic data at a single observatory. First column is a series
-            of datetime objects (in the format yyyy-mm-dd) and subsequent
-            columns are the X, Y and Z components of the magnetic field at the
-            specified times.
+        data (pandas.DataFrame):
+            dataframe containing all available daily geomagnetic data at a
+            single observatory. First column is a series of datetime objects
+            (in the format yyyy-mm-dd) and subsequent columns are the X, Y and
+            Z components of the magnetic field at the specified times.
     """
 
     data = pd.DataFrame()
@@ -273,16 +280,19 @@ def append_wdc_data(*, obs_name,
 
 
 def covobs_parsefile(fname):
-    """Load a datafile containing SV/MF predictions from a field model.
+    """Load a datafile containing SV/MF predictions from the COV-OBS magnetic
+    field model series by Gillet et al. (2013, Geochem. Geophys. Geosyst.;
+    2015, Earth, Planets and Space) field model.
 
     Args:
         fname (str): path to a COV-OBS datafile.
 
     Returns:
-        data (pandas.DataFrame): dataframe containing daily geomagnetic
-            data. First column is a series of datetime objects (in the format
-            yyyy-mm-dd) and subsequent columns are the X, Y and Z components of
-            the SV/MF at the specified times.
+        model_data (pandas.DataFrame):
+            dataframe containing daily geomagnetic data. First column is a
+            series of datetime objects (in the format yyyy-mm-dd) and
+            subsequent columns are the X, Y and Z components of the SV/MF at
+            the specified times.
     """
 
     model_data = pd.read_csv(fname, sep=r'\s+', header=None,
@@ -294,7 +304,8 @@ def covobs_parsefile(fname):
 
 
 def covobs_datetimes(data):
-    """Create datetime objects from the year column of a COV-OBS output file.
+    """Create datetime objects from the year column of a COV-OBS field model
+    output file.
 
     The format output by the field model is year.decimalmonth e.g. 1960.08 is
     Jan 1960
@@ -304,9 +315,9 @@ def covobs_datetimes(data):
             format).
 
     Returns:
-        data (pandas.DataFrame): the same dataframe with the decimal year
-            column replced with a series of datetime objects in the format
-            yyyy-mm-dd.
+        data (pandas.DataFrame):
+            the same dataframe with the decimal year column replced with a
+            series of datetime objects in the format yyyy-mm-dd.
     """
 
     year_temp = np.floor(data.year_decimal.values.astype(
@@ -335,10 +346,11 @@ def covobs_readfile(fname):
         fname (str): path to a COV-OBS format datafile.
 
     Returns:
-        data (pandas.DataFrame): dataframe containing the data read from the
-            file. First column is a series of datetime objects (in the
-            format yyyy-mm-dd) and subsequent columns are the X, Y and Z
-            components of the SV/MF at the specified times.
+        data (pandas.DataFrame):
+            dataframe containing the data read from the file. First column is a
+            series of datetime objects (in the format yyyy-mm-dd) and
+            subsequent columns are the X, Y and Z components of the SV/MF at
+            the specified times.
     """
 
     rawdata = covobs_parsefile(fname)
@@ -347,7 +359,7 @@ def covobs_readfile(fname):
     return data
 
 
-def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/hourval/single_obs/*',
+def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/', write_path,
                      print_obs=True):
     """Converts hourly WDC data to X, Y and Z daily means and save to CSV file.
 
@@ -365,6 +377,7 @@ def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/hourval/single_obs/*',
     Args:
         fpath (str): path to the datafiles. Assumes data for each observatory
             is stored in a directory named after the observatory.
+        write_path (str): path to which the output CSV files are written.
         print_obs (bool): choose whether to print each observatory name as the
             function goes through the directories. Useful for checking progress
             as it can take a while to read the whole WDC dataset.
@@ -372,27 +385,37 @@ def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/hourval/single_obs/*',
         None
     """
 
-    dir_list = glob.glob(fpath)
+    wdc_path = fpath + 'hourval/single_obs/*'
+    dir_list = glob.glob(wdc_path)
     obs_names = [os.path.basename(obs_path) for obs_path in dir_list]
     for observatory in obs_names:
-        print(observatory)
+        if print_obs is True:
+            print(observatory)
         wdc_data = append_wdc_data(
             obs_name=observatory,
-            path='./data/BGS_hourly/hourval/single_obs/%s/*.wdc')
-        write_csv_data(wdc_data, "./data/wdc_daily/", observatory)
+            path=fpath + '/hourval/single_obs/%s/*.wdc')
+        write_csv_data(data=wdc_data, write_path=write_path,
+                       obs_name=observatory)
 
 
-def write_csv_data(data, data_path, obs_name):
+def write_csv_data(*, data, write_path, obs_name, file_prefix=None):
     """Write dataframe to a CSV file.
 
     Args:
         data (pandas.DataFrame): data to be written to file.
-        data_path (str): path to which the CSV file is written.
+        write_path (str): path to which the output CSV file is written.
         obs_name (str): name of observatory at which the data were obtained.
+        file_prefix (str): optional string to prefix the output CSV filenames
+            (useful for specifying parameters used to create the dataset etc).
+    Returns:
+        None
     """
 
-    fpath = data_path + obs_name + '.csv'
-    data.to_csv(fpath, sep=' ', header=True, index=False)
+    if file_prefix is not None:
+        fpath = write_path + file_prefix + obs_name + '.csv'
+    else:
+        fpath = write_path + obs_name + '.csv'
+    data.to_csv(fpath, sep=',', na_rep='NA', header=True, index=False)
 
 
 def read_csv_data(fname):
@@ -402,55 +425,105 @@ def read_csv_data(fname):
         fname (str): path to a CSV datafile.
 
     Returns:
-        data (pandas.DataFrame): dataframe containing the data read from the
-            CSV file.
+        data (pandas.DataFrame):
+            dataframe containing the data read from the CSV file.
     """
 
     col_names = ['date', 'X', 'Y', 'Z']
-    data = pd.read_csv(fname, sep=' ', header=0, names=col_names,
+    data = pd.read_csv(fname, sep=',', header=0, names=col_names,
                        parse_dates=[0])
     return data
 
 
-def combine_csv_data(*, obs_list, data_path, model_path):
+def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
+                     obs_list, data_path, model_path):
     """Read and combine observatory and model SV data for several locations.
 
     Calls read_csv_data to read observatory data and field model predictions
     for each observatory in a list. The data and predictions for individual
     observatories are combined into their respective large dataframes. The
     first column contains datetime objects and subsequent columns contain X, Y
-    and Z secular variation components (in groups of three) for all
+    and Z secular variation/field components (in groups of three) for all
     observatories.
 
     Args:
+        start_date (datetime.datetime): the start date of the data analysis.
+        end_date (datetime.datetime): the end date of the analysis.
+        sampling_rate (str): the sampling rate for the period of interest. The
+            default is 'MS', which creates a range of dates between the
+            specified values at monthly intervals with the day fixed as the
+            first of each month. Use 'M' for the final day of each month. Other
+            useful options are 'AS' (a series of dates at annual intervals,
+            with the day and month fixed at 01 and January respectively) and
+            'A' (as for 'AS' but with the day/month fixed as 31 December.)
         obs_list (list): list of observatory names (as 3-digit IAGA codes).
         data_path (str): path to the CSV files containing observatory data.
         model_path (str): path to the CSV files containing model SV data.
 
     Returns:
-        obs_data (pandas.DataFrame): dataframe containing SV data for all
+        obs_data (pandas.DataFrame):
+            dataframe containing SV data for all observatories in obs_list.
+        model_sv_data (pandas.DataFrame):
+            dataframe containing SV predictions for all observatories in
+            obs_list.
+        model_mf_data (pandas.DataFrame):
+            dataframe containing magnetic field predictions for all
             observatories in obs_list.
-        model_data (pandas.DataFrame): dataframe containing SV predictions for
-            all observatories in obs_list.
     """
+
+    # Initialise the dataframe with the appropriate date range
+    obs_data = pd.DataFrame({'date': pd.date_range(start_date, end_date,
+                                                   freq=sampling_rate)})
+    model_sv_data = pd.DataFrame({'date': pd.date_range(
+                                start_date, end_date,
+                                freq=sampling_rate)})
+    model_mf_data = pd.DataFrame({'date': pd.date_range(
+                                start_date, end_date,
+                                freq=sampling_rate)})
 
     for observatory in obs_list:
 
         obs_file = observatory + '.csv'
-        model_file = 'sv_' + observatory + '.dat'
+        model_sv_file = 'sv_' + observatory + '.dat'
+        model_mf_file = 'mf_' + observatory + '.dat'
         obs_data_temp = read_csv_data(os.path.join(data_path, obs_file))
-        model_data_temp = covobs_readfile(os.path.join(model_path, model_file))
+        model_sv_data_temp = covobs_readfile(os.path.join(model_path,
+                                                          model_sv_file))
+        model_mf_data_temp = covobs_readfile(os.path.join(model_path,
+                                                          model_mf_file))
+        obs_data_temp.rename(
+            columns={'X': 'X' + '_' + observatory,
+                     'Y': 'Y' + '_' + observatory,
+                     'Z': 'Z' + '_' + observatory}, inplace=True)
+        model_sv_data_temp.rename(
+            columns={'dx': 'dx' + '_' + observatory,
+                     'dy': 'dy' + '_' + observatory,
+                     'dz': 'dz' + '_' + observatory}, inplace=True)
+        model_mf_data_temp.rename(
+            columns={'dx': 'x' + '_' + observatory,
+                     'dy': 'y' + '_' + observatory,
+                     'dz': 'z' + '_' + observatory}, inplace=True)
         # Combine the current observatory data with those of other
         # observatories
         if observatory == obs_list[0]:
-            obs_data = obs_data_temp
-            model_data = model_data_temp
+            obs_data = pd.merge(
+                left=obs_data, right=obs_data_temp,
+                how='left', on='date')
+            model_sv_data = pd.merge(
+                left=model_sv_data, right=model_sv_data_temp,
+                how='left', on='date')
+            model_mf_data = pd.merge(
+                left=model_mf_data, right=model_mf_data_temp,
+                how='left', on='date')
 
         else:
             obs_data = pd.merge(
                 left=obs_data, right=obs_data_temp,
-                how='left', on='date', suffixes=obs_list)
-            model_data = pd.merge(
-                left=model_data, right=model_data_temp,
-                how='left', on='date', suffixes=obs_list)
-    return obs_data, model_data
+                how='left', on='date')
+            model_sv_data = pd.merge(
+                left=model_sv_data, right=model_sv_data_temp,
+                how='left', on='date')
+            model_mf_data = pd.merge(
+                left=model_mf_data, right=model_mf_data_temp,
+                how='left', on='date')
+    return obs_data, model_sv_data, model_mf_data

@@ -46,8 +46,9 @@ def plot_cpa_results(dates, signal, results):
         plt.ylabel('MF (nT)', fontsize=16)
         # Draw vertical lines at each change point location
         if isinstance(results['changePoint'], int):     # Only 1 change point
-            plt.axvline(dates[results['changePoint']], color='r',
+            plt.axvline(dates[results['changePoint']-1], color='r',
                         linestyle='--')
+        # -1 in index because R indices begin at 1 and not 0 as in python
         else:
             for chgpoint in results['changePoint']:  # More than 1 change point
-                plt.axvline(dates[chgpoint], color='r', linestyle='--')
+                plt.axvline(dates[chgpoint-1], color='r', linestyle='--')
