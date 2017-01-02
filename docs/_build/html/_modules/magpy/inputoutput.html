@@ -150,15 +150,15 @@
 
 <span class="sd">Part of the MagPy package for geomagnetic data analysis. This module provides</span>
 <span class="sd">various functions to read, parse and manipulate the contents of World Data</span>
-<span class="sd">Centre (WDC) formatted files containing geomagnetic data.&quot;&quot;&quot;</span>
+<span class="sd">Centre (WDC) formatted files containing geomagnetic data and output data to</span>
+<span class="sd">comma separated values (CSV) files. Also contains functions to read output of</span>
+<span class="sd">the COV-OBS magnetic field model series by Gillet et al. (2013, Geochem.</span>
+<span class="sd">Geophys. Geosyst.; 2015, Earth, Planets and Space)&quot;&quot;&quot;</span>
 
-
-<span class="c1"># Need functions to:</span>
-<span class="c1"># 1. Remove stormy days, save to file</span>
-<span class="c1"># 2. Get monthly or annual differences of the monthly means (SV)</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
@@ -175,10 +175,11 @@
 <span class="sd">        fname (str): path to a WDC datafile.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing daily geomagnetic</span>
-<span class="sd">            data. First column is a series of datetime objects (in the format</span>
-<span class="sd">            yyyy-mm-dd) and subsequent columns are the X, Y and Z components of</span>
-<span class="sd">            the magnetic field at the specified times.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing daily geomagnetic data. First column is a</span>
+<span class="sd">            series of datetime objects (in the format yyyy-mm-dd) and</span>
+<span class="sd">            subsequent columns are the X, Y and Z components of the magnetic</span>
+<span class="sd">            field at the specified times.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -218,8 +219,9 @@
 <span class="sd">            month and day. Called by wdc_parsefile.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): the same dataframe with a series of datetime</span>
-<span class="sd">            objects (in the format yyyy-mm-dd) in the first column.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            the same dataframe with a series of datetime objects (in the format</span>
+<span class="sd">            yyyy-mm-dd) in the first column.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Convert the century/yr columns to a year</span>
@@ -248,27 +250,39 @@
 <span class="sd">            tabular base and daily mean.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): the same dataframe with datetime objects in</span>
-<span class="sd">            the first column and columns for X, Y and Z components of magnetic</span>
-<span class="sd">            field (in nT).</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            the same dataframe with datetime objects in the first column and</span>
+<span class="sd">            columns for X, Y and Z components of magnetic field (in nT).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Replace missing values with NaNs</span>
     <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
+    <span class="c1"># Group the data by field component, calculate the daily means and form</span>
+    <span class="c1"># a dataframe with separate columns for each field component</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">daily_mean_conversion</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;daily_mean_temp&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;daily_mean&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">,</span>
+                            <span class="n">values</span><span class="o">=</span><span class="s1">&#39;daily_mean&#39;</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="c1"># Call helper function to convert D and H components to X and Y</span>
     <span class="k">if</span> <span class="s1">&#39;D&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="s1">&#39;X&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;Y&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;Z&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="s1">&#39;X&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;Y&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;Z&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
+    <span class="c1"># Make sure that the dataframe contains columns for X, Y and Z components,</span>
+    <span class="c1"># and create a column of NaN values if a component is missing</span>
+    <span class="k">if</span> <span class="s1">&#39;X&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+    <span class="k">if</span> <span class="s1">&#39;Y&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+    <span class="k">if</span> <span class="s1">&#39;Z&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
 
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -290,9 +304,10 @@
 <span class="sd">            tabular base and daily mean.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): the same dataframe with datetime objects in</span>
-<span class="sd">            the first column and daily means of the field components in either</span>
-<span class="sd">            nT or degrees (depending on the component).</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            the same dataframe with datetime objects in the first column and</span>
+<span class="sd">            daily means of the field components in either nT or degrees</span>
+<span class="sd">            (depending on the component).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">grp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
@@ -325,9 +340,10 @@
 <span class="sd">            H, X, Y or Z).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): the same dataframe with datetime objects in</span>
-<span class="sd">            the first column and daily means of the field components in either</span>
-<span class="sd">            nT or degrees (depending on the component).</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            the same dataframe with datetime objects in the first column and</span>
+<span class="sd">            daily means of the field components in either nT or degrees</span>
+<span class="sd">            (depending on the component).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">])),</span> <span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span>
@@ -341,33 +357,6 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Resample the daily geomagnetic data to a specified frequency.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing datetime objects and</span>
-<span class="sd">            daily means of magnetic data.</span>
-<span class="sd">        sampling (str): new sampling frequency. Default value is &#39;M&#39;</span>
-<span class="sd">            (monthly means), which averages data for each month and sets</span>
-<span class="sd">            the datetime object to the final day of that month. Use &#39;MS&#39;</span>
-<span class="sd">            to set the datetime object to the first day of the month.</span>
-<span class="sd">            Another useful option is &#39;A&#39; (annual means), which averages</span>
-<span class="sd">            data for a whole year and sets the datetime object to the final</span>
-<span class="sd">            day of the year. Use &#39;AS&#39; to set the datetime object to the</span>
-<span class="sd">            first day of the year.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe of datetime objects and</span>
-<span class="sd">            monthly/annual means of observatory data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span>
-        <span class="n">sampling</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
-    <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">resampled</span></div>
-
-
 <div class="viewcode-block" id="wdc_readfile"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.wdc_readfile">[docs]</a><span class="k">def</span> <span class="nf">wdc_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Wrapper function to call wdc_parsefile, wdc_readfile and wdc_xyz.</span>
 
@@ -375,10 +364,11 @@
 <span class="sd">        fname (str): path to a WDC datafile.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing the data read from the</span>
-<span class="sd">            WDC file. First column is a series of datetime objects (in the</span>
-<span class="sd">            format yyyy-mm-dd) and subsequent columns are the X, Y and Z</span>
-<span class="sd">            components of the magnetic field at the specified times.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing the data read from the WDC file. First column</span>
+<span class="sd">            is a series of datetime objects (in the format yyyy-mm-dd) and</span>
+<span class="sd">            subsequent columns are the X, Y and Z components of the magnetic</span>
+<span class="sd">            field at the specified times.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">rawdata</span> <span class="o">=</span> <span class="n">wdc_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
@@ -388,21 +378,22 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="append_wdc_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.append_wdc_data">[docs]</a><span class="k">def</span> <span class="nf">append_wdc_data</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span>
-                    <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/Users/Grace/Dropbox/BGS_data/hourval/</span><span class="se">\</span>
-<span class="s1">single_obs/</span><span class="si">%s</span><span class="s1">/*.wdc&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="append_wdc_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.append_wdc_data">[docs]</a><span class="k">def</span> <span class="nf">append_wdc_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span>
+                    <span class="n">path</span><span class="o">=</span><span class="s1">&#39;./data/BGS_data/hourval/single_obs/</span><span class="si">%s</span><span class="s1">/*.wdc&#39;</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;Append all WDC data for an observatory into a single dataframe.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obs_name (str): observatory name (as 3-digit IAGA code).</span>
+<span class="sd">        path (str): path to a directory containing WDC datafiles for a single</span>
+<span class="sd">            observatory.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing all available daily</span>
-<span class="sd">            geomagnetic data at a single observatory. First column is a series</span>
-<span class="sd">            of datetime objects (in the format yyyy-mm-dd) and subsequent</span>
-<span class="sd">            columns are the X, Y and Z components of the magnetic field at the</span>
-<span class="sd">            specified times.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing all available daily geomagnetic data at a</span>
+<span class="sd">            single observatory. First column is a series of datetime objects</span>
+<span class="sd">            (in the format yyyy-mm-dd) and subsequent columns are the X, Y and</span>
+<span class="sd">            Z components of the magnetic field at the specified times.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
@@ -411,6 +402,7 @@
 
     <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
     <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">wdc_readfile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -421,16 +413,19 @@
 
 
 <div class="viewcode-block" id="covobs_parsefile"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.covobs_parsefile">[docs]</a><span class="k">def</span> <span class="nf">covobs_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Load a datafile containing SV predictions from a field model.</span>
+    <span class="sd">&quot;&quot;&quot;Load a datafile containing SV/MF predictions from the COV-OBS magnetic</span>
+<span class="sd">    field model series by Gillet et al. (2013, Geochem. Geophys. Geosyst.;</span>
+<span class="sd">    2015, Earth, Planets and Space) field model.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fname (str): path to a COV-OBS datafile.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing daily geomagnetic</span>
-<span class="sd">            data. First column is a series of datetime objects (in the format</span>
-<span class="sd">            yyyy-mm-dd) and subsequent columns are the X, Y and Z components of</span>
-<span class="sd">            the SV at the specified times.</span>
+<span class="sd">        model_data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing daily geomagnetic data. First column is a</span>
+<span class="sd">            series of datetime objects (in the format yyyy-mm-dd) and</span>
+<span class="sd">            subsequent columns are the X, Y and Z components of the SV/MF at</span>
+<span class="sd">            the specified times.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">model_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">r&#39;\s+&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -442,7 +437,8 @@
 
 
 <div class="viewcode-block" id="covobs_datetimes"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.covobs_datetimes">[docs]</a><span class="k">def</span> <span class="nf">covobs_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create datetime objects from the year column of a COV-OBS output file.</span>
+    <span class="sd">&quot;&quot;&quot;Create datetime objects from the year column of a COV-OBS field model</span>
+<span class="sd">    output file.</span>
 
 <span class="sd">    The format output by the field model is year.decimalmonth e.g. 1960.08 is</span>
 <span class="sd">    Jan 1960</span>
@@ -452,9 +448,9 @@
 <span class="sd">            format).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): the same dataframe with the decimal year</span>
-<span class="sd">            column replced with a series of datetime objects in the format</span>
-<span class="sd">            yyyy-mm-dd.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            the same dataframe with the decimal year column replced with a</span>
+<span class="sd">            series of datetime objects in the format yyyy-mm-dd.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">year_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">year_decimal</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
@@ -462,7 +458,6 @@
 
     <span class="n">months</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">year_decimal</span> <span class="o">-</span> <span class="n">year_temp</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
 
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">year_temp</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="n">months</span><span class="p">)</span>
 
@@ -471,19 +466,8 @@
         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="c1"># Convert the century/yr columns to a year</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;century&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;yr&#39;</span><span class="p">]</span>
-
-    <span class="c1"># Create datetime objects from the century, year, month and day columns of</span>
-    <span class="c1"># the WDC format data file</span>
-    <span class="n">dates</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;{0} {1} {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]),</span>
-        <span class="s2">&quot;%Y %m </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-              <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;year_decimal&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -495,10 +479,11 @@
 <span class="sd">        fname (str): path to a COV-OBS format datafile.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing the data read from the</span>
-<span class="sd">            file. First column is a series of datetime objects (in the</span>
-<span class="sd">            format yyyy-mm-dd) and subsequent columns are the X, Y and Z</span>
-<span class="sd">            components of the SV at the specified times.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing the data read from the file. First column is a</span>
+<span class="sd">            series of datetime objects (in the format yyyy-mm-dd) and</span>
+<span class="sd">            subsequent columns are the X, Y and Z components of the SV/MF at</span>
+<span class="sd">            the specified times.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">rawdata</span> <span class="o">=</span> <span class="n">covobs_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
@@ -507,17 +492,63 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="write_csv_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.write_csv_data">[docs]</a><span class="k">def</span> <span class="nf">write_csv_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">):</span>
+<div class="viewcode-block" id="wdc_to_daily_csv"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.wdc_to_daily_csv">[docs]</a><span class="k">def</span> <span class="nf">wdc_to_daily_csv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fpath</span><span class="o">=</span><span class="s1">&#39;./data/BGS_hourly/&#39;</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span>
+                     <span class="n">print_obs</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts hourly WDC data to X, Y and Z daily means and save to CSV file.</span>
+
+<span class="sd">    Finds WDC hourly data files for all observatories in a directory path</span>
+<span class="sd">    (assumes data for each observatory is located inside a directory named</span>
+<span class="sd">    after the observatory). The WDC distributes data inside directories</span>
+<span class="sd">    with the naming convention /hourval/single_obs/obs/obsyear.wdc where obs is</span>
+<span class="sd">    a three digit observatory name, year is a four digit year and the string</span>
+<span class="sd">    /hourval/single_obs prepends each directory name. e.g.</span>
+<span class="sd">    /hourval/single_obs/ngk/ngk1990.wdc or /hourval/single_obs/clf/clf2013.wdc.</span>
+<span class="sd">    This function converts the hourly data to daily X, Y and Z means, appends</span>
+<span class="sd">    all years of data for a single observatory into a single dataframe and</span>
+<span class="sd">    saves the dataframe to a CSV file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpath (str): path to the datafiles. Assumes data for each observatory</span>
+<span class="sd">            is stored in a directory named after the observatory.</span>
+<span class="sd">        write_path (str): path to which the output CSV files are written.</span>
+<span class="sd">        print_obs (bool): choose whether to print each observatory name as the</span>
+<span class="sd">            function goes through the directories. Useful for checking progress</span>
+<span class="sd">            as it can take a while to read the whole WDC dataset.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wdc_path</span> <span class="o">=</span> <span class="n">fpath</span> <span class="o">+</span> <span class="s1">&#39;hourval/single_obs/*&#39;</span>
+    <span class="n">dir_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">wdc_path</span><span class="p">)</span>
+    <span class="n">obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">obs_path</span><span class="p">)</span> <span class="k">for</span> <span class="n">obs_path</span> <span class="ow">in</span> <span class="n">dir_list</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">observatory</span> <span class="ow">in</span> <span class="n">obs_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">print_obs</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">observatory</span><span class="p">)</span>
+        <span class="n">wdc_data</span> <span class="o">=</span> <span class="n">append_wdc_data</span><span class="p">(</span>
+            <span class="n">obs_name</span><span class="o">=</span><span class="n">observatory</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">fpath</span> <span class="o">+</span> <span class="s1">&#39;/hourval/single_obs/</span><span class="si">%s</span><span class="s1">/*.wdc&#39;</span><span class="p">)</span>
+        <span class="n">write_csv_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">wdc_data</span><span class="p">,</span> <span class="n">write_path</span><span class="o">=</span><span class="n">write_path</span><span class="p">,</span>
+                       <span class="n">obs_name</span><span class="o">=</span><span class="n">observatory</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_csv_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.write_csv_data">[docs]</a><span class="k">def</span> <span class="nf">write_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write dataframe to a CSV file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (pandas.DataFrame): data to be written to file.</span>
-<span class="sd">        data_path (str): path to which the CSV file is written.</span>
+<span class="sd">        write_path (str): path to which the output CSV file is written.</span>
 <span class="sd">        obs_name (str): name of observatory at which the data were obtained.</span>
+<span class="sd">        file_prefix (str): optional string to prefix the output CSV filenames</span>
+<span class="sd">            (useful for specifying parameters used to create the dataset etc).</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">fpath</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">+</span> <span class="n">obs_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">file_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">write_path</span> <span class="o">+</span> <span class="n">file_prefix</span> <span class="o">+</span> <span class="n">obs_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">write_path</span> <span class="o">+</span> <span class="n">obs_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_csv_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.read_csv_data">[docs]</a><span class="k">def</span> <span class="nf">read_csv_data</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
@@ -527,58 +558,108 @@
 <span class="sd">        fname (str): path to a CSV datafile.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        data (pandas.DataFrame): dataframe containing the data read from the</span>
-<span class="sd">            CSV file.</span>
+<span class="sd">        data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing the data read from the CSV file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">]</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
-                       <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dayfirst</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
+                       <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="combine_csv_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.combine_csv_data">[docs]</a><span class="k">def</span> <span class="nf">combine_csv_data</span><span class="p">(</span><span class="n">obs_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">model_path</span><span class="p">):</span>
+<div class="viewcode-block" id="combine_csv_data"><a class="viewcode-back" href="../../modules.html#magpy.inputoutput.combine_csv_data">[docs]</a><span class="k">def</span> <span class="nf">combine_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span>
+                     <span class="n">obs_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">model_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read and combine observatory and model SV data for several locations.</span>
 
 <span class="sd">    Calls read_csv_data to read observatory data and field model predictions</span>
 <span class="sd">    for each observatory in a list. The data and predictions for individual</span>
 <span class="sd">    observatories are combined into their respective large dataframes. The</span>
 <span class="sd">    first column contains datetime objects and subsequent columns contain X, Y</span>
-<span class="sd">    and Z secular variation components (in groups of three) for all</span>
+<span class="sd">    and Z secular variation/field components (in groups of three) for all</span>
 <span class="sd">    observatories.</span>
 
 <span class="sd">    Args:</span>
+<span class="sd">        start_date (datetime.datetime): the start date of the data analysis.</span>
+<span class="sd">        end_date (datetime.datetime): the end date of the analysis.</span>
+<span class="sd">        sampling_rate (str): the sampling rate for the period of interest. The</span>
+<span class="sd">            default is &#39;MS&#39;, which creates a range of dates between the</span>
+<span class="sd">            specified values at monthly intervals with the day fixed as the</span>
+<span class="sd">            first of each month. Use &#39;M&#39; for the final day of each month. Other</span>
+<span class="sd">            useful options are &#39;AS&#39; (a series of dates at annual intervals,</span>
+<span class="sd">            with the day and month fixed at 01 and January respectively) and</span>
+<span class="sd">            &#39;A&#39; (as for &#39;AS&#39; but with the day/month fixed as 31 December.)</span>
 <span class="sd">        obs_list (list): list of observatory names (as 3-digit IAGA codes).</span>
 <span class="sd">        data_path (str): path to the CSV files containing observatory data.</span>
 <span class="sd">        model_path (str): path to the CSV files containing model SV data.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        obs_data (pandas.DataFrame): dataframe containing SV data for all</span>
+<span class="sd">        obs_data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing SV data for all observatories in obs_list.</span>
+<span class="sd">        model_sv_data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing SV predictions for all observatories in</span>
+<span class="sd">            obs_list.</span>
+<span class="sd">        model_mf_data (pandas.DataFrame):</span>
+<span class="sd">            dataframe containing magnetic field predictions for all</span>
 <span class="sd">            observatories in obs_list.</span>
-<span class="sd">        model_data (pandas.DataFrame): dataframe containing SV predictions for</span>
-<span class="sd">            all observatories in obs_list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialise the dataframe with the appropriate date range</span>
+    <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span>
+                                                   <span class="n">freq</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">)})</span>
+    <span class="n">model_sv_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+                                <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span>
+                                <span class="n">freq</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">)})</span>
+    <span class="n">model_mf_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+                                <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span>
+                                <span class="n">freq</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">)})</span>
 
     <span class="k">for</span> <span class="n">observatory</span> <span class="ow">in</span> <span class="n">obs_list</span><span class="p">:</span>
 
-        <span class="n">obs_fname</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">+</span> <span class="n">observatory</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
-        <span class="n">model_fname</span> <span class="o">=</span> <span class="n">model_path</span> <span class="o">+</span> <span class="n">observatory</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
-        <span class="n">obs_data_temp</span> <span class="o">=</span> <span class="n">read_csv_data</span><span class="p">(</span><span class="n">obs_fname</span><span class="p">)</span>
-        <span class="n">model_data_temp</span> <span class="o">=</span> <span class="n">read_csv_data</span><span class="p">(</span><span class="n">model_fname</span><span class="p">)</span>
+        <span class="n">obs_file</span> <span class="o">=</span> <span class="n">observatory</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
+        <span class="n">model_sv_file</span> <span class="o">=</span> <span class="s1">&#39;sv_&#39;</span> <span class="o">+</span> <span class="n">observatory</span> <span class="o">+</span> <span class="s1">&#39;.dat&#39;</span>
+        <span class="n">model_mf_file</span> <span class="o">=</span> <span class="s1">&#39;mf_&#39;</span> <span class="o">+</span> <span class="n">observatory</span> <span class="o">+</span> <span class="s1">&#39;.dat&#39;</span>
+        <span class="n">obs_data_temp</span> <span class="o">=</span> <span class="n">read_csv_data</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">obs_file</span><span class="p">))</span>
+        <span class="n">model_sv_data_temp</span> <span class="o">=</span> <span class="n">covobs_readfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span>
+                                                          <span class="n">model_sv_file</span><span class="p">))</span>
+        <span class="n">model_mf_data_temp</span> <span class="o">=</span> <span class="n">covobs_readfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span>
+                                                          <span class="n">model_mf_file</span><span class="p">))</span>
+        <span class="n">obs_data_temp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="s1">&#39;X&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
+                     <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="s1">&#39;Y&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
+                     <span class="s1">&#39;Z&#39;</span><span class="p">:</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">model_sv_data_temp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="s1">&#39;dx&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
+                     <span class="s1">&#39;dy&#39;</span><span class="p">:</span> <span class="s1">&#39;dy&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
+                     <span class="s1">&#39;dz&#39;</span><span class="p">:</span> <span class="s1">&#39;dz&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">model_mf_data_temp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
+                     <span class="s1">&#39;dy&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
+                     <span class="s1">&#39;dz&#39;</span><span class="p">:</span> <span class="s1">&#39;z&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="c1"># Combine the current observatory data with those of other</span>
         <span class="c1"># observatories</span>
         <span class="k">if</span> <span class="n">observatory</span> <span class="o">==</span> <span class="n">obs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">obs_data</span> <span class="o">=</span> <span class="n">obs_data_temp</span>
-            <span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data_temp</span>
+            <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">=</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">obs_data_temp</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+            <span class="n">model_sv_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">=</span><span class="n">model_sv_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">model_sv_data_temp</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+            <span class="n">model_mf_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">=</span><span class="n">model_mf_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">model_mf_data_temp</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
                 <span class="n">left</span><span class="o">=</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">obs_data_temp</span><span class="p">,</span>
-                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="n">obs_list</span><span class="p">)</span>
-            <span class="n">model_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">left</span><span class="o">=</span><span class="n">model_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">model_data_temp</span><span class="p">,</span>
-                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="n">obs_list</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span></div>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+            <span class="n">model_sv_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">=</span><span class="n">model_sv_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">model_sv_data_temp</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+            <span class="n">model_mf_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">=</span><span class="n">model_mf_data</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">model_mf_data_temp</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_sv_data</span><span class="p">,</span> <span class="n">model_mf_data</span></div>
 </pre></div>
 
            </div>

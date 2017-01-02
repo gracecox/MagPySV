@@ -27,7 +27,7 @@ import pandas as pd
 import scipy as sp
 
 
-def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
+def plot_eigenvalues(*, values, fig_size=(8, 6), font_size=16, label_size=20):
     """Plot eigenvalues of the SV residuals.
 
     Produces a plot of the eigenvalues obtained during the principal component
@@ -40,10 +40,10 @@ def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
     Args:
         values (array): the eigenvalues obtained from the principal component
             analysis of the SV residuals.
-        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
-        **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt.
+        font_size (int): font size for axes. Defaults to 16 pt.
+        label_size (int): font size for axis labels. Defaults to 20 pt.
     """
 
     plt.figure(figsize=fig_size)
@@ -53,7 +53,7 @@ def plot_eigenvalues(values, *, fig_size=(8, 6), font_size=16, label_size=20):
     plt.ylabel(r'$\lambda_i$', fontsize=label_size)
 
 
-def plot_mf(dates, mf, model, obs, *, fig_size=(8, 6), font_size=16,
+def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=16,
             label_size=20, plot_legend=False):
     """Plot the SV and model prediction for a single observatory.
 
@@ -61,16 +61,16 @@ def plot_mf(dates, mf, model, obs, *, fig_size=(8, 6), font_size=16,
     model prediction for a single observatory.
 
     Args:
-        dates (datetime series): dates of the time series measurements.
+        dates (datetime.datetime series): dates of time series measurements.
         mf (series): X, Y and Z components of magnetic field at a single
             location.
-        model: time series of X, Y and Z components of the field predicted by a
+        model (series): X, Y and Z components of the field predicted by a
             field model for the same location as the data.
-        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
-        **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt.
-        **plot_legend (bool): option to include a legend on the plot. Defaults
+        font_size (int): font size for axes. Defaults to 16 pt.
+        label_size (int): font size for axis labels. Defaults to 20 pt.
+        plot_legend (bool): option to include a legend on the plot. Defaults
             to False.
     """
 
@@ -101,7 +101,7 @@ def plot_mf(dates, mf, model, obs, *, fig_size=(8, 6), font_size=16,
         plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
 
 
-def plot_sv(dates, sv, model, obs, *, fig_size=(8, 6), font_size=16,
+def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=16,
             label_size=20, plot_legend=False):
     """Plot the SV and model prediction for a single observatory.
 
@@ -109,15 +109,15 @@ def plot_sv(dates, sv, model, obs, *, fig_size=(8, 6), font_size=16,
     model prediction for a single observatory.
 
     Args:
-        dates (datetime series): dates of the time series measurements.
+        dates (datetime.datetime series): dates of time series measurements.
         sv (series): X, Y and Z components of SV at a single location.
-        model: time series of X, Y and Z components of the SV predicted by a
+        model (series): X, Y and Z components of the SV predicted by a
             field model for the same location as the data.
-        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
-        **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt.
-        **plot_legend (bool): option to include a legend on the plot. Defaults
+        font_size (int): font size for axes. Defaults to 16 pt.
+        label_size (int): font size for axis labels. Defaults to 20 pt.
+        plot_legend (bool): option to include a legend on the plot. Defaults
             to False.
     """
 
@@ -148,7 +148,7 @@ def plot_sv(dates, sv, model, obs, *, fig_size=(8, 6), font_size=16,
         plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
 
 
-def plot_dcx(dates, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
+def plot_dcx(*, dates, signal, fig_size=(8, 6), font_size=16, label_size=20,
              plot_legend=False):
     """Compare the proxy used to denoise the SV data with the Dst index.
 
@@ -157,15 +157,15 @@ def plot_dcx(dates, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
     reduced to zero mean and unit variance (i.e. their zscore) for plotting.
 
     Args:
-        dates (datetime series): dates of the time series measurements.
+        dates (datetime.datetime series): dates of time series measurements.
         signal (series): proxy for unmodelled external signal used in the
             denoising process (principal component analysis). The proxy is the
             residual in the noisiest eigendirection(s).
-        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
-        **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt.
-        **plot_legend (bool): option to include a legend on the plot. Defaults
+        font_size (int): font size for axes. Defaults to 16 pt.
+        label_size (int): font size for axis labels. Defaults to 20 pt.
+        plot_legend (bool): option to include a legend on the plot. Defaults
             to False.
     """
 
@@ -195,7 +195,7 @@ def plot_dcx(dates, signal, *, fig_size=(8, 6), font_size=16, label_size=20,
         plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)
 
 
-def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
+def plot_dcx_fft(*, dates, signal, fig_size=(8, 6), font_size=16,
                  label_size=20, plot_legend=False):
     """Compare the DFTs of the proxy signal with that of the Dst index.
 
@@ -205,15 +205,15 @@ def plot_dcx_fft(dates, signal, *, fig_size=(8, 6), font_size=16,
     power of two.
 
     Args:
-        dates (datetime series): dates of the time series measurements.
-        signal: proxy for unmodelled external signal used in the denoising
-            process (principal component analysis). The proxy is the residual
-            in the noisiest eigendirection(s).
-        **fig_size (array): figure size in inches. Defaults to 8 inches by 6
+        dates (datetime.datetime series): dates of time series measurements.
+        signal (series): proxy for unmodelled external signal used in the
+            denoising process (principal component analysis). The proxy is the
+            residual in the noisiest eigendirection(s).
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
-        **font_size (int): font size for axes. Defaults to 16 pt.
-        **label_size (int): font size for axis labels. Defaults to 20 pt.
-        **plot_legend (bool): option to include a legend on the plot. Defaults
+        font_size (int): font size for axes. Defaults to 16 pt.
+        label_size (int): font size for axis labels. Defaults to 20 pt.
+        plot_legend (bool): option to include a legend on the plot. Defaults
             to False.
     """
     data_path = '/Users/Grace/Dropbox/BGS_data/monthly_means/Dcx/'

@@ -16,7 +16,7 @@ MagPy is a python toolbox for processing and analysing geomagnetic observatory d
     :target: https://travis-ci.org/gracecox/MagPy
     :alt: Build Status
 
-.. |docs-status| image:: https://readthedocs.io/projects/magpy/badge/?version=latest
+.. |docs-status| image:: https://readthedocs.org/projects/magpy/badge/?version=latest
     :target: http://magpy.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 

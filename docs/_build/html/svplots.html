@@ -85,7 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changepoint.html">changepoint module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">svplots module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">svplots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="svtools.html">svtools module</a></li>
 </ul>
 
@@ -109,7 +109,7 @@
         <div class="rst-content">
           
 
- 
+
 
 
 
@@ -138,7 +138,7 @@
 various plotting functions.</p>
 <dl class="function">
 <dt id="magpy.svplots.plot_dcx">
-<code class="descclassname">magpy.svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>date</em>, <em>signal</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the proxy used to denoise the SV data with the Dst index.</p>
 <p>Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
 used as a proxy for unmodelled external signal. Both time series are
@@ -148,15 +148,15 @@ reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
 <li><strong>signal</strong> (<em>series</em>) &#8211; proxy for unmodelled external signal used in the
 denoising process (principal component analysis). The proxy is the
 residual in the noisiest eigendirection(s).</li>
-<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
-<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
-<li><strong>**plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
 to False.</li>
 </ul>
 </td>
@@ -167,7 +167,7 @@ to False.</li>
 
 <dl class="function">
 <dt id="magpy.svplots.plot_dcx_fft">
-<code class="descclassname">magpy.svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>dates</em>, <em>signal</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the DFTs of the proxy signal with that of the Dst index.</p>
 <p>Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
 alongside the DFT of the signal used as a proxy for unmodelled external
@@ -178,44 +178,15 @@ power of two.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
-<li><strong>signal</strong> &#8211; proxy for unmodelled external signal used in the denoising
-process (principal component analysis). The proxy is the residual
-in the noisiest eigendirection(s).</li>
-<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>signal</strong> (<em>series</em>) &#8211; proxy for unmodelled external signal used in the
+denoising process (principal component analysis). The proxy is the
+residual in the noisiest eigendirection(s).</li>
+<li><strong>fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
-<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
-<li><strong>**plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
-to False.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="magpy.svplots.plot_denoised">
-<code class="descclassname">magpy.svplots.</code><code class="descname">plot_denoised</code><span class="sig-paren">(</span><em>dates</em>, <em>denoised</em>, <em>model</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_denoised"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_denoised" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the denoised SV and model prediction for a single observatory.</p>
-<p>Produces a plot of the X, Y and Z components of the denoised SV and field
-model prediction for a single observatory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.
-denoised (series): X, Y and Z components of
-denoised SV at a single location.</li>
-<li><strong>model</strong> &#8211; time series of X, Y and Z components of the SV predicted by a
-field model for the same location as the denoised data.</li>
-<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
-inches.</li>
-<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
-<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
-<li><strong>**plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
 to False.</li>
 </ul>
 </td>
@@ -226,7 +197,7 @@ to False.</li>
 
 <dl class="function">
 <dt id="magpy.svplots.plot_eigenvalues">
-<code class="descclassname">magpy.svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>values</em>, <em>*</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>*</em>, <em>values</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot eigenvalues of the SV residuals.</p>
 <p>Produces a plot of the eigenvalues obtained during the principal component
 analysis (PCA) of SV residuals. The largest eigenvalue represents the
@@ -241,10 +212,67 @@ direction). See Wardinski &amp; Holme (2011, GJI) for further details.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>values</strong> (<em>array</em>) &#8211; the eigenvalues obtained from the principal component
 analysis of the SV residuals.</li>
-<li><strong>**fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>**font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
-<li><strong>**label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.svplots.plot_mf">
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_mf</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>mf</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_mf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_mf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the SV and model prediction for a single observatory.</p>
+<p>Produces a plot of the X, Y and Z components of the SV and field
+model prediction for a single observatory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>mf</strong> (<em>series</em>) &#8211; X, Y and Z components of magnetic field at a single
+location.</li>
+<li><strong>model</strong> (<em>series</em>) &#8211; X, Y and Z components of the field predicted by a
+field model for the same location as the data.</li>
+<li><strong>fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpy.svplots.plot_sv">
+<code class="descclassname">magpy.svplots.</code><code class="descname">plot_sv</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpy/svplots.html#plot_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpy.svplots.plot_sv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the SV and model prediction for a single observatory.</p>
+<p>Produces a plot of the X, Y and Z components of the SV and field
+model prediction for a single observatory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>sv</strong> (<em>series</em>) &#8211; X, Y and Z components of SV at a single location.</li>
+<li><strong>model</strong> (<em>series</em>) &#8211; X, Y and Z components of the SV predicted by a
+field model for the same location as the data.</li>
+<li><strong>fig_size</strong> (<em>array</em>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<em>int</em>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<em>int</em>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<em>bool</em>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
 </ul>
 </td>
 </tr>
