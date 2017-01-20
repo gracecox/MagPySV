@@ -2,10 +2,14 @@ doc-warnings: yes
 test-warnings: yes
 strictness: high
 max-line-length: 80
+pep8:
+  full: yes
 autodetect: yes
 requirements:
     - requirements.txt
 ignore-paths:
     - docs/conf.py
+ignore-patterns:
+    - ^.*\.ipynb
 python-targets:
     - 3

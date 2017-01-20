@@ -157,7 +157,6 @@ def remove_selected_points(*, data, fname):
         col_name = data_point.component + '_' + data_point.observatory
         try:
             data.loc[data['date'] == data_point.date, col_name] = np.nan
-            pass
         except KeyError:
             pass
 

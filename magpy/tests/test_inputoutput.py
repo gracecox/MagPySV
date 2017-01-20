@@ -141,10 +141,9 @@ class DataResamplingTestCase(unittest.TestCase):
         self.col_names = ['date', 'code', 'component', 'daily_mean']
         self.data = pd.read_csv(testfile, sep=' ', header=0,
                                 names=self.col_names, parse_dates=[0])
+        self.averaged = svtools.data_resampling(self.data)
 
     def test_data_resampling(self):
-
-        self.averaged = svtools.data_resampling(self.data)
 
         self.assertAlmostEqual(self.averaged.daily_mean.values[0], 801.000000)
         self.assertAlmostEqual(self.averaged.daily_mean.values[7],
