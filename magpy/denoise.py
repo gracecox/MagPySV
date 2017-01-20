@@ -192,7 +192,7 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
     return denoised_sv, proxy, eig_values
 
 
-def detect_outliers(*, signal, window_length, threshold, plot_fig):
+def detect_outliers(*, signal, window_length, threshold, plot_fig=False):
     """ xxxxxxxx
 
     Args:
@@ -212,7 +212,7 @@ def detect_outliers(*, signal, window_length, threshold, plot_fig):
     # [1, 1, 1, 5, 6, 6, 6]. The limit of half the window length is used so the
     # first ffill cannot overwrite the beginning of the next valid interval
     # (bfill values are used there instead).
-    signal = signal.ffill(limit=window_length/2+1).bfill()
+    signal = signal.ffill(limit=window_length / 2 + 1).bfill()
     # calculate the running median and standard deviation
     running_median = pd.rolling_median(signal, window=window_length,
                                        center=True)
@@ -220,6 +220,7 @@ def detect_outliers(*, signal, window_length, threshold, plot_fig):
     # Identify outliers as (signal - median) > threshold * std
     n = (signal - running_median).apply(np.abs)
     # Set the outliers to nan
-    signal[n > threshold * ]
-    return residuals
+    signal[n > threshold * running_std] = np.nan
+
+    return signal
 
