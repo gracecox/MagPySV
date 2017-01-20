@@ -3,12 +3,6 @@ language: python
 python:
   - "3.5"
 
-before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda update --yes conda
-
 # commands to install R (statistical language) for use with the rpy2 python package
 addons:
   apt:
@@ -19,7 +13,6 @@ addons:
 
 # command to install dependencies
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose 
   - pip install -r requirements.txt
   - pip install pytest
   - pip install pytest-cov
