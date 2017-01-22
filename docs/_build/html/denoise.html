@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>denoise module &mdash; MagPy 0.1.0 documentation</title>
+  <title>denoise module &mdash; MagPySV 0 documentation</title>
   
 
   
@@ -33,9 +33,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MagPy 0.1.0 documentation" href="index.html"/>
+    <link rel="top" title="MagPySV 0 documentation" href="index.html"/>
         <link rel="next" title="changepoint module" href="changepoint.html"/>
-        <link rel="prev" title="Welcome to MagPy’s documentation!" href="index.html"/> 
+        <link rel="prev" title="Welcome to MagPySV’s documentation!" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -53,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> MagPy
+            <a href="index.html" class="icon icon-home"> MagPySV
           
 
           
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1
+                1
               </div>
             
           
@@ -84,7 +84,8 @@
           
             
             
-                <ul class="current">
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changepoint.html">changepoint module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
@@ -103,7 +104,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">MagPy</a>
+        <a href="index.html">MagPySV</a>
       </nav>
 
 
@@ -134,8 +135,149 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="denoise-module">
-<h1>denoise module<a class="headerlink" href="#denoise-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-magpysv.denoise">
+<span id="denoise-module"></span><h1>denoise module<a class="headerlink" href="#module-magpysv.denoise" title="Permalink to this headline">¶</a></h1>
+<p>Module containing functions to remove external signal from geomagnetic data.</p>
+<p>Part of the MagPySV package for geomagnetic data analysis. This module provides
+various functions to denoise geomagnetic data by performing principal component
+analysis.</p>
+<dl class="function">
+<dt id="magpysv.denoise.detect_outliers">
+<code class="descclassname">magpysv.denoise.</code><code class="descname">detect_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>signal</em>, <em>window_length</em>, <em>threshold</em>, <em>plot_fig=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/denoise.html#detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.denoise.detect_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>xxxxxxxx</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing means (usually
+monthly) of SV calculated from observed geomagnetic field values.</li>
+<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV predicted by
+a geomagnetic field model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing SV residuals.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">residuals (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)">pandas.DataFrame</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.denoise.eigenvalue_analysis">
+<code class="descclassname">magpysv.denoise.</code><code class="descname">eigenvalue_analysis</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>obs_data</em>, <em>model_data</em>, <em>residuals</em>, <em>proxy_number=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/denoise.html#eigenvalue_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.denoise.eigenvalue_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove external signal from SV data using principal Component Analysis.</p>
+<p>Perform principal component analysis (PCA) on secular variation
+residuals (the difference between the observed SV and that predicted by a
+geomagnetic field model) calculated from annual differences of monthly
+means at several observatories. Uses masked arrays to discount missing data
+points and calculates the eigenvalues/vectors of the (3nx3n) covariance
+matrix for n observatories. The residuals are rotated into the
+eigendirections and denoised using the method detailed in Wardinski &amp; Holme
+(2011, GJI). The SV residuals of the noisy component for all observatories
+combined are used as a proxy for the unmodelled external signal. The
+denoised data are then rotated back into geographic coordinates. Principal
+component analysis - find the eigenvalues and eigenvectors of the
+covariance matrix of the residuals. Project the SV residuals into the
+eigenvector directions. The pca algorithm outputs the eigenvalues sorted
+from largest to smallest, so the corresponding eigenvector matrix has the
+&#8216;noisy&#8217; direction in the first column and the &#8216;clean&#8217; direction in the
+final column.</p>
+<p>Smallest eigenvalue &#8216;quiet&#8217; direction</p>
+<p>Largest eiegenvalue &#8216;noisy&#8217; direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>obs_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for monthly/annual
+means of the X, Y and Z components of the secular variation at the
+observatories of interest.</li>
+<li><strong>model_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for field model
+prediction of the X, Y and Z components of the secular variation at
+the same observatories as in obs_data.</li>
+<li><strong>residuals</strong> (<em>dataframe</em>) &#8211; dataframe containing the residuals of the SV
+(difference between the observed data and model prediction).</li>
+<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; used to create the proxy
+for theexternal signal removal. Default value is 1 (only the
+residual in the direction of the largest eigenvalue is used). Using
+n directions means that proxy is the sum of the SV residuals in the
+n noisiest eigendirections.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe with datetime objects in the first
+column and columns for the denoised X, Y and Z SV components at each of
+the observatories for which data were provided.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">denoised_sv (dataframe)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.denoise.eigenvalue_analysis_impute">
+<code class="descclassname">magpysv.denoise.</code><code class="descname">eigenvalue_analysis_impute</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>obs_data</em>, <em>model_data</em>, <em>residuals</em>, <em>proxy_number=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/denoise.html#eigenvalue_analysis_impute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.denoise.eigenvalue_analysis_impute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove external signal from SV data using principal Component Analysis.</p>
+<p>Perform principal component analysis (PCA) on secular variation
+residuals (the difference between the observed SV and that predicted by a
+geomagnetic field model) calculated from annual differences of monthly
+means at several observatories. Uses the imputer from sklearn.preprocessing
+to fill in missing data points and calculates the singular values of the
+data matrix for n observatories (uses Singular Values Decomposition, SVD).
+The residuals are rotated into the eigendirections and denoised using the
+method detailed in Wardinski &amp; Holme (2011). The SV residuals of the noisy
+component for all observatories combined are used as a proxy for the
+unmodelled external signal. The denoised data are then rotated back into
+geographic coordinates. The pca algorithm outputs the singular values
+(these are equal to the square root of the eigenvalues of the covariance
+matrix) sorted from largest to smallest, so the corresponding eigenvector
+matrix has the &#8216;noisy&#8217; direction in the first column and the &#8216;clean&#8217;
+direction in the final column.</p>
+<p>Smallest eigenvalue: &#8216;quiet&#8217; direction</p>
+<p>Largest eiegenvalue: &#8216;noisy&#8217; direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dates</strong> (<em>datetime series</em>) &#8211; dates of the time series measurements.</li>
+<li><strong>obs_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for monthly/annual
+means of the X, Y and Z components of the secular variation at the
+observatories of interest.</li>
+<li><strong>model_data</strong> (<em>dataframe</em>) &#8211; dataframe containing columns for field model
+prediction of the X, Y and Z components of the secular variation at
+the same observatories as in obs_data.</li>
+<li><strong>residuals</strong> (<em>dataframe</em>) &#8211; dataframe containing the residuals of the SV
+(difference between the observed data and model prediction).</li>
+<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; used to create the proxy
+for the external signal removal. Default value is 1 (only the
+residual in the direction of the largest eigenvalue is used). Using
+n directions means that proxy is the sum of the SV residuals in the
+n noisiest eigendirections.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe with datetime objects in the first
+column and columns for the denoised X, Y and Z SV components at each of
+the observatories for which data were provided.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">denoised_sv (dataframe)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -148,7 +290,7 @@
         <a href="changepoint.html" class="btn btn-neutral float-right" title="changepoint module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to MagPy’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="Welcome to MagPySV’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -157,7 +299,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Grace Cox.
+        &copy; Copyright 2017, Grace Cox.
 
     </p>
   </div>
@@ -179,7 +321,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0',
+            VERSION:'0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
@@ -188,7 +330,6 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

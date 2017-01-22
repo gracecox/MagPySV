@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>svplots module &mdash; MagPy 0.1.0 documentation</title>
+  <title>svplots module &mdash; MagPySV 0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MagPy 0.1.0 documentation" href="index.html"/>
+    <link rel="top" title="MagPySV 0 documentation" href="index.html"/>
         <link rel="next" title="svtools module" href="svtools.html"/>
         <link rel="prev" title="inputoutput module" href="inputoutput.html"/> 
 
@@ -53,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> MagPy
+            <a href="index.html" class="icon icon-home"> MagPySV
           
 
           
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1
+                1
               </div>
             
           
@@ -84,7 +84,8 @@
           
             
             
-                <ul class="current">
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changepoint.html">changepoint module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
@@ -103,7 +104,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">MagPy</a>
+        <a href="index.html">MagPySV</a>
       </nav>
 
 
@@ -134,8 +135,155 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="svplots-module">
-<h1>svplots module<a class="headerlink" href="#svplots-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-magpysv.svplots">
+<span id="svplots-module"></span><h1>svplots module<a class="headerlink" href="#module-magpysv.svplots" title="Permalink to this headline">¶</a></h1>
+<p>Module containing plotting functions.</p>
+<p>Part of the MagPy package for geomagnetic data analysis. This module provides
+various plotting functions.</p>
+<dl class="function">
+<dt id="magpysv.svplots.plot_dcx">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the proxy used to denoise the SV data with the Dst index.</p>
+<p>Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
+used as a proxy for unmodelled external signal. Both time series are
+reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>signal</strong> (<em>series</em>) &#8211; proxy for unmodelled external signal used in the
+denoising process (principal component analysis). The proxy is the
+residual in the noisiest eigendirection(s).</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.plot_dcx_fft">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the proxy signal with that of the Dst index.</p>
+<p>Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
+alongside the DFT of the signal used as a proxy for unmodelled external
+signal. The length of the time series are padded with zeroes up to the next
+power of two.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>signal</strong> (<em>series</em>) &#8211; proxy for unmodelled external signal used in the
+denoising process (principal component analysis). The proxy is the
+residual in the noisiest eigendirection(s).</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.plot_eigenvalues">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>*</em>, <em>values</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot eigenvalues of the SV residuals.</p>
+<p>Produces a plot of the eigenvalues obtained during the principal component
+analysis (PCA) of SV residuals. The largest eigenvalue represents the
+eigendirection with the largest contribution to the residuals (i.e. the
+&#8220;noisy&#8221; direction.). The smallest eigenvalue represents the
+eigendirection with the smallest contribution to the residuals (the &#8220;clean&#8221;
+direction). See Wardinski &amp; Holme (2011, GJI) for further details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal component
+analysis of the SV residuals.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.plot_mf">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_mf</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>mf</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_mf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_mf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the SV and model prediction for a single observatory.</p>
+<p>Produces a plot of the X, Y and Z components of the SV and field
+model prediction for a single observatory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>mf</strong> (<em>series</em>) &#8211; X, Y and Z components of magnetic field at a single
+location.</li>
+<li><strong>model</strong> (<em>series</em>) &#8211; X, Y and Z components of the field predicted by a
+field model for the same location as the data.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.plot_sv">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=16</em>, <em>label_size=20</em>, <em>plot_legend=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the SV and model prediction for a single observatory.</p>
+<p>Produces a plot of the X, Y and Z components of the SV and field
+model prediction for a single observatory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<em>datetime.datetime series</em>) &#8211; dates of time series measurements.</li>
+<li><strong>sv</strong> (<em>series</em>) &#8211; X, Y and Z components of SV at a single location.</li>
+<li><strong>model</strong> (<em>series</em>) &#8211; X, Y and Z components of the SV predicted by a
+field model for the same location as the data.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 16 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 20 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -157,7 +305,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Grace Cox.
+        &copy; Copyright 2017, Grace Cox.
 
     </p>
   </div>
@@ -179,7 +327,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0',
+            VERSION:'0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
@@ -188,7 +336,6 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

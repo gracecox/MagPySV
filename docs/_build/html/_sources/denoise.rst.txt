@@ -1,7 +1,7 @@
 denoise module
 ==============
 
-.. automodule:: magpy.denoise
+.. automodule:: magpysv.denoise
     :members:
     :undoc-members:
     :show-inheritance:
