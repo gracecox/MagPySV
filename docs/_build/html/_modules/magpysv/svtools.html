@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>magpy.svtools &mdash; MagPy 0.1.0 documentation</title>
+  <title>magpysv.svtools &mdash; MagPySV 0 documentation</title>
   
 
   
@@ -30,7 +30,10 @@
   
 
   
-    <link rel="top" title="MagPy 0.1.0 documentation" href="../../index.html"/>
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="MagPySV 0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -49,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> MagPy
+            <a href="../../index.html" class="icon icon-home"> MagPySV
           
 
           
@@ -59,7 +62,7 @@
             
             
               <div class="version">
-                0.1
+                1
               </div>
             
           
@@ -80,7 +83,8 @@
           
             
             
-                <ul>
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">changepoint module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../inputoutput.html">inputoutput module</a></li>
@@ -99,7 +103,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">MagPy</a>
+        <a href="../../index.html">MagPySV</a>
       </nav>
 
 
@@ -118,7 +122,7 @@
       
           <li><a href="../index.html">Module code</a> &raquo;</li>
       
-    <li>magpy.svtools</li>
+    <li>magpysv.svtools</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -130,7 +134,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for magpy.svtools</h1><div class="highlight"><pre>
+  <h1>Source code for magpysv.svtools</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#    Copyright (C) 2016  Grace Cox</span>
 <span class="c1">#</span>
@@ -152,12 +156,12 @@
 <span class="sd">various functions to read SV files output by geomagnetic field models.&quot;&quot;&quot;</span>
 
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the secular variation from the observed magnetic field values.</span>
 
 <span class="sd">    Uses monthly means of geomagnetic observatory data to calculate the SV</span>
@@ -189,12 +193,12 @@
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
-    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obs_sv</span></div>
 
 
-<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate SV residuals (observed - prediction) using datetime objects.</span>
 
 <span class="sd">    Args:</span>
@@ -208,8 +212,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])]</span>
-    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Calculate SV residuals (data - model prediction) for all observatories</span>
     <span class="n">residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -218,7 +222,7 @@
     <span class="k">return</span> <span class="n">residuals</span></div>
 
 
-<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Resample the daily geomagnetic data to a specified frequency.</span>
 
 <span class="sd">    Args:</span>
@@ -239,14 +243,14 @@
 <span class="sd">                observatory data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span>
+    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span>
         <span class="n">sampling</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
-    <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">resampled</span></div>
 
 
-<div class="viewcode-block" id="apply_Ap_threshold"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.apply_Ap_threshold">[docs]</a><span class="k">def</span> <span class="nf">apply_Ap_threshold</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">Ap_path</span><span class="o">=</span><span class="s1">&#39;data/Ap_daily.txt&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_Ap_threshold"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.apply_Ap_threshold">[docs]</a><span class="k">def</span> <span class="nf">apply_Ap_threshold</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">Ap_path</span><span class="o">=</span><span class="s1">&#39;data/Ap_daily.txt&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove observatory data for days with Ap values above a threshold value.</span>
 
 <span class="sd">    Args:</span>
@@ -263,11 +267,11 @@
                            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;Ap&#39;</span><span class="p">])</span>
 
     <span class="n">date</span> <span class="o">=</span> <span class="n">Ap_daily</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;{0} {1} {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">])),</span>
+        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">])),</span>
         <span class="s2">&quot;%Y %m </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span>
         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">Ap_daily</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
-    <span class="n">Ap_daily</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">Ap_daily</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># Merge the two dataframes so that only dates contained within both are</span>
     <span class="c1"># retained</span>
     <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">Ap_daily</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
@@ -276,12 +280,12 @@
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obs_data</span></div>
 
 
-<div class="viewcode-block" id="remove_selected_points"><a class="viewcode-back" href="../../svtools.html#magpy.svtools.remove_selected_points">[docs]</a><span class="k">def</span> <span class="nf">remove_selected_points</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_selected_points"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.remove_selected_points">[docs]</a><span class="k">def</span> <span class="nf">remove_selected_points</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
     <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;observatory&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">]</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
                          <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -290,7 +294,6 @@
         <span class="n">col_name</span> <span class="o">=</span> <span class="n">data_point</span><span class="o">.</span><span class="n">component</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">data_point</span><span class="o">.</span><span class="n">observatory</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">data_point</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-            <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -306,7 +309,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Grace Cox.
+        &copy; Copyright 2017, Grace Cox.
 
     </p>
   </div>
@@ -328,7 +331,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.0',
+            VERSION:'0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
@@ -337,7 +340,6 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

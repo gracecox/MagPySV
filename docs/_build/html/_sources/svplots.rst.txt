@@ -1,7 +1,7 @@
 svplots module
 ==============
 
-.. automodule:: magpy.svplots
+.. automodule:: magpysv.svplots
     :members:
     :undoc-members:
     :show-inheritance:

@@ -13,14 +13,15 @@
 #
 #    You should have received a copy of the GNU General Public License along
 #    with this program.  If not, see <http://www.gnu.org/licenses/>."""
-"""Module containing functions to parse World Data Centre (WDC) files
+"""Module containing functions to parse World Data Centre (WDC) files.
 
-Part of the MagPy package for geomagnetic data analysis. This module provides
+Part of the MagPySV package for geomagnetic data analysis. This module provides
 various functions to read, parse and manipulate the contents of World Data
 Centre (WDC) formatted files containing geomagnetic data and output data to
 comma separated values (CSV) files. Also contains functions to read output of
 the COV-OBS magnetic field model series by Gillet et al. (2013, Geochem.
-Geophys. Geosyst.; 2015, Earth, Planets and Space)"""
+Geophys. Geosyst.; 2015, Earth, Planets and Space).
+"""
 
 
 import datetime as dt
@@ -280,7 +281,9 @@ def append_wdc_data(*, obs_name,
 
 
 def covobs_parsefile(fname):
-    """Load a datafile containing SV/MF predictions from the COV-OBS magnetic
+    """Loads MF and SV predictions from the COV-OBS geomagnetic field model.
+    
+    Load a datafile containing SV/MF predictions from the COV-OBS magnetic
     field model series by Gillet et al. (2013, Geochem. Geophys. Geosyst.;
     2015, Earth, Planets and Space) field model.
 
@@ -304,8 +307,7 @@ def covobs_parsefile(fname):
 
 
 def covobs_datetimes(data):
-    """Create datetime objects from the year column of a COV-OBS field model
-    output file.
+    """Create datetime objects from COV-OBS field model output file.
 
     The format output by the field model is year.decimalmonth e.g. 1960.08 is
     Jan 1960
@@ -381,6 +383,7 @@ def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/', write_path,
         print_obs (bool): choose whether to print each observatory name as the
             function goes through the directories. Useful for checking progress
             as it can take a while to read the whole WDC dataset.
+
     Returns:
         None
     """
@@ -407,6 +410,7 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None):
         obs_name (str): name of observatory at which the data were obtained.
         file_prefix (str): optional string to prefix the output CSV filenames
             (useful for specifying parameters used to create the dataset etc).
+
     Returns:
         None
     """
