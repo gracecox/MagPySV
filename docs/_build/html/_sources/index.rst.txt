@@ -1,40 +1,41 @@
-.. MagPy documentation master file, created by
-   sphinx-quickstart on Mon Mar 14 20:07:30 2016.
+.. MagPySV documentation master file, created by
+   sphinx-quickstart on Sun Jan 22 13:31:29 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to MagPy's documentation!
-=================================
+Welcome to MagPySV's documentation!
+===================================
 |build-status| |docs-status| |coverage| |code-health| |license|
 
 Purpose
 -------
 
-MagPy is a python toolbox for processing and analysing geomagnetic observatory data. A work in progress...
+MagPySV is a python toolbox for processing and analysing geomagnetic observatory data. A work in progress...
 
-.. |build-status| image:: https://travis-ci.org/gracecox/MagPy.svg?branch=master
-    :target: https://travis-ci.org/gracecox/MagPy
+.. |build-status| image:: https://travis-ci.org/gracecox/MagPySV.svg?branch=master
+    :target: https://travis-ci.org/gracecox/MagPySV
     :alt: Build Status
 
 .. |docs-status| image:: https://readthedocs.org/projects/magpy/badge/?version=latest
     :target: http://magpy.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. |coverage| image:: https://coveralls.io/repos/github/gracecox/MagPy/badge.svg?branch=master
-   :target: https://coveralls.io/github/gracecox/MagPy?branch=master
+.. |coverage| image:: https://coveralls.io/repos/github/gracecox/MagPySV/badge.svg?branch=master
+   :target: https://coveralls.io/github/gracecox/MagPySV?branch=master
    :alt: Coverage
 
 .. |license| image:: http://img.shields.io/badge/license-GPLv3-4AC51C.svg?style=flat
    :target: https://www.gnu.org/licenses/quick-guide-gplv3.html.en
 
-.. |code-health| image:: https://landscape.io/github/gracecox/MagPy/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/gracecox/MagPy/master
+.. |code-health| image:: https://landscape.io/github/gracecox/MagPySV/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/gracecox/MagPySV/master
    :alt: Code Health
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
    denoise
    changepoint
@@ -48,4 +49,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
