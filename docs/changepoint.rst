@@ -1,7 +1,7 @@
 changepoint module
 ==================
 
-.. automodule:: magpy.changepoint
+.. automodule:: magpysv.changepoint
     :members:
     :undoc-members:
     :show-inheritance:
