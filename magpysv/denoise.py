@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
-#    Copyright (C) 2016  Grace Cox
+#    Copyright (C) 2016  Grace Cox (University of Liverpool)
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program.  If not, see <http://www.gnu.org/licenses/>."""
+#    Released under the MIT license, a copy of which is located at the root of
+#    this project.
 """Module containing functions to remove external signal from geomagnetic data.
 
 Part of the MagPySV package for geomagnetic data analysis. This module provides
@@ -84,9 +74,11 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
     # signal in the SV residuals. The variable 'proxy' contains the noisy
     # component residual for all observatories combined
     noisy_direction = eig_vectors[0, :]
-    proxy = projected_residuals[:, 0]
+    proxy = 0
 
-    if proxy_number > 1:
+    if proxy_number == 1:
+        proxy = projected_residuals[:, 0]
+    elif proxy_number > 1:
         for direction in range(proxy_number):
             proxy = proxy + projected_residuals[:, direction]
 
@@ -168,15 +160,17 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
     eig_vectors = eig_vectors[:, idx]
 
     # Project the residuals onto the eigenvectors
-    projected_residuals = np.ma.dot(masked_residuals.T, eig_vectors.T).T
+    projected_residuals = np.ma.dot(masked_residuals, eig_vectors)
 
     # Use the method of Wardinski & Holme (2011) to remove unmodelled external
     # signal in the SV residuals. The variable 'proxy' contains the noisy
     # component residual for all observatories combined
-    noisy_direction = eig_vectors[0, :]
-    proxy = projected_residuals[:, 0]
+    noisy_direction = eig_vectors[:, 0]
+    proxy = 0
 
-    if proxy_number > 1:
+    if proxy_number == 1:
+        proxy = projected_residuals[:, 0]
+    elif proxy_number > 1:
         for direction in range(proxy_number):
             proxy = proxy + projected_residuals[:, direction]
 
@@ -210,21 +204,23 @@ def detect_outliers(*, signal, window_length, threshold, plot_fig=False):
     """
 
     window_length = 12
+    signal_temp = signal.copy()
     # Account for missing values when using rolling_median and rolling_std.
     # ffill (bfill) propagates the closest value forwards (backwards) through
     # nan values. E.g. [np.nan, np.nan, 1, 5, 6, np.nan, np.nan] returns as
     # [1, 1, 1, 5, 6, 6, 6]. The limit of half the window length is used so the
     # first ffill cannot overwrite the beginning of the next valid interval
     # (bfill values are used there instead).
-    signal = signal.ffill(limit=window_length / 2 + 1).bfill()
+    signal_temp = signal_temp.ffill(limit=window_length / 2 + 1).bfill()
     # calculate the running median and standard deviation
-    running_median = pd.rolling_median(signal, window=window_length,
+    running_median = pd.rolling_median(signal_temp, window=window_length,
                                        center=True)
-    running_std = pd.rolling_std(signal, window=window_length, center=True)
+    running_std = pd.rolling_std(signal_temp, window=window_length,
+                                 center=True)
     # Identify outliers as (signal - median) > threshold * std
-    n = (signal - running_median).apply(np.abs)
+    threshold_value = (signal_temp - running_median).apply(np.abs)
     # Set the outliers to nan
-    signal[n > threshold * running_std] = np.nan
+    signal_temp[threshold_value > threshold * running_std] = np.nan
+    masked_signal = np.ma.array(signal, mask=np.isnan(signal_temp))
 
-    return signal
-
+    return masked_signal.data

@@ -38,7 +38,6 @@ Contents:
    :caption: Contents:
 
    denoise
-   changepoint
    inputoutput
    svplots
    svtools

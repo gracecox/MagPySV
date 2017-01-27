@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
-#    Copyright (C) 2016  Grace Cox
+#    Copyright (C) 2016  Grace Cox (University of Liverpool)
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License along
-#    with this program.  If not, see <http://www.gnu.org/licenses/>."""
+#    Released under the MIT license, a copy of which is located at the root of
+#    this project.
 """Module containing plotting functions.
 
 Part of the MagPy package for geomagnetic data analysis. This module provides
@@ -170,7 +160,7 @@ def plot_dcx(*, dates, signal, fig_size=(8, 6), font_size=16, label_size=20,
     """
 
     # Read the Dcx data and put into a dataframe
-    data_path = '/Users/Grace/Dropbox/BGS_data/monthly_means/Dcx/'
+    data_path = '../../Dropbox/BGS_data/monthly_means/Dcx/'
     data_file = 'Dcx_mm_monthly_diff.txt'
     dcx = pd.read_csv(os.path.join(data_path, data_file), sep=r'\s+',
                       header=None)
@@ -216,7 +206,7 @@ def plot_dcx_fft(*, dates, signal, fig_size=(8, 6), font_size=16,
         plot_legend (bool): option to include a legend on the plot. Defaults
             to False.
     """
-    data_path = '/Users/Grace/Dropbox/BGS_data/monthly_means/Dcx/'
+    data_path = '../../Dropbox/BGS_data/monthly_means/Dcx/'
     data_file = 'Dcx_mm_monthly_diff.txt'
     dcx = pd.read_csv(os.path.join(data_path, data_file), sep=r'\s+',
                       header=None)
@@ -237,8 +227,9 @@ def plot_dcx_fft(*, dates, signal, fig_size=(8, 6), font_size=16,
     dcx_fft = sp.fft(dcx.monthly_mean, sample_length)
     proxy_fft = sp.fft(signal, sample_length)
     freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
-    dcx_power = (2.0 / sample_length) * np.abs(dcx_fft[:sample_length / 2])
-    proxy_power = (2.0 / sample_length) * np.abs(proxy_fft[:sample_length / 2])
+    dcx_power = (2.0 / sample_length) * np.abs(dcx_fft[:sample_length // 2])
+    proxy_power = (2.0 / sample_length) * np.abs(
+        proxy_fft[:sample_length // 2])
 
     plt.figure(figsize=fig_size)
     # Time domain
