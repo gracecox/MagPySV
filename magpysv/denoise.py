@@ -7,10 +7,12 @@
 
 Part of the MagPySV package for geomagnetic data analysis. This module provides
 various functions to denoise geomagnetic data by performing principal component
-analysis."""
+analysis and identifying and removing outliers.
+"""
 
 
 import pandas as pd
+import magpysv.svplots as svplots
 import numpy as np
 from sklearn.decomposition import PCA as sklearnPCA
 from sklearn.preprocessing import Imputer
@@ -18,7 +20,7 @@ from sklearn.preprocessing import Imputer
 
 def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
                                proxy_number=1):
-    """Remove external signal from SV data using principal Component Analysis.
+    """Remove external signal from SV data using Principal Component Analysis.
 
     Perform principal component analysis (PCA) on secular variation
     residuals (the difference between the observed SV and that predicted by a
@@ -36,31 +38,50 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
     matrix has the 'noisy' direction in the first column and the 'clean'
     direction in the final column.
 
+    Note that the SVD algorithm cannot be used if any data are missing, which
+    is why imputation is needed with this method. The function
+    denoise.eigenvalue_analysis permits missing values and does not
+    infill them.
+
     Smallest eigenvalue: 'quiet' direction
 
     Largest eiegenvalue: 'noisy' direction
 
     Args:
-        dates (datetime series): dates of the time series measurements.
-        obs_data (dataframe): dataframe containing columns for monthly/annual
-            means of the X, Y and Z components of the secular variation at the
-            observatories of interest.
-        model_data (dataframe): dataframe containing columns for field model
-            prediction of the X, Y and Z components of the secular variation at
-            the same observatories as in obs_data.
-        residuals (dataframe): dataframe containing the residuals of the SV
+        dates (datetime.datetime): dates of the time series measurements.
+        obs_data (pandas.DataFrame): dataframe containing columns for
+            monthly/annual means of the X, Y and Z components of the secular
+            variation at the observatories of interest.
+        model_data (pandas.DataFrame): dataframe containing columns for field
+            model prediction of the X, Y and Z components of the secular
+            variation at the same observatories as in obs_data.
+        residuals (pandas.DataFrame): dataframe containing the SV residuals
             (difference between the observed data and model prediction).
-        proxy_number (int): the number of 'noisy' used to create the proxy
-            for the external signal removal. Default value is 1 (only the
-            residual in the direction of the largest eigenvalue is used). Using
-            n directions means that proxy is the sum of the SV residuals in the
-            n noisiest eigendirections.
-    Returns:
-        denoised_sv (dataframe): dataframe with datetime objects in the first
-        column and columns for the denoised X, Y and Z SV components at each of
-        the observatories for which data were provided.
-    """
+        proxy_number (int): the number of 'noisy' directions used to create
+            the proxy for the external signal removal. Default value is 1 (only
+            the residual in the direction of the largest eigenvalue is used).
+            Using n directions means that proxy is the sum of the SV residuals
+            in the n noisiest eigendirections.
 
+    Returns:
+        (tuple): tuple containing:
+
+        - denoised_sv (*pandas.DataFrame*):
+            dataframe with dates in the first
+            column and columns for the denoised X, Y and Z secular variation
+            components at each of the observatories for which data were
+            provided.
+        - proxy (*array*):
+            the signal that was used as a proxy for unmodelled
+            external magnetic field in the denoising stage.
+        - eig_values (*array*):
+            the singular values of the obs_data matrix.
+        - eig_vectors (*array*):
+            the eigenvectors associated with the n largest
+            singular values of the data matrix. For example, if the residuals
+            in the two 'noisiest' directions are used as the proxy for external
+            signal, then these two eigenvectors are returned.
+    """
     # Fill in missing SV values (indicated as NaN in the data files)
     imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
     imputed_residuals = imp.fit_transform(residuals)
@@ -95,7 +116,7 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values
+    return denoised_sv, proxy, eig_values, eig_vectors.data[:, 0:proxy_number]
 
 
 def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
@@ -111,39 +132,53 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
     eigendirections and denoised using the method detailed in Wardinski & Holme
     (2011, GJI). The SV residuals of the noisy component for all observatories
     combined are used as a proxy for the unmodelled external signal. The
-    denoised data are then rotated back into geographic coordinates. Principal
-    component analysis - find the eigenvalues and eigenvectors of the
-    covariance matrix of the residuals. Project the SV residuals into the
-    eigenvector directions. The pca algorithm outputs the eigenvalues sorted
-    from largest to smallest, so the corresponding eigenvector matrix has the
-    'noisy' direction in the first column and the 'clean' direction in the
-    final column.
+    denoised data are then rotated back into geographic coordinates. The PCA
+    algorithm outputs the eigenvalues sorted from largest to smallest, so the
+    corresponding eigenvector matrix has the 'noisy' direction in the first
+    column and the 'clean' direction in the final column.
+
+    This algorithm masks missing data so that they are not taken into account
+    during the PCA. Missing values are not infilled or estimated, so NaN
+    values in the input dataframe are given as NaN values in the output.
 
     Smallest eigenvalue 'quiet' direction
 
     Largest eiegenvalue 'noisy' direction
 
     Args:
-        dates (datetime series): dates of the time series measurements.
-        obs_data (dataframe): dataframe containing columns for monthly/annual
-            means of the X, Y and Z components of the secular variation at the
-            observatories of interest.
-        model_data (dataframe): dataframe containing columns for field model
-            prediction of the X, Y and Z components of the secular variation at
-            the same observatories as in obs_data.
-        residuals (dataframe): dataframe containing the residuals of the SV
+        dates (datetime.datetime): dates of the time series measurements.
+        obs_data (pandas.DataFrame): dataframe containing columns for
+            monthly/annual means of the X, Y and Z components of the secular
+            variation at the observatories of interest.
+        model_data (pandas.DataFrame): dataframe containing columns for field
+            model prediction of the X, Y and Z components of the secular
+            variation at the same observatories as in obs_data.
+        residuals (pandas.DataFrame): dataframe containing the SV residuals
             (difference between the observed data and model prediction).
-        proxy_number (int): the number of 'noisy' used to create the proxy
-            for theexternal signal removal. Default value is 1 (only the
-            residual in the direction of the largest eigenvalue is used). Using
-            n directions means that proxy is the sum of the SV residuals in the
-            n noisiest eigendirections.
-    Returns:
-        denoised_sv (dataframe): dataframe with datetime objects in the first
-        column and columns for the denoised X, Y and Z SV components at each of
-        the observatories for which data were provided.
-    """
+        proxy_number (int): the number of 'noisy' directions used to create
+            the proxy for the external signal removal. Default value is 1 (only
+            the residual in the direction of the largest eigenvalue is used).
+            Using n directions means that proxy is the sum of the SV residuals
+            in the n noisiest eigendirections.
 
+    Returns:
+        (tuple): tuple containing:
+
+        - denoised_sv (*pandas.DataFrame*):
+            dataframe with datetime objects in the
+            first column and columns for the denoised X, Y and Z SV components
+            at each of the observatories for which data were provided.
+        - proxy (*array*):
+            the signal that was used as a proxy for unmodelled
+            external magnetic field in the denoising stage.
+        - eig_values (*array*):
+            the eigenvalues of the obs_data matrix.
+        - eig_vectors (*array*):
+            the eigenvectors associated with the n largest
+            eigenvalues of the data matrix. For example, if the residuals
+            in the two 'noisiest' directions are used as the proxy for external
+            signal, then these two eigenvectors are returned.
+    """
     # Create a masked version of the residuals array so that we can perform the
     # PCA ignoring all nan values
     masked_residuals = np.ma.array(residuals, mask=np.isnan(residuals))
@@ -178,7 +213,7 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
 
     for idx in range(len(proxy)):
         corrected_residuals.append(
-            masked_residuals[idx, :] - proxy[idx] * noisy_direction)
+            masked_residuals.data[idx, :] - proxy[idx] * noisy_direction)
 
     corrected_residuals = pd.DataFrame(corrected_residuals,
                                        columns=obs_data.columns)
@@ -187,24 +222,41 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values
+    return denoised_sv, proxy, eig_values, eig_vectors.data[:, 0:proxy_number]
 
 
-def detect_outliers(*, signal, window_length, threshold, plot_fig=False):
-    """ xxxxxxxx
+def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
+                    plot_fig=False):
+    """Detect outliers in a time series and remove them.
+
+    Use the following formula to detect outliers:
+
+    (signal - median) > threshold * standard deviation
+
+    The time series are long and highly variable so it is not appropriate to
+    use single values of median and standard deviation (std) to represent the
+    whole series. The function uses a running median and std to better
+    characterise the series (the window length and threshold value are
+    specified by the user).
 
     Args:
-        obs_data (pandas.DataFrame): dataframe containing means (usually
-            monthly) of SV calculated from observed geomagnetic field values.
-        model_data (pandas.DataFrame): dataframe containing the SV predicted by
-            a geomagnetic field model.
+        dates (datetime.datetime): dates of the time series measurements.
+        signal (array): array (or column from a pandas.DataFrame) containing
+            the time series of interest.
+        obs_name (str): states the component of interest and the three digit
+           IAGA observatory name.
+        window_length (int): number of months over which to take the running
+            median and running standard deviation.
+        threshold (float): the threshold value used in the above criterion.
+            Typical values would be between two and three (so that the
+            difference between the data and median is twice (or three times)
+            the standard deviation).
 
     Returns:
-        residuals (pandas.DataFrame): dataframe containing SV residuals.
+        masked_signal (array):
+            the input signal with identified outliers removed (set to NaN).
     """
-
-    window_length = 12
-    signal_temp = signal.copy()
+    signal_temp = pd.DataFrame(data=signal.copy())
     # Account for missing values when using rolling_median and rolling_std.
     # ffill (bfill) propagates the closest value forwards (backwards) through
     # nan values. E.g. [np.nan, np.nan, 1, 5, 6, np.nan, np.nan] returns as
@@ -213,14 +265,20 @@ def detect_outliers(*, signal, window_length, threshold, plot_fig=False):
     # (bfill values are used there instead).
     signal_temp = signal_temp.ffill(limit=window_length / 2 + 1).bfill()
     # calculate the running median and standard deviation
-    running_median = pd.rolling_median(signal_temp, window=window_length,
-                                       center=True)
-    running_std = pd.rolling_std(signal_temp, window=window_length,
-                                 center=True)
+    running_median = signal_temp.rolling(window=window_length,
+                                         center=True).median().bfill().ffill()
+    running_std = signal_temp.rolling(window=window_length,
+                                      center=True).std().bfill().ffill()
     # Identify outliers as (signal - median) > threshold * std
-    threshold_value = (signal_temp - running_median).apply(np.abs)
+    threshold_value = (signal_temp - running_median).abs()
+    outliers = signal_temp[threshold_value > threshold * running_std.abs()]
     # Set the outliers to nan
-    signal_temp[threshold_value > threshold * running_std] = np.nan
-    masked_signal = np.ma.array(signal, mask=np.isnan(signal_temp))
+    signal_temp[threshold_value > threshold * running_std.abs()] = np.nan
+    masked_signal = np.ma.array(signal, mask=np.isnan(signal_temp), copy=True)
+    masked_signal.data[masked_signal.mask] = np.nan
+
+    if plot_fig is True:
+        svplots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
+                              outliers=outliers)
 
     return masked_signal.data

@@ -24,8 +24,8 @@ MagPySV is a python toolbox for processing and analysing geomagnetic observatory
    :target: https://coveralls.io/github/gracecox/MagPySV?branch=master
    :alt: Coverage
 
-.. |license| image:: http://img.shields.io/badge/license-GPLv3-4AC51C.svg?style=flat
-   :target: https://www.gnu.org/licenses/quick-guide-gplv3.html.en
+.. |license| image:: https://img.shields.io/packagist/l/doctrine/orm.svg
+   :target: https://opensource.org/licenses/MIT
 
 .. |code-health| image:: https://landscape.io/github/gracecox/MagPySV/master/landscape.svg?style=flat
    :target: https://landscape.io/github/gracecox/MagPySV/master

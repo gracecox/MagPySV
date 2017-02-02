@@ -5,8 +5,9 @@
 #    this project.
 """Module containing functions to parse files output by magnetic field models.
 
-Part of the MagPy package for geomagnetic data analysis. This module provides
-various functions to read SV files output by geomagnetic field models."""
+Part of the MagPySV package for geomagnetic data analysis. This module provides
+various functions to read SV files output by geomagnetic field models.
+"""
 
 
 import pandas as pd
@@ -36,13 +37,12 @@ def calculate_sv(obs_data, mean_spacing=1):
     Returns:
         obs_data (pandas.DataFrame): dataframe containing SV data.
     """
-
     # write function to calculate sv here
     obs_sv = pd.DataFrame()
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
         months=mean_spacing - 1)
     # Calculate scale required to give SV in nT/yr
-    scaling_factor = 12/mean_spacing
+    scaling_factor = 12 / mean_spacing
     obs_sv['dx'] = scaling_factor * obs_data['X'].diff(periods=mean_spacing)
     obs_sv['dy'] = scaling_factor * obs_data['Y'].diff(periods=mean_spacing)
     obs_sv['dz'] = scaling_factor * obs_data['Z'].diff(periods=mean_spacing)
@@ -63,7 +63,6 @@ def calculate_residuals(*, obs_data, model_data):
     Returns:
         residuals (pandas.DataFrame): dataframe containing SV residuals.
     """
-
     model_data = model_data[model_data['date'].isin(obs_data['date'])]
     obs_data.drop(obs_data.columns[[0]], axis=1, inplace=True)
     model_data.drop(model_data.columns[[0]], axis=1, inplace=True)
@@ -95,9 +94,7 @@ def data_resampling(data, sampling='MS'):
             dataframe of datetime objects and monthly/annual means of
                 observatory data.
     """
-
-    resampled = data.set_index('date', drop=False).resample(
-        sampling, how='mean')
+    resampled = data.set_index('date', drop=False).resample(sampling).mean()
     resampled.reset_index(inplace=True)
 
     return resampled
@@ -139,6 +136,23 @@ def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
 
 
 def remove_selected_points(*, data, fname):
+    """Remove specified points from dataset based on list of points in a file.
+
+    Reads a list of unwanted points from a file and removes them from the
+    dataframe if present. E.g. If the user had monthly SV means and wished to
+    exclude the X value at NGK in January 2015 from the analysis, the following
+    line would be written in a file
+
+    2015-01-01,ngk,X
+
+    Args:
+        data (pandas.DataFrame): dataframe containing datetime objects and
+              daily means of magnetic data.
+        fname (str): path to file containing a list of unwanted data points.
+
+    Returns:
+        data (pandas.DataFrame): the same dataframe with the points removed.
+    """
     col_names = ['date', 'observatory', 'component']
     points = pd.read_csv(fname, sep=',', header=0, names=col_names,
                          parse_dates=[0])

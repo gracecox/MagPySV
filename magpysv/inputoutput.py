@@ -39,7 +39,6 @@ def wdc_parsefile(fname):
             subsequent columns are the X, Y and Z components of the magnetic
             field at the specified times.
     """
-
     try:
         # New WDC file format
         cols = [(0, 3), (3, 5), (5, 7), (7, 8), (8, 10), (14, 16),
@@ -81,7 +80,6 @@ def wdc_datetimes(data):
             the same dataframe with a series of datetime objects (in the format
             yyyy-mm-dd) in the first column.
     """
-
     # Convert the century/yr columns to a year
     data['year'] = 100 * data['century'] + data['yr']
 
@@ -112,7 +110,6 @@ def wdc_xyz(data):
             the same dataframe with datetime objects in the first column and
             columns for X, Y and Z components of magnetic field (in nT).
     """
-
     # Replace missing values with NaNs
     data.replace(9999, np.nan, inplace=True)
     # Group the data by field component, calculate the daily means and form
@@ -167,7 +164,6 @@ def daily_mean_conversion(data):
             daily means of the field components in either nT or degrees
             (depending on the component).
     """
-
     grp = pd.DataFrame()
     for group in data.groupby('component'):
 
@@ -203,7 +199,6 @@ def angles_to_geographic(data):
             daily means of the field components in either nT or degrees
             (depending on the component).
     """
-
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'X'] = data.loc[(
         ~np.isnan(data['D']) & ~np.isnan(data['H'])), 'H'] * np.cos(np.deg2rad(
             data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'D']))
@@ -228,7 +223,6 @@ def wdc_readfile(fname):
             subsequent columns are the X, Y and Z components of the magnetic
             field at the specified times.
     """
-
     rawdata = wdc_parsefile(fname)
     rawdata = wdc_datetimes(rawdata)
     data = wdc_xyz(rawdata)
@@ -253,7 +247,6 @@ def append_wdc_data(*, obs_name,
             (in the format yyyy-mm-dd) and subsequent columns are the X, Y and
             Z components of the magnetic field at the specified times.
     """
-
     data = pd.DataFrame()
 
     data_path = path % obs_name
@@ -272,7 +265,7 @@ def append_wdc_data(*, obs_name,
 
 def covobs_parsefile(fname):
     """Loads MF and SV predictions from the COV-OBS geomagnetic field model.
-    
+
     Load a datafile containing SV/MF predictions from the COV-OBS magnetic
     field model series by Gillet et al. (2013, Geochem. Geophys. Geosyst.;
     2015, Earth, Planets and Space) field model.
@@ -287,7 +280,6 @@ def covobs_parsefile(fname):
             subsequent columns are the X, Y and Z components of the SV/MF at
             the specified times.
     """
-
     model_data = pd.read_csv(fname, sep=r'\s+', header=None,
                              usecols=[0, 1, 2, 3])
 
@@ -311,7 +303,6 @@ def covobs_datetimes(data):
             the same dataframe with the decimal year column replced with a
             series of datetime objects in the format yyyy-mm-dd.
     """
-
     year_temp = np.floor(data.year_decimal.values.astype(
         'float64')).astype('int')
 
@@ -373,11 +364,7 @@ def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/', write_path,
         print_obs (bool): choose whether to print each observatory name as the
             function goes through the directories. Useful for checking progress
             as it can take a while to read the whole WDC dataset.
-
-    Returns:
-        None
     """
-
     wdc_path = fpath + 'hourval/single_obs/*'
     dir_list = glob.glob(wdc_path)
     obs_names = [os.path.basename(obs_path) for obs_path in dir_list]
@@ -400,11 +387,7 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None):
         obs_name (str): name of observatory at which the data were obtained.
         file_prefix (str): optional string to prefix the output CSV filenames
             (useful for specifying parameters used to create the dataset etc).
-
-    Returns:
-        None
     """
-
     if file_prefix is not None:
         fpath = write_path + file_prefix + obs_name + '.csv'
     else:
@@ -422,7 +405,6 @@ def read_csv_data(fname):
         data (pandas.DataFrame):
             dataframe containing the data read from the CSV file.
     """
-
     col_names = ['date', 'X', 'Y', 'Z']
     data = pd.read_csv(fname, sep=',', header=0, names=col_names,
                        parse_dates=[0])
@@ -455,16 +437,17 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
         model_path (str): path to the CSV files containing model SV data.
 
     Returns:
-        obs_data (pandas.DataFrame):
+        (tuple): tuple containing:
+
+        - obs_data (*pandas.DataFrame*):
             dataframe containing SV data for all observatories in obs_list.
-        model_sv_data (pandas.DataFrame):
+        - model_sv_data (*pandas.DataFrame*):
             dataframe containing SV predictions for all observatories in
             obs_list.
-        model_mf_data (pandas.DataFrame):
+        - model_mf_data (*pandas.DataFrame*):
             dataframe containing magnetic field predictions for all
             observatories in obs_list.
     """
-
     # Initialise the dataframe with the appropriate date range
     obs_data = pd.DataFrame({'date': pd.date_range(start_date, end_date,
                                                    freq=sampling_rate)})

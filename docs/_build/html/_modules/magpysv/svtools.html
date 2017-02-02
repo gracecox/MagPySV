@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>magpysv.svtools &mdash; MagPySV 0 documentation</title>
+  <title>magpysv.svtools &mdash; MagPySV 1.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="MagPySV 0 documentation" href="../../index.html"/>
+    <link rel="top" title="MagPySV 1.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1
+                1.0
               </div>
             
           
@@ -86,7 +86,6 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">changepoint module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../inputoutput.html">inputoutput module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../svplots.html">svplots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../svtools.html">svtools module</a></li>
@@ -136,24 +135,15 @@
             
   <h1>Source code for magpysv.svtools</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#    Copyright (C) 2016  Grace Cox</span>
+<span class="c1">#    Copyright (C) 2016  Grace Cox (University of Liverpool)</span>
 <span class="c1">#</span>
-<span class="c1">#    This program is free software: you can redistribute it and/or modify</span>
-<span class="c1">#    it under the terms of the GNU General Public License as published by</span>
-<span class="c1">#    the Free Software Foundation, either version 3 of the License, or</span>
-<span class="c1">#    (at your option) any later version.</span>
-<span class="c1">#</span>
-<span class="c1">#    This program is distributed in the hope that it will be useful,</span>
-<span class="c1">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c1">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c1">#    GNU General Public License for more details.</span>
-<span class="c1">#</span>
-<span class="c1">#    You should have received a copy of the GNU General Public License along</span>
-<span class="c1">#    with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.&quot;&quot;&quot;</span>
+<span class="c1">#    Released under the MIT license, a copy of which is located at the root of</span>
+<span class="c1">#    this project.</span>
 <span class="sd">&quot;&quot;&quot;Module containing functions to parse files output by magnetic field models.</span>
 
-<span class="sd">Part of the MagPy package for geomagnetic data analysis. This module provides</span>
-<span class="sd">various functions to read SV files output by geomagnetic field models.&quot;&quot;&quot;</span>
+<span class="sd">Part of the MagPySV package for geomagnetic data analysis. This module provides</span>
+<span class="sd">various functions to read SV files output by geomagnetic field models.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -183,13 +173,12 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        obs_data (pandas.DataFrame): dataframe containing SV data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># write function to calculate sv here</span>
     <span class="n">obs_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
         <span class="n">months</span><span class="o">=</span><span class="n">mean_spacing</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="c1"># Calculate scale required to give SV in nT/yr</span>
-    <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mi">12</span><span class="o">/</span><span class="n">mean_spacing</span>
+    <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">/</span> <span class="n">mean_spacing</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
@@ -210,7 +199,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        residuals (pandas.DataFrame): dataframe containing SV residuals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])]</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -242,9 +230,7 @@
 <span class="sd">            dataframe of datetime objects and monthly/annual means of</span>
 <span class="sd">                observatory data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span>
-        <span class="n">sampling</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">sampling</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">resampled</span></div>
@@ -286,6 +272,23 @@
 
 
 <div class="viewcode-block" id="remove_selected_points"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.remove_selected_points">[docs]</a><span class="k">def</span> <span class="nf">remove_selected_points</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove specified points from dataset based on list of points in a file.</span>
+
+<span class="sd">    Reads a list of unwanted points from a file and removes them from the</span>
+<span class="sd">    dataframe if present. E.g. If the user had monthly SV means and wished to</span>
+<span class="sd">    exclude the X value at NGK in January 2015 from the analysis, the following</span>
+<span class="sd">    line would be written in a file</span>
+
+<span class="sd">    2015-01-01,ngk,X</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (pandas.DataFrame): dataframe containing datetime objects and</span>
+<span class="sd">              daily means of magnetic data.</span>
+<span class="sd">        fname (str): path to file containing a list of unwanted data points.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        data (pandas.DataFrame): the same dataframe with the points removed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;observatory&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">]</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
                          <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -331,7 +334,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0',
+            VERSION:'1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
