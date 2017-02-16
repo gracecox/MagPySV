@@ -76,7 +76,7 @@ def plot_eigenvectors(*, obs_names, eigenvecs, fig_size=(8, 6), font_size=12,
     plt.figure(figsize=fig_size)
     # Loop over directions and plot each eigenvector on a separate subplot
     for direction in range(eigenvecs.shape[1]):
-        plt.subplot(eigenvecs.shape[1], 1, direction+1)
+        plt.subplot(eigenvecs.shape[1], 1, direction + 1)
         plt.plot(np.abs(eigenvecs[::3, direction]), 'bx',
                  np.abs(eigenvecs[1::3, direction]), 'rx',
                  np.abs(eigenvecs[2::3, direction]), 'cx')
@@ -145,7 +145,7 @@ def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
 
 def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
             label_size=16, plot_legend=False, plot_average=False,
-            window_length=12):
+            window_length=12, min_samples=3):
     """Plot the SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the SV and field
@@ -167,6 +167,11 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
             series on the plot. Defaults to False.
         window_length (int): number of months over which to take the running
             average if this is plotted. Defaults to 12 months.
+        min_samples (int): minimum number of non-NaN values that must be
+            present in the window in order for the running average to be
+            calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
+            first differences this means that at least 3 months of data per
+            window are required to calculate the 12-month running average.)
     """
     if plot_average is True:
         plt.figure(figsize=fig_size)
@@ -174,8 +179,8 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.subplot(3, 1, 1)
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 0], 'b', dates, sv.ix[:, 0].rolling(
-            window=window_length, center=True).mean(), 'c', dates,
-            model.ix[:, 0], 'r')
+            window=window_length, center=True, min_periods=min_samples).mean(),
+            'c', dates, model.ix[:, 0], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -185,8 +190,8 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 1], 'b', dates, sv.ix[:, 1].rolling(
-            window=window_length, center=True).mean(), 'c', dates,
-            model.ix[:, 1], 'r')
+            window=window_length, center=True, min_periods=min_samples).mean(),
+            'c', dates, model.ix[:, 1], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -196,8 +201,8 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 2], 'b', dates, sv.ix[:, 2].rolling(
-            window=window_length, center=True).mean(), 'c', dates,
-            model.ix[:, 2], 'r')
+            window=window_length, center=True, min_periods=min_samples).mean(),
+            'c', dates, model.ix[:, 2], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -245,7 +250,7 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
 def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
                        fig_size=(8, 6), font_size=12, label_size=16,
                        plot_legend=False, plot_average=False,
-                       window_length=12):
+                       window_length=12, min_samples=3):
     """Plot noisy/denoised SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the noisy SV, the denoised
@@ -270,6 +275,11 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
             series on the plot. Defaults to False.
         window_length (int): number of months over which to take the running
             average if this is plotted. Defaults to 12 months.
+        min_samples (int): minimum number of non-NaN values that must be
+            present in the window in order for the running average to be
+            calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
+            first differences this means that at least 3 months of data per
+            window are required to calculate the 12-month running average.)
     """
     plt.figure(figsize=fig_size)
     if plot_average is True:
@@ -278,7 +288,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.gca().xaxis_date()
         plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
                  'r', dates, denoised_sv.ix[:, 0].rolling(window=window_length,
-                 center=True).mean(), 'c', dates, model.ix[:, 0], 'k')
+                 center=True, min_periods=min_samples).mean(), 'c',
+                 dates, model.ix[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -289,7 +300,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.gca().xaxis_date()
         plt.plot(dates, noisy_sv.ix[:, 1], 'b', dates, denoised_sv.ix[:, 1],
                  'r', dates, denoised_sv.ix[:, 1].rolling(window=window_length,
-                 center=True).mean(), 'c', dates, model.ix[:, 1], 'k')
+                 center=True, min_periods=min_samples).mean(), 'c',
+                 dates, model.ix[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -300,7 +312,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.gca().xaxis_date()
         plt.plot(dates, noisy_sv.ix[:, 2], 'b', dates, denoised_sv.ix[:, 2],
                  'r', dates, denoised_sv.ix[:, 2].rolling(window=window_length,
-                 center=True).mean(), 'c', dates, model.ix[:, 2], 'k')
+                 center=True, min_periods=min_samples).mean(), 'c',
+                 dates, model.ix[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)

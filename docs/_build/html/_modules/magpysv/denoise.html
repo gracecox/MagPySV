@@ -87,6 +87,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../svplots.html">svplots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../svtools.html">svtools module</a></li>
 </ul>
@@ -154,7 +155,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">Imputer</span>
 
 
-<div class="viewcode-block" id="eigenvalue_analysis_impute"><a class="viewcode-back" href="../../denoise.html#magpysv.denoise.eigenvalue_analysis_impute">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis_impute</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
+<div class="viewcode-block" id="eigenvalue_analysis_impute"><a class="viewcode-back" href="../../magpysv.html#magpysv.denoise.eigenvalue_analysis_impute">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis_impute</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
                                <span class="n">proxy_number</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove external signal from SV data using Principal Component Analysis.</span>
 
@@ -255,7 +256,7 @@
     <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="eigenvalue_analysis"><a class="viewcode-back" href="../../denoise.html#magpysv.denoise.eigenvalue_analysis">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
+<div class="viewcode-block" id="eigenvalue_analysis"><a class="viewcode-back" href="../../magpysv.html#magpysv.denoise.eigenvalue_analysis">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
                         <span class="n">proxy_number</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove external signal from SV data using principal Component Analysis.</span>
 
@@ -361,7 +362,7 @@
     <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="detect_outliers"><a class="viewcode-back" href="../../denoise.html#magpysv.denoise.detect_outliers">[docs]</a><span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span>
+<div class="viewcode-block" id="detect_outliers"><a class="viewcode-back" href="../../magpysv.html#magpysv.denoise.detect_outliers">[docs]</a><span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span>
                     <span class="n">plot_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detect outliers in a time series and remove them.</span>
 

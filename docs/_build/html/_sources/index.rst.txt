@@ -24,7 +24,7 @@ MagPySV is a python toolbox for processing and analysing geomagnetic observatory
    :target: https://coveralls.io/github/gracecox/MagPySV?branch=master
    :alt: Coverage
 
-.. |license| image:: https://img.shields.io/packagist/l/doctrine/orm.svg
+.. |license| image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://opensource.org/licenses/MIT
 
 .. |code-health| image:: https://landscape.io/github/gracecox/MagPySV/master/landscape.svg?style=flat
@@ -39,6 +39,7 @@ Contents:
 
    denoise
    inputoutput
+   model_prediction
    svplots
    svtools
 
