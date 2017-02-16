@@ -87,6 +87,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../svplots.html">svplots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../svtools.html">svtools module</a></li>
 </ul>
@@ -157,7 +158,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="wdc_parsefile"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.wdc_parsefile">[docs]</a><span class="k">def</span> <span class="nf">wdc_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="wdc_parsefile"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.wdc_parsefile">[docs]</a><span class="k">def</span> <span class="nf">wdc_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load a WDC datafile and place the contents into a dataframe.</span>
 
 <span class="sd">    Load a datafile of WDC hourly geomagnetic data for a single observatory and</span>
@@ -204,7 +205,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="wdc_datetimes"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.wdc_datetimes">[docs]</a><span class="k">def</span> <span class="nf">wdc_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="wdc_datetimes"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.wdc_datetimes">[docs]</a><span class="k">def</span> <span class="nf">wdc_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create datetime objects from the fields extracted from a WDC datafile.</span>
 
 <span class="sd">    Args:</span>
@@ -231,7 +232,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="wdc_xyz"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.wdc_xyz">[docs]</a><span class="k">def</span> <span class="nf">wdc_xyz</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="wdc_xyz"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.wdc_xyz">[docs]</a><span class="k">def</span> <span class="nf">wdc_xyz</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert extracted WDC data to daily averages of X, Y and Z components.</span>
 
 <span class="sd">    Missing values (indicated by 9999 in the datafiles) are replaced with NaNs.</span>
@@ -278,7 +279,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="daily_mean_conversion"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.daily_mean_conversion">[docs]</a><span class="k">def</span> <span class="nf">daily_mean_conversion</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="daily_mean_conversion"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.daily_mean_conversion">[docs]</a><span class="k">def</span> <span class="nf">daily_mean_conversion</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use the tabular base to calculate daily means in nT or degrees (D, I).</span>
 
 <span class="sd">    Uses the tabular base and daily value from the WDC file to calculate the</span>
@@ -314,7 +315,7 @@
     <span class="k">return</span> <span class="n">grp</span></div>
 
 
-<div class="viewcode-block" id="angles_to_geographic"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.angles_to_geographic">[docs]</a><span class="k">def</span> <span class="nf">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="angles_to_geographic"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.angles_to_geographic">[docs]</a><span class="k">def</span> <span class="nf">angles_to_geographic</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use D and H values to calculate the X and Y field components.</span>
 
 <span class="sd">    The declination (D) and horizontal intensity (H) relate to the north (Y)</span>
@@ -346,7 +347,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="wdc_readfile"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.wdc_readfile">[docs]</a><span class="k">def</span> <span class="nf">wdc_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="wdc_readfile"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.wdc_readfile">[docs]</a><span class="k">def</span> <span class="nf">wdc_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Wrapper function to call wdc_parsefile, wdc_readfile and wdc_xyz.</span>
 
 <span class="sd">    Args:</span>
@@ -366,7 +367,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="append_wdc_data"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.append_wdc_data">[docs]</a><span class="k">def</span> <span class="nf">append_wdc_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span>
+<div class="viewcode-block" id="append_wdc_data"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.append_wdc_data">[docs]</a><span class="k">def</span> <span class="nf">append_wdc_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span>
                     <span class="n">path</span><span class="o">=</span><span class="s1">&#39;./data/BGS_data/hourval/single_obs/</span><span class="si">%s</span><span class="s1">/*.wdc&#39;</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;Append all WDC data for an observatory into a single dataframe.</span>
@@ -399,7 +400,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="covobs_parsefile"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.covobs_parsefile">[docs]</a><span class="k">def</span> <span class="nf">covobs_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="covobs_parsefile"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.covobs_parsefile">[docs]</a><span class="k">def</span> <span class="nf">covobs_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Loads MF and SV predictions from the COV-OBS geomagnetic field model.</span>
 
 <span class="sd">    Load a datafile containing SV/MF predictions from the COV-OBS magnetic</span>
@@ -424,7 +425,7 @@
     <span class="k">return</span> <span class="n">model_data</span></div>
 
 
-<div class="viewcode-block" id="covobs_datetimes"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.covobs_datetimes">[docs]</a><span class="k">def</span> <span class="nf">covobs_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="covobs_datetimes"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.covobs_datetimes">[docs]</a><span class="k">def</span> <span class="nf">covobs_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create datetime objects from COV-OBS field model output file.</span>
 
 <span class="sd">    The format output by the field model is year.decimalmonth e.g. 1960.08 is</span>
@@ -458,7 +459,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="covobs_readfile"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.covobs_readfile">[docs]</a><span class="k">def</span> <span class="nf">covobs_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="covobs_readfile"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.covobs_readfile">[docs]</a><span class="k">def</span> <span class="nf">covobs_readfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Wrapper function to call covobs_parsefile and covobs_datetimes.</span>
 
 <span class="sd">    Args:</span>
@@ -478,7 +479,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="wdc_to_daily_csv"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.wdc_to_daily_csv">[docs]</a><span class="k">def</span> <span class="nf">wdc_to_daily_csv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fpath</span><span class="o">=</span><span class="s1">&#39;./data/BGS_hourly/&#39;</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span>
+<div class="viewcode-block" id="wdc_to_daily_csv"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.wdc_to_daily_csv">[docs]</a><span class="k">def</span> <span class="nf">wdc_to_daily_csv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fpath</span><span class="o">=</span><span class="s1">&#39;./data/BGS_hourly/&#39;</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span>
                      <span class="n">print_obs</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Converts hourly WDC data to X, Y and Z daily means and save to CSV file.</span>
 
@@ -514,7 +515,7 @@
                        <span class="n">obs_name</span><span class="o">=</span><span class="n">observatory</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_csv_data"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.write_csv_data">[docs]</a><span class="k">def</span> <span class="nf">write_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="write_csv_data"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.write_csv_data">[docs]</a><span class="k">def</span> <span class="nf">write_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write dataframe to a CSV file.</span>
 
 <span class="sd">    Args:</span>
@@ -531,7 +532,7 @@
     <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_csv_data"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.read_csv_data">[docs]</a><span class="k">def</span> <span class="nf">read_csv_data</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="read_csv_data"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.read_csv_data">[docs]</a><span class="k">def</span> <span class="nf">read_csv_data</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read dataframe from a CSV file.</span>
 
 <span class="sd">    Args:</span>
@@ -547,7 +548,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="combine_csv_data"><a class="viewcode-back" href="../../inputoutput.html#magpysv.inputoutput.combine_csv_data">[docs]</a><span class="k">def</span> <span class="nf">combine_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="combine_csv_data"><a class="viewcode-back" href="../../magpysv.html#magpysv.inputoutput.combine_csv_data">[docs]</a><span class="k">def</span> <span class="nf">combine_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span>
                      <span class="n">obs_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">model_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read and combine observatory and model SV data for several locations.</span>
 

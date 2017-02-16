@@ -35,7 +35,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="index.html"/>
         <link rel="next" title="svtools module" href="svtools.html"/>
-        <link rel="prev" title="inputoutput module" href="inputoutput.html"/> 
+        <link rel="prev" title="model_prediction module" href="model_prediction.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -88,6 +88,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">svplots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="svtools.html">svtools module</a></li>
 </ul>
@@ -317,7 +318,7 @@ inches.</li>
 
 <dl class="function">
 <dt id="magpysv.svplots.plot_sv">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em>, <em>min_samples=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the SV and model prediction for a single observatory.</p>
 <p>Produces a plot of the X, Y and Z components of the SV and field
 model prediction for a single observatory.</p>
@@ -341,6 +342,11 @@ to False.</li>
 series on the plot. Defaults to False.</li>
 <li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
 average if this is plotted. Defaults to 12 months.</li>
+<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; minimum number of non-NaN values that must be
+present in the window in order for the running average to be
+calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
+first differences this means that at least 3 months of data per
+window are required to calculate the 12-month running average.)</li>
 </ul>
 </td>
 </tr>
@@ -350,7 +356,7 @@ average if this is plotted. Defaults to 12 months.</li>
 
 <dl class="function">
 <dt id="magpysv.svplots.plot_sv_comparison">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv_comparison</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>noisy_sv</em>, <em>denoised_sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv_comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv_comparison" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv_comparison</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>noisy_sv</em>, <em>denoised_sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em>, <em>min_samples=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv_comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv_comparison" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot noisy/denoised SV and model prediction for a single observatory.</p>
 <p>Produces a plot of the X, Y and Z components of the noisy SV, the denoised
 SV and field model prediction for a single observatory.</p>
@@ -377,6 +383,11 @@ to False.</li>
 series on the plot. Defaults to False.</li>
 <li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
 average if this is plotted. Defaults to 12 months.</li>
+<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; minimum number of non-NaN values that must be
+present in the window in order for the running average to be
+calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
+first differences this means that at least 3 months of data per
+window are required to calculate the 12-month running average.)</li>
 </ul>
 </td>
 </tr>
@@ -396,7 +407,7 @@ average if this is plotted. Defaults to 12 months.</li>
         <a href="svtools.html" class="btn btn-neutral float-right" title="svtools module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="inputoutput.html" class="btn btn-neutral" title="inputoutput module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="model_prediction.html" class="btn btn-neutral" title="model_prediction module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
