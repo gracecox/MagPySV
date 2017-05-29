@@ -24,7 +24,7 @@ def calculate_sv(obs_data, mean_spacing=1):
     samplings other than monthly differences, the datetime objects of the
     calculated SV are taken the midpoint of the datetime objects of the field
     data. E.g. differencing the means of the field January 1999 and in January
-    2000 yields the SV for August 1999.
+    2000 yields the SV for July 1999.
 
     Args:
         obs_data (pandas.DataFrame): dataframe containing means (usually
@@ -40,7 +40,13 @@ def calculate_sv(obs_data, mean_spacing=1):
     # write function to calculate sv here
     obs_sv = pd.DataFrame()
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
-        months=mean_spacing - 1)
+        months=int(np.floor(mean_spacing/2)), day=1)
+    if mean_spacing % 2 == 1:
+        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
+            day=1)
+    else:
+        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
+            day=15)
     # Calculate scale required to give SV in nT/yr
     scaling_factor = 12 / mean_spacing
     obs_sv['dx'] = scaling_factor * obs_data['X'].diff(periods=mean_spacing)
@@ -63,7 +69,8 @@ def calculate_residuals(*, obs_data, model_data):
     Returns:
         residuals (pandas.DataFrame): dataframe containing SV residuals.
     """
-    model_data = model_data[model_data['date'].isin(obs_data['date'])]
+    dates = obs_data['date']
+    model_data = model_data[model_data['date'].isin(dates)]
     obs_data.drop(obs_data.columns[[0]], axis=1, inplace=True)
     model_data.drop(model_data.columns[[0]], axis=1, inplace=True)
 
@@ -71,10 +78,11 @@ def calculate_residuals(*, obs_data, model_data):
     residuals = pd.DataFrame(
         obs_data.values - model_data.values,
         columns=obs_data.columns)
+    obs_data.insert(0, 'date', dates)
     return residuals
 
 
-def data_resampling(data, sampling='MS'):
+def data_resampling(data, sampling='MS', average_date=True):
     """Resample the daily geomagnetic data to a specified frequency.
 
     Args:
@@ -88,6 +96,14 @@ def data_resampling(data, sampling='MS'):
             data for a whole year and sets the datetime object to the final
             day of the year. Use 'AS' to set the datetime object to the
             first day of the year.
+        average_date (bool): the specified resampling intervals only have
+            options for setting the date to the first ('MS' and 'AS') or final
+            ('M' and 'A') day of the month or year. For monthly averages, a
+            more appropriate representative date is the middle of that month
+            (i.e. the 15th day of the month). For annual averages, an
+            appropriate representative date is the middle of that year (taken
+            as July 1st of the year.) This option is used to set the dates to
+            the centre of the sampling interval. Defaults to True.
 
     Returns:
         data (pandas.DataFrame):
@@ -96,7 +112,12 @@ def data_resampling(data, sampling='MS'):
     """
     resampled = data.set_index('date', drop=False).resample(sampling).mean()
     resampled.reset_index(inplace=True)
-
+    if average_date is True and 'A' in sampling:
+        resampled['date'] = resampled['date'] + pd.tseries.offsets.DateOffset(
+                            month=7, day=1)
+    if average_date is True and 'M' in sampling:
+        resampled['date'] = resampled['date'] + pd.tseries.offsets.DateOffset(
+                            day=15)
     return resampled
 
 

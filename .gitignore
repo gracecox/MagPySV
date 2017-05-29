@@ -1,3 +1,7 @@
-./magpy/data/BGS_hourly/
-./magpy/data/wdc_daily/
+./magpysv/data/*
+./magpysv/data/denoised_sv/**/*
+./magpysv/data/monthly_mf/*
+./magpysv/data/monthly_sv/**/*
+./magpysv/data/wdc_daily/*
+./magpysv/data/BGS_hourly/**/**/*
 *.bak

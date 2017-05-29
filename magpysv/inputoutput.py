@@ -263,7 +263,7 @@ def append_wdc_data(*, obs_name,
     return data
 
 
-def covobs_parsefile(fname):
+def covobs_parsefile(*, fname, data_type):
     """Loads MF and SV predictions from the COV-OBS geomagnetic field model.
 
     Load a datafile containing SV/MF predictions from the COV-OBS magnetic
@@ -272,6 +272,8 @@ def covobs_parsefile(fname):
 
     Args:
         fname (str): path to a COV-OBS datafile.
+        data_type (str): specify whether the file contains magnetic field data
+            ('mf') or or secular variation data ('sv')
 
     Returns:
         model_data (pandas.DataFrame):
@@ -282,9 +284,10 @@ def covobs_parsefile(fname):
     """
     model_data = pd.read_csv(fname, sep=r'\s+', header=None,
                              usecols=[0, 1, 2, 3])
-
-    model_data.columns = ["year_decimal", "dx", "dy", "dz"]
-
+    if data_type is 'mf':
+        model_data.columns = ["year_decimal", "X", "Y", "Z"]
+    else:
+        model_data.columns = ["year_decimal", "dX", "dY", "dZ"]
     return model_data
 
 
@@ -322,12 +325,13 @@ def covobs_datetimes(data):
     return data
 
 
-def covobs_readfile(fname):
+def covobs_readfile(*, fname, data_type):
     """Wrapper function to call covobs_parsefile and covobs_datetimes.
 
     Args:
         fname (str): path to a COV-OBS format datafile.
-
+        data_type (str): specify whether the file contains magnetic field data
+            ('mf') or or secular variation data ('sv')
     Returns:
         data (pandas.DataFrame):
             dataframe containing the data read from the file. First column is a
@@ -336,7 +340,7 @@ def covobs_readfile(fname):
             the specified times.
     """
 
-    rawdata = covobs_parsefile(fname)
+    rawdata = covobs_parsefile(fname=fname, data_type=data_type)
     data = covobs_datetimes(rawdata)
 
     return data
@@ -378,7 +382,8 @@ def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/', write_path,
                        obs_name=observatory)
 
 
-def write_csv_data(*, data, write_path, obs_name, file_prefix=None):
+def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
+                   decimal_dates=False):
     """Write dataframe to a CSV file.
 
     Args:
@@ -387,7 +392,13 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None):
         obs_name (str): name of observatory at which the data were obtained.
         file_prefix (str): optional string to prefix the output CSV filenames
             (useful for specifying parameters used to create the dataset etc).
+        decimal_dates (bool): optional argument to specify that dates should be
+            written in decimal format rather than datetime objects. Defaults to
+            False.
     """
+    # Convert datetime objects to decimal dates if required
+    if decimal_dates is True:
+        data.date = data.date.apply(datetime_to_decimal)
     if file_prefix is not None:
         fpath = write_path + file_prefix + obs_name + '.csv'
     else:
@@ -395,24 +406,29 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None):
     data.to_csv(fpath, sep=',', na_rep='NA', header=True, index=False)
 
 
-def read_csv_data(fname):
+def read_csv_data(*, fname, data_type):
     """Read dataframe from a CSV file.
 
     Args:
         fname (str): path to a CSV datafile.
+        data_type (str): specify whether the file contains magnetic field data
+            ('mf') or or secular variation data ('sv')
 
     Returns:
         data (pandas.DataFrame):
             dataframe containing the data read from the CSV file.
     """
-    col_names = ['date', 'X', 'Y', 'Z']
+    if data_type is 'mf':
+        col_names = ['date', 'X', 'Y', 'Z']
+    else:
+        col_names = ['date', 'dX', 'dY', 'dZ']
     data = pd.read_csv(fname, sep=',', header=0, names=col_names,
                        parse_dates=[0])
     return data
 
 
 def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
-                     obs_list, data_path, model_path):
+                     obs_list, data_path, model_path, day_of_month=1):
     """Read and combine observatory and model SV data for several locations.
 
     Calls read_csv_data to read observatory data and field model predictions
@@ -435,6 +451,16 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
         obs_list (list): list of observatory names (as 3-digit IAGA codes).
         data_path (str): path to the CSV files containing observatory data.
         model_path (str): path to the CSV files containing model SV data.
+        day_of_month (int): For SV data, first differences of
+            monthly means have dates at the start of the month (i.e. MF of
+            mid-Feb minus MF of mid-Jan should give SV at Feb 1st. For annual
+            differences of monthly means the MF of mid-Jan year 2 minus MF of
+            mid-Jan year 1 gives SV at mid-July year 1. The dates of COV-OBS
+            output default to the first day of the month (compatible with dates
+            of monthly first differences SV data, but not with those of
+            annual differences). This option is used to set the day part of the
+            dates column if required. Default to 1 (all output dataframes
+            will have dates set at the first day of the month.)
 
     Returns:
         (tuple): tuple containing:
@@ -449,37 +475,41 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
             observatories in obs_list.
     """
     # Initialise the dataframe with the appropriate date range
-    obs_data = pd.DataFrame({'date': pd.date_range(start_date, end_date,
-                                                   freq=sampling_rate)})
-    model_sv_data = pd.DataFrame({'date': pd.date_range(
-                                start_date, end_date,
-                                freq=sampling_rate)})
-    model_mf_data = pd.DataFrame({'date': pd.date_range(
-                                start_date, end_date,
-                                freq=sampling_rate)})
+    dates = pd.date_range(start_date, end_date, freq=sampling_rate)
+    obs_data = pd.DataFrame({'date': dates})
+    model_sv_data = pd.DataFrame({'date': dates})
+    model_mf_data = pd.DataFrame({'date': dates})
 
     for observatory in obs_list:
 
         obs_file = observatory + '.csv'
         model_sv_file = 'sv_' + observatory + '.dat'
         model_mf_file = 'mf_' + observatory + '.dat'
-        obs_data_temp = read_csv_data(os.path.join(data_path, obs_file))
-        model_sv_data_temp = covobs_readfile(os.path.join(model_path,
-                                                          model_sv_file))
-        model_mf_data_temp = covobs_readfile(os.path.join(model_path,
-                                                          model_mf_file))
+        obs_data_temp = read_csv_data(fname=os.path.join(data_path, obs_file),
+                                      data_type='sv')
+        model_sv_data_temp = covobs_readfile(fname=os.path.join(model_path,
+                                             model_sv_file), data_type='sv')
+        print(model_sv_data_temp.head())
+        model_mf_data_temp = covobs_readfile(fname=os.path.join(model_path,
+                                             model_mf_file), data_type='mf')
+
+        model_sv_data_temp['date'] = (model_sv_data_temp['date'] +
+                                      pd.tseries.offsets.DateOffset(day=1))
+
         obs_data_temp.rename(
+            columns={'dX': 'dX' + '_' + observatory,
+                     'dY': 'dY' + '_' + observatory,
+                     'dZ': 'dZ' + '_' + observatory}, inplace=True)
+        obs_data_temp['date'] = (obs_data_temp['date'] +
+                                 pd.tseries.offsets.DateOffset(day=1))
+        model_sv_data_temp.rename(
+            columns={'dX': 'dX' + '_' + observatory,
+                     'dY': 'dY' + '_' + observatory,
+                     'dZ': 'dZ' + '_' + observatory}, inplace=True)
+        model_mf_data_temp.rename(
             columns={'X': 'X' + '_' + observatory,
                      'Y': 'Y' + '_' + observatory,
                      'Z': 'Z' + '_' + observatory}, inplace=True)
-        model_sv_data_temp.rename(
-            columns={'dx': 'dx' + '_' + observatory,
-                     'dy': 'dy' + '_' + observatory,
-                     'dz': 'dz' + '_' + observatory}, inplace=True)
-        model_mf_data_temp.rename(
-            columns={'dx': 'x' + '_' + observatory,
-                     'dy': 'y' + '_' + observatory,
-                     'dz': 'z' + '_' + observatory}, inplace=True)
         # Combine the current observatory data with those of other
         # observatories
         if observatory == obs_list[0]:
@@ -503,4 +533,25 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
             model_mf_data = pd.merge(
                 left=model_mf_data, right=model_mf_data_temp,
                 how='left', on='date')
+    if day_of_month is not 1:
+        model_sv_data['date'] = (model_sv_data['date'] +
+                                 pd.tseries.offsets.DateOffset(
+                                 day=day_of_month))
+        model_mf_data['date'] = model_sv_data['date']
+        obs_data['date'] = model_sv_data['date']
     return obs_data, model_sv_data, model_mf_data
+
+
+def datetime_to_decimal(date):
+    """Convert a datetime object to a decimal year.
+    Args:
+        date (datetime.datetime): datetime object representing an observation
+            time.
+
+    Returns:
+        date (float): the same date represented as a decimal year.
+    """
+    year_start = dt.datetime(date.year, 1, 1)
+    year_end = year_start.replace(year=date.year + 1)
+    decimal_year = date.year + (date - year_start) / (year_end - year_start)
+    return decimal_year
