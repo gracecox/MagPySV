@@ -253,14 +253,14 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
             the standard deviation).
 
     Returns:
-        masked_signal (array):
+        signal (array):
             the input signal with identified outliers removed (set to NaN).
     """
     signal_temp = pd.DataFrame(data=signal.copy())
     # Account for missing values when using rolling_median and rolling_std.
     # ffill (bfill) propagates the closest value forwards (backwards) through
-    # nan values. E.g. [np.nan, np.nan, 1, 5, 6, np.nan, np.nan] returns as
-    # [1, 1, 1, 5, 6, 6, 6]. The limit of half the window length is used so the
+    # nan values. E.g. [np.nan, np.nan, 1, 9, 7, np.nan, np.nan] returns as
+    # [1, 1, 1, 9, 7, 7, 7]. The limit of half the window length is used so the
     # first ffill cannot overwrite the beginning of the next valid interval
     # (bfill values are used there instead).
     signal_temp = signal_temp.ffill(limit=window_length / 2 + 1).bfill()
@@ -271,14 +271,14 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
                                       center=True).std().bfill().ffill()
     # Identify outliers as (signal - median) > threshold * std
     threshold_value = (signal_temp - running_median).abs()
-    outliers = signal_temp[threshold_value > threshold * running_std.abs()]
-    # Set the outliers to nan
-    signal_temp[threshold_value > threshold * running_std.abs()] = np.nan
-    masked_signal = np.ma.array(signal, mask=np.isnan(signal_temp), copy=True)
-    masked_signal.data[masked_signal.mask] = np.nan
+    difference = threshold_value - threshold * running_std.abs()
+    outliers = signal_temp[difference > 0]
 
+    # Plot the outliers and original time series if required
     if plot_fig is True:
         svplots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
                               outliers=outliers)
+    # Set the outliers to nan
+    signal[difference[obs_name] > 0] = np.nan
 
-    return masked_signal.data
+    return signal
