@@ -34,7 +34,7 @@ def wdc_parsefile(fname):
 
     Returns:
         data (pandas.DataFrame):
-            dataframe containing daily geomagnetic data. First column is a
+            dataframe containing hourly geomagnetic data. First column is a
             series of datetime objects (in the format yyyy-mm-dd) and
             subsequent columns are the X, Y and Z components of the magnetic
             field at the specified times.
@@ -42,30 +42,54 @@ def wdc_parsefile(fname):
     try:
         # New WDC file format
         cols = [(0, 3), (3, 5), (5, 7), (7, 8), (8, 10), (14, 16),
-                (16, 20), (116, 120)]
+                (16, 20), (20, 116)]
         col_names = [
             'code', 'yr', 'month', 'component', 'day', 'century',
-            'base', 'daily_mean_temp']
+            'base', 'hourly_values']
         types = {
             'code': str, 'year': int, 'month': int, 'component': str,
-            'day': int, 'century': int, 'base': int, 'daily_mean': float}
+            'day': int, 'century': int, 'base': int, 'hourly_values': str}
         data = pd.read_fwf(fname, colspecs=cols, names=col_names,
                            converters=types, header=None)
+        data['hourly_values'] = data['hourly_values'].apply(
+                                                          separate_hourly_vals)
+        data = data.set_index(['code', 'yr', 'month', 'component', 'day',
+                               'century', 'base'])['hourly_values'].apply(
+                               pd.Series).stack()
+        data = data.reset_index()
+        data.columns = ['code', 'yr', 'month', 'component', 'day', 'century',
+                        'base', 'hour', 'hourly_mean_temp']
+        data['hourly_mean_temp'] = data['hourly_mean_temp'].astype(float)
     except ValueError:
         # Old WDC format (century value is missing. Col 15 = International D
         # or Q days. Col 16 = Blank for data since 1900, 8 for data before.)
-        cols = [(0, 3), (3, 5), (5, 7), (7, 8), (8, 10), (16, 20), (116, 120)]
+        cols = [(0, 3), (3, 5), (5, 7), (7, 8), (8, 10), (16, 20), (20, 116)]
         col_names = [
             'code', 'yr', 'month', 'component', 'day', 'base',
-            'daily_mean_temp']
+            'hourly_values']
         types = {
             'code': str, 'year': int, 'month': int, 'component': str,
-            'day': int, 'base': int, 'daily_mean': float}
+            'day': int, 'base': int, 'hourly_values': str}
         data = pd.read_fwf(fname, colspecs=cols, names=col_names,
                            converters=types, header=None)
         data['century'] = 19
-
+        data['hourly_values'] = data['hourly_values'].apply(
+                                                          separate_hourly_vals)
+        data = data.set_index(['code', 'yr', 'month', 'component', 'day',
+                               'century', 'base'])['hourly_values'].apply(
+                               pd.Series).stack()
+        data = data.reset_index()
+        data.columns = ['code', 'yr', 'month', 'component', 'day', 'century',
+                        'base', 'hour', 'hourly_mean_temp']
+        data['hourly_mean_temp'] = data['hourly_mean_temp'].astype(float)
     return data
+
+
+def separate_hourly_vals(hourstring):
+    n = 4
+    hourly_vals_list = [hourstring[i:i+n] for i in range(0, len(hourstring),
+                        n)]
+    return hourly_vals_list
 
 
 def wdc_datetimes(data):
@@ -73,7 +97,7 @@ def wdc_datetimes(data):
 
     Args:
         data (pandas.DataFrame): needs columns for century, year (yy format),
-            month and day. Called by wdc_parsefile.
+            month, day and hour. Called by wdc_parsefile.
 
     Returns:
         data (pandas.DataFrame):
@@ -86,24 +110,24 @@ def wdc_datetimes(data):
     # Create datetime objects from the century, year, month and day columns of
     # the WDC format data file
     dates = data.apply(lambda x: dt.datetime.strptime(
-        "{0} {1} {2}".format(x['year'], x['month'], x['day']),
-        "%Y %m %d"), axis=1)
+        "{0} {1} {2} {3} {4}".format(x['year'], x['month'], x['day'],
+                                     x['hour'], 30), "%Y %m %d %H %M"), axis=1)
     data.insert(0, 'date', dates)
-    data.drop(['year', 'yr', 'century', 'code', 'day', 'month'], axis=1,
-              inplace=True)
+    data.drop(['year', 'yr', 'century', 'code', 'day', 'month', 'hour'],
+              axis=1, inplace=True)
 
     return data
 
 
 def wdc_xyz(data):
-    """Convert extracted WDC data to daily averages of X, Y and Z components.
+    """Convert extracted WDC data to hourly X, Y and Z components in nT.
 
     Missing values (indicated by 9999 in the datafiles) are replaced with NaNs.
 
     Args:
         data (pandas.DataFrame): dataframe containing columns for datetime
             objects, magnetic field component (D, I, F, H, X, Y or Z), the
-            tabular base and daily mean.
+            tabular base and hourly mean.
 
     Returns:
         data (pandas.DataFrame):
@@ -112,13 +136,13 @@ def wdc_xyz(data):
     """
     # Replace missing values with NaNs
     data.replace(9999, np.nan, inplace=True)
-    # Group the data by field component, calculate the daily means and form
+    # Group the data by field component, calculate the hourly means and form
     # a dataframe with separate columns for each field component
-    data = data.groupby('component').apply(daily_mean_conversion)
+    data = data.groupby('component').apply(hourly_mean_conversion)
     data.reset_index(drop=True, inplace=True)
-    data.drop(['base', 'daily_mean_temp'], axis=1, inplace=True)
+    data.drop(['base', 'hourly_mean_temp'], axis=1, inplace=True)
     data = data.pivot_table(index='date', columns='component',
-                            values='daily_mean')
+                            values='hourly_mean')
     data.reset_index(inplace=True)
 
     # Call helper function to convert D and H components to X and Y
@@ -142,38 +166,38 @@ def wdc_xyz(data):
     return data
 
 
-def daily_mean_conversion(data):
-    """Use the tabular base to calculate daily means in nT or degrees (D, I).
+def hourly_mean_conversion(data):
+    """Use the tabular base to calculate hourly means in nT or degrees (D, I).
 
-    Uses the tabular base and daily value from the WDC file to calculate the
-    daily means of magnetic field components. Value is in nT for H, F, X, Y or
+    Uses the tabular base and hourly value from the WDC file to calculate the
+    hourly means of magnetic field components. Value is in nT for H, F, X, Y or
     Z components and in degrees for D or I components. Called by wdc_xyz.
 
-    daily_mean = tabular_base*100 + wdc_daily_value (for components in nT)
+    hourly_mean = tabular_base*100 + wdc_hourly_value (for components in nT)
 
-    daily_mean = tabular_base + wdc_daily_value/600 (for D and I components)
+    hourly_mean = tabular_base + wdc_hourly_value/600 (for D and I components)
 
     Args:
         data (pandas.DataFrame): dataframe containing columns for datetime
             objects, magnetic field component (D, I, F, H, X, Y or Z), the
-            tabular base and daily mean.
+            tabular base and hourly mean.
 
     Returns:
         data (pandas.DataFrame):
             the same dataframe with datetime objects in the first column and
-            daily means of the field components in either nT or degrees
+            hourly means of the field components in either nT or degrees
             (depending on the component).
     """
     grp = pd.DataFrame()
     for group in data.groupby('component'):
 
         if group[0] == 'D' or group[0] == 'I':
-            group[1]['daily_mean'] = group[1]['base'] + \
-                (1 / 600.0) * group[1]['daily_mean_temp']
+            group[1]['hourly_mean'] = group[1]['base'] + \
+                (1 / 600.0) * group[1]['hourly_mean_temp']
             grp = grp.append(group[1], ignore_index=True)
         else:
-            group[1]['daily_mean'] = 100.0 * group[1]['base'] + \
-                group[1]['daily_mean_temp']
+            group[1]['hourly_mean'] = 100.0 * group[1]['base'] + \
+                group[1]['hourly_mean_temp']
             grp = grp.append(group[1], ignore_index=True)
     return grp
 
@@ -190,13 +214,13 @@ def angles_to_geographic(data):
 
     Args:
         data (pandas.DataFrame): dataframe containing columns for datetime
-            objects and daily means of the magnetic field components (D, I, F,
+            objects and hourly means of the magnetic field components (D, I, F,
             H, X, Y or Z).
 
     Returns:
         data (pandas.DataFrame):
             the same dataframe with datetime objects in the first column and
-            daily means of the field components in either nT or degrees
+            hourly means of the field components in either nT or degrees
             (depending on the component).
     """
     data.loc[(~np.isnan(data['D']) & ~np.isnan(data['H'])), 'X'] = data.loc[(
@@ -242,7 +266,7 @@ def append_wdc_data(*, obs_name,
 
     Returns:
         data (pandas.DataFrame):
-            dataframe containing all available daily geomagnetic data at a
+            dataframe containing all available hourly geomagnetic data at a
             single observatory. First column is a series of datetime objects
             (in the format yyyy-mm-dd) and subsequent columns are the X, Y and
             Z components of the magnetic field at the specified times.
@@ -277,7 +301,7 @@ def covobs_parsefile(*, fname, data_type):
 
     Returns:
         model_data (pandas.DataFrame):
-            dataframe containing daily geomagnetic data. First column is a
+            dataframe containing hourly geomagnetic data. First column is a
             series of datetime objects (in the format yyyy-mm-dd) and
             subsequent columns are the X, Y and Z components of the SV/MF at
             the specified times.
@@ -346,9 +370,9 @@ def covobs_readfile(*, fname, data_type):
     return data
 
 
-def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/', write_path,
-                     print_obs=True):
-    """Converts hourly WDC data to X, Y and Z daily means and save to CSV file.
+def wdc_to_hourly_csv(*, fpath='./data/BGS_hourly/', write_path,
+                      print_obs=True):
+    """Converts WDC file to X, Y and Z hourly means and save to CSV file.
 
     Finds WDC hourly data files for all observatories in a directory path
     (assumes data for each observatory is located inside a directory named
@@ -357,9 +381,9 @@ def wdc_to_daily_csv(*, fpath='./data/BGS_hourly/', write_path,
     a three digit observatory name, year is a four digit year and the string
     /hourval/single_obs prepends each directory name. e.g.
     /hourval/single_obs/ngk/ngk1990.wdc or /hourval/single_obs/clf/clf2013.wdc.
-    This function converts the hourly data to daily X, Y and Z means, appends
-    all years of data for a single observatory into a single dataframe and
-    saves the dataframe to a CSV file.
+    This function converts the hourly WDC format data to hourly X, Y and Z
+    means, appends all years of data for a single observatory into a single
+    dataframe and saves the dataframe to a CSV file.
 
     Args:
         fpath (str): path to the datafiles. Assumes data for each observatory
