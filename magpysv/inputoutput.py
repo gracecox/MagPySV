@@ -148,12 +148,7 @@ def wdc_xyz(data):
     # Call helper function to convert D and H components to X and Y
     if 'D' in data.columns and 'H' in data.columns:
         data = angles_to_geographic(data)
-        if 'X' in data.columns and 'Y' in data.columns and 'Z' in data.columns:
-            data = data[['date', 'X', 'Y', 'Z']]
 
-    else:
-        if 'X' in data.columns and 'Y' in data.columns and 'Z' in data.columns:
-            data = data[['date', 'X', 'Y', 'Z']]
     # Make sure that the dataframe contains columns for X, Y and Z components,
     # and create a column of NaN values if a component is missing
     if 'X' not in data.columns:
@@ -163,6 +158,7 @@ def wdc_xyz(data):
     if 'Z' not in data.columns:
         data['Z'] = np.NaN
 
+    data = data[['date', 'X', 'Y', 'Z']]
     return data
 
 
@@ -513,7 +509,6 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
                                       data_type='sv')
         model_sv_data_temp = covobs_readfile(fname=os.path.join(model_path,
                                              model_sv_file), data_type='sv')
-        print(model_sv_data_temp.head())
         model_mf_data_temp = covobs_readfile(fname=os.path.join(model_path,
                                              model_mf_file), data_type='mf')
 
@@ -579,3 +574,65 @@ def datetime_to_decimal(date):
     year_end = year_start.replace(year=date.year + 1)
     decimal_year = date.year + (date - year_start) / (year_end - year_start)
     return decimal_year
+
+
+def ae_parsefile(fname):
+    """Load a WDC format AE datafile and place the contents into a dataframe.
+    """
+    # AE WDC file format
+    cols = [(0, 2), (3, 5), (5, 7), (8, 10), (14, 16),
+            (16, 20), (20, 116)]
+    col_names = [
+        'code', 'yr', 'month', 'day', 'century',
+        'base', 'hourly_values']
+    types = {
+        'code': str, 'year': int, 'month': int,
+        'day': int, 'century': int, 'base': int, 'hourly_values': str}
+    data = pd.read_fwf(fname, colspecs=cols, names=col_names,
+                       converters=types, header=None)
+    data = data.loc[data['code']=="AE"]
+    try:
+        data['hourly_values'] = data['hourly_values'].apply(
+                                                    separate_hourly_vals)
+    except ValueError:
+        data['hourly_values'] = data['hourly_values'].apply(
+                                                    separate_hourly_vals_ae)
+    data = data.set_index(['code', 'yr', 'month', 'day',
+                           'century', 'base'])['hourly_values'].apply(
+                           pd.Series).stack()
+    data = data.reset_index()
+    data.columns = ['code', 'yr', 'month', 'day', 'century',
+                    'base', 'hour', 'hourly_mean_temp']
+    data['hourly_mean_temp'] = data['hourly_mean_temp'].astype(float)
+    return data
+
+
+def separate_hourly_vals_ae(hourstring):
+    n = 4
+    if hourstring[0] is not '-' and hourstring[0] is not ' ':
+        hourstring = ' ' + hourstring
+    hourly_vals_list = [hourstring[i:i+n] for i in range(0, len(hourstring),
+                        n)]
+    return hourly_vals_list
+
+
+def ae_readfile(fname):
+    data = ae_parsefile(fname)
+    data = wdc_datetimes(data)
+    data['hourly_mean'] = 100.0 * data['base'] + \
+                data['hourly_mean_temp']
+    data.drop(['hourly_mean_temp', 'base'], axis=1, inplace=True)
+    return data
+
+def append_ae_data(ae_data_path):
+    data = pd.DataFrame()
+    filenames = glob.glob(ae_data_path + 'ae*.txt')
+    for file in filenames:
+        print(file)
+        try:
+            frame = ae_readfile(file)
+            data = data.append(frame, ignore_index=True)
+        except StopIteration:
+            pass
+
+    return data

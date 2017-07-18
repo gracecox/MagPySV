@@ -186,3 +186,24 @@ def remove_selected_points(*, data, fname):
             pass
 
     return data
+
+def calculate_sv_index(obs_data, mean_spacing=1):
+    """Calculate the secular variation of index
+    """
+    # write function to calculate sv here
+    obs_sv = pd.DataFrame()
+    obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
+        months=int(np.floor(mean_spacing/2)), day=1)
+    if mean_spacing % 2 == 1:
+        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
+            day=1)
+    else:
+        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
+            day=15)
+    # Calculate scale required to give SV in nT/yr
+    scaling_factor = 12 / mean_spacing
+    obs_sv['mean'] = scaling_factor * obs_data['mean'].diff(periods=mean_spacing)
+    obs_sv.drop(obs_sv.head(mean_spacing).index, inplace=True)
+
+    return obs_sv
+

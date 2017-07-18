@@ -19,12 +19,12 @@ import scipy as sp
 
 # Setup matplotlib to use latex fonts in figure labels if needed
 plt.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}',
-                                       r'\usepackage{helvet}',
                                        r'\usepackage{sansmath}',
                                        r'\sansmath']
 
 
-def plot_eigenvalues(*, values, fig_size=(8, 6), font_size=12, label_size=16):
+def plot_eigenvalues(*, values, fig_size=(8, 6), font_size=12, label_size=16,
+                     save_fig=False, write_path=None):
     """Plot eigenvalues of the covariance matrix of SV residuals.
 
     Produces a plot of the eigenvalues obtained during the principal component
@@ -49,10 +49,14 @@ def plot_eigenvalues(*, values, fig_size=(8, 6), font_size=12, label_size=16):
 #    plt.axis('tight')
     plt.xlabel(r'$i$', fontsize=label_size)
     plt.ylabel(r'$\lambda_i$', fontsize=label_size)
+    if save_fig is True:
+        fpath = write_path + 'eigenvalues.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_eigenvectors(*, obs_names, eigenvecs, fig_size=(8, 6), font_size=12,
-                      label_size=16):
+                      label_size=16, save_fig=False, write_path=None):
     """Plot eigenvectors of the covariance matrix of SV residuals.
 
     Produces a plot of the eigenvectors corresponding to the n largest
@@ -87,10 +91,14 @@ def plot_eigenvectors(*, obs_names, eigenvecs, fig_size=(8, 6), font_size=12,
     plt.legend(['x direction', 'y direction', 'z direction'],
                loc='upper right', frameon=False)
     plt.xlabel('Location', fontsize=label_size)
+    if save_fig is True:
+        fpath = write_path + 'noisy_eigenvectors.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
-            label_size=16, plot_legend=True):
+            label_size=16, plot_legend=True, save_fig=False, write_path=None):
     """Plot the SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the SV and field
@@ -141,11 +149,15 @@ def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
     plt.ylabel(r'$Z$ (nT)', fontsize=label_size)
     if plot_legend is True:
         plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + obs + '.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
             label_size=16, plot_legend=False, plot_average=False,
-            window_length=12, min_samples=3):
+            window_length=12, min_samples=3, save_fig=False, write_path=None):
     """Plot the SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the SV and field
@@ -245,12 +257,17 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
 
         if plot_legend is True:
             plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + obs + '.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
                        fig_size=(8, 6), font_size=12, label_size=16,
                        plot_legend=False, plot_average=False,
-                       window_length=12, min_samples=3):
+                       window_length=12, min_samples=3, save_fig=False,
+                       write_path=None):
     """Plot noisy/denoised SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the noisy SV, the denoised
@@ -360,10 +377,67 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         if plot_legend is True:
             plt.legend([obs, 'Denoised SV', 'COV-OBS'],
                        loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + obs + '.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
+
+
+def plot_ae(*, dates, signal, fig_size=(8, 6), font_size=12, label_size=16,
+             plot_legend=True, save_fig=False, write_path=None):
+    """Compare the proxy used to denoise the SV data with the AE index.
+
+    Loads AE data and plots it alongside the signal
+    used as a proxy for unmodelled external signal. Both time series are
+    reduced to zero mean and unit variance (i.e. their zscore) for plotting.
+
+    Args:
+        dates (datetime.datetime): dates of time series measurements.
+        signal (time series): proxy for unmodelled external signal used in the
+            denoising process (principal component analysis). The proxy is the
+            residual in the noisiest eigendirection(s).
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        font_size (int): font size for axes. Defaults to 12 pt.
+        label_size (int): font size for axis labels. Defaults to 16 pt.
+        plot_legend (bool): option to include a legend on the plot. Defaults
+            to True.
+    """
+    # Read the AE data and put into a dataframe
+    data_path = '/Users/gracecox/Desktop/ae_index/means'
+    data_file = 'fdmm.csv'
+    col_names = ['date', 'ae']
+    ae = pd.read_csv(os.path.join(data_path, data_file),
+                     sep=',', header=0, names=col_names, parse_dates=[0])
+    # Only keep Dcx data for dates during the period of interest
+    ae = ae[ae['date'].isin(dates)]
+    ae['zscore'] = (ae['ae'] - ae['ae'].mean())/ae['ae'].std(ddof=0)
+    masked_ae = np.ma.array(ae['ae'], mask=np.isnan(ae['ae']))
+    coeff = np.ma.corrcoef(masked_ae, signal, rowvar=False,
+                           allow_masked=True)
+    # Plot the zscore of the two time series
+    plt.figure(figsize=fig_size)
+    plt.gca().xaxis_date()
+    plt.plot(ae['date'], ae['zscore'], 'b', dates,
+             sp.stats.mstats.zscore(signal), 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.xlabel('Year', fontsize=label_size)
+    plt.ylabel('AE (nT/yr)', fontsize=label_size)
+    plt.xticks(fontsize=font_size)
+    plt.yticks(fontsize=font_size)
+    plt.annotate('r = ' + "{:.2f}".format(coeff.data[1, 0]), xy=(0.05, 0.95),
+                 xycoords='axes fraction')
+    if plot_legend is True:
+        plt.legend(['AE', 'proxy'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + 'ae_comparison.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_dcx(*, dates, signal, fig_size=(8, 6), font_size=12, label_size=16,
-             plot_legend=True):
+             plot_legend=True, save_fig=False, write_path=None):
     """Compare the proxy used to denoise the SV data with the Dst index.
 
     Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
@@ -397,6 +471,11 @@ def plot_dcx(*, dates, signal, fig_size=(8, 6), font_size=12, label_size=16,
     # Only keep Dcx data for dates during the period of interest
     dcx = dcx[dcx['date'].isin(dates)]
 
+#    masked_dcx = np.ma.array(dcx['monthly_mean'],
+#                             mask=np.isnan(dcx['monthly_mean']))
+#    coeff = np.ma.corrcoef(masked_dcx, signal, rowvar=False,
+#                           allow_masked=True)
+    coeff = np.corrcoef(dcx.monthly_mean, signal)[0, 1]
     # Plot the zscore of the two time series
     plt.figure(figsize=fig_size)
     plt.gca().xaxis_date()
@@ -408,12 +487,19 @@ def plot_dcx(*, dates, signal, fig_size=(8, 6), font_size=12, label_size=16,
     plt.ylabel('Dcx (nT/yr)', fontsize=label_size)
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
+    plt.annotate('r = ' + "{:.2f}".format(coeff), xy=(0.05, 0.95),
+                 xycoords='axes fraction')
     if plot_legend is True:
         plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + 'dcx_comparison.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_dcx_fft(*, dates, signal, fig_size=(8, 6), font_size=12,
-                 label_size=16, plot_legend=True):
+                 label_size=16, plot_legend=True, save_fig=False,
+                 write_path=None):
     """Compare the DFTs of the proxy signal with that of the Dst index.
 
     Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
@@ -480,10 +566,85 @@ def plot_dcx_fft(*, dates, signal, fig_size=(8, 6), font_size=12,
     plt.ylabel('Power', fontsize=label_size)
     if plot_legend is True:
         plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + 'dcx_comparison_fft.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
+
+
+def plot_ae_fft(*, dates, signal, fig_size=(8, 6), font_size=12,
+                label_size=16, plot_legend=True, save_fig=False,
+                write_path=None):
+    """Compare the DFTs of the proxy signal with that of the AE index.
+
+    Loads AE data, calculates its DFT and plots it
+    alongside the DFT of the signal used as a proxy for unmodelled external
+    signal. The length of the time series are padded with zeroes up to the next
+    power of two.
+
+    Args:
+        dates (datetime.datetime): dates of time series measurements.
+        signal (time series): proxy for unmodelled external signal used in the
+            denoising process (principal component analysis). The proxy is the
+            residual in the noisiest eigendirection(s).
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        font_size (int): font size for axes. Defaults to 12 pt.
+        label_size (int): font size for axis labels. Defaults to 16 pt.
+        plot_legend (bool): option to include a legend on the plot. Defaults
+            to True.
+    """
+    # Read the AE data and put into a dataframe
+    data_path = '/Users/gracecox/Desktop/ae_index/means'
+    data_file = 'fdmm.csv'
+    col_names = ['date', 'ae']
+    ae = pd.read_csv(os.path.join(data_path, data_file),
+                     sep=',', header=0, names=col_names, parse_dates=[0])
+    # Only keep AE data for dates during the period of interest
+    ae = ae[ae['date'].isin(dates)]
+
+    sampling_period = 1 / 12.0   # Sampling time in years
+
+    # Find the next power of two higher than the length of the time series and
+    # perform the FFT with the series padded with zeroes to this length
+    sample_length = int(pow(2, np.ceil(np.log2(len(signal)))))
+
+    ae_fft = sp.fft(ae['ae'], sample_length)
+    proxy_fft = sp.fft(signal, sample_length)
+    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
+    ae_power = (2.0 / sample_length) * np.abs(ae_fft[:sample_length // 2])
+    proxy_power = (2.0 / sample_length) * np.abs(
+        proxy_fft[:sample_length // 2])
+
+    plt.figure(figsize=fig_size)
+    # Time domain
+    plt.subplot(2, 1, 1)
+    plt.gca().xaxis_date()
+    plt.plot(ae.date, ae['ae'], 'b', dates, signal, 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.xticks(fontsize=font_size)
+    plt.yticks(fontsize=font_size)
+    plt.ylabel('AE (nT/yr)', fontsize=label_size)
+    # Frequency domain
+    plt.subplot(2, 1, 2)
+    plt.plot(freq, ae_power, 'b', freq, proxy_power, 'r')
+    plt.axis('tight')
+    plt.xticks(fontsize=font_size)
+    plt.yticks(fontsize=font_size)
+    plt.xlabel('Frequency (cycles/year)', fontsize=label_size)
+    plt.ylabel('Power', fontsize=label_size)
+    if plot_legend is True:
+        plt.legend(['AE', 'proxy'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + 'ae_comparison_fft.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
 
 
 def plot_outliers(*, dates, signal, obs_name, outliers, fig_size=(8, 6),
-                  font_size=12, label_size=16):
+                  font_size=12, label_size=16, save_fig=False,
+                  write_path=None):
     """Plot the SV and identified outliers.
 
     Args:
@@ -508,3 +669,7 @@ def plot_outliers(*, dates, signal, obs_name, outliers, fig_size=(8, 6),
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
     plt.legend([obs_name, 'outlier'], loc='upper right', frameon=False)
+    if save_fig is True:
+        fpath = write_path + obs_name + '_outliers.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
