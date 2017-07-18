@@ -16,6 +16,7 @@ import os
 from subprocess import Popen, PIPE
 import numpy as np
 import requests
+import pandas as pd
 
 
 def get_observatory_list():

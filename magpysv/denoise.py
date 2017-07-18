@@ -226,7 +226,7 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
 
 
 def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
-                    plot_fig=False):
+                    plot_fig=False, save_fig=False, write_path=None):
     """Detect outliers in a time series and remove them.
 
     Use the following formula to detect outliers:
@@ -277,7 +277,8 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
     # Plot the outliers and original time series if required
     if plot_fig is True:
         svplots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
-                              outliers=outliers)
+                              outliers=outliers, save_fig=save_fig,
+                              write_path=write_path)
     # Set the outliers to nan
     signal[difference[obs_name] > 0] = np.nan
 
