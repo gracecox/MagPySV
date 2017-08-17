@@ -116,7 +116,7 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values, eig_vectors.data[:, 0:proxy_number]
+    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals
 
 
 def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
@@ -222,7 +222,7 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values, eig_vectors.data[:, 0:proxy_number]
+    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals
 
 
 def detect_outliers(*, dates, signal, obs_name, window_length, threshold,

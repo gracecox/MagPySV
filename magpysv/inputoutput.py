@@ -512,15 +512,15 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
         model_mf_data_temp = covobs_readfile(fname=os.path.join(model_path,
                                              model_mf_file), data_type='mf')
 
-        model_sv_data_temp['date'] = (model_sv_data_temp['date'] +
-                                      pd.tseries.offsets.DateOffset(day=1))
+        model_sv_data_temp['date'] = model_sv_data_temp['date'].apply(
+            lambda dt: dt.replace(day=1))
 
         obs_data_temp.rename(
             columns={'dX': 'dX' + '_' + observatory,
                      'dY': 'dY' + '_' + observatory,
                      'dZ': 'dZ' + '_' + observatory}, inplace=True)
-        obs_data_temp['date'] = (obs_data_temp['date'] +
-                                 pd.tseries.offsets.DateOffset(day=1))
+        obs_data_temp['date'] = obs_data_temp['date'].apply(
+            lambda dt: dt.replace(day=1))
         model_sv_data_temp.rename(
             columns={'dX': 'dX' + '_' + observatory,
                      'dY': 'dY' + '_' + observatory,
@@ -553,9 +553,8 @@ def combine_csv_data(*, start_date, end_date, sampling_rate='MS',
                 left=model_mf_data, right=model_mf_data_temp,
                 how='left', on='date')
     if day_of_month is not 1:
-        model_sv_data['date'] = (model_sv_data['date'] +
-                                 pd.tseries.offsets.DateOffset(
-                                 day=day_of_month))
+        model_sv_data['date'] = model_sv_data['date'].apply(
+            lambda dt: dt.replace(day=day_of_month))
         model_mf_data['date'] = model_sv_data['date']
         obs_data['date'] = model_sv_data['date']
     return obs_data, model_sv_data, model_mf_data
@@ -624,6 +623,7 @@ def ae_readfile(fname):
     data.drop(['hourly_mean_temp', 'base'], axis=1, inplace=True)
     return data
 
+
 def append_ae_data(ae_data_path):
     data = pd.DataFrame()
     filenames = glob.glob(ae_data_path + 'ae*.txt')
@@ -631,6 +631,61 @@ def append_ae_data(ae_data_path):
         print(file)
         try:
             frame = ae_readfile(file)
+            data = data.append(frame, ignore_index=True)
+        except StopIteration:
+            pass
+
+    return data
+
+
+def ap_readfile(fname):
+    col_names = ['full_string']
+    types = {'full_string': str}
+    if fname[-8] == '2':
+        cols = [(1, 55)]
+        data = pd.read_fwf(fname, colspecs=cols, names=col_names,
+                           converters=types, header=None)
+        data['month'] = data.full_string.str[1:3]
+        data['day'] = data.full_string.str[3:5]
+        data['hourly_values'] = data.full_string.str[30:]
+    else:
+        cols = [(0, 55)]
+        data = pd.read_fwf(fname, colspecs=cols, names=col_names,
+                           converters=types, header=None)
+        data['month'] = data.full_string.str[2:4]
+        data['day'] = data.full_string.str[4:6]
+        data['hourly_values'] = data.full_string.str[32:]
+    data.drop(['full_string'], axis=1, inplace=True)
+    data['hourly_values'] = data['hourly_values'].apply(separate_three_hourly_vals)
+    data = data.set_index(['month', 'day'])['hourly_values'].apply(
+                               pd.Series).stack()
+    data = data.reset_index()
+    data.columns = ['month', 'day', 'hour', 'hourly_mean']
+    data['hourly_mean'] = data['hourly_mean'].astype(float)
+    data['year'] = int(fname[-8:-4])
+    dates = data.apply(lambda x: dt.datetime.strptime(
+        "{0} {1} {2} {3} {4}".format(x['year'], x['month'], x['day'],
+                                     x['hour'], 30), "%Y %m %d %H %M"), axis=1)
+    data.insert(0, 'date', dates)
+    data.drop(['year', 'day', 'month', 'hour'],
+              axis=1, inplace=True)
+    return data
+
+
+def separate_three_hourly_vals(hourstring):
+    n = 3
+    hourly_vals_list = [hourstring[i:i+n] for i in range(0, len(hourstring),
+                        n)]
+    hourly_vals_list = np.repeat(hourly_vals_list, n-1)
+    return hourly_vals_list
+
+def append_ap_data(ap_data_path):
+    data = pd.DataFrame()
+    filenames = glob.glob(ap_data_path + 'kp*.wdc')
+    for file in filenames:
+        print(file)
+        try:
+            frame = ap_readfile(file)
             data = data.append(frame, ignore_index=True)
         except StopIteration:
             pass

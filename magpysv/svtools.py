@@ -42,11 +42,9 @@ def calculate_sv(obs_data, mean_spacing=1):
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
         months=int(np.floor(mean_spacing/2)), day=1)
     if mean_spacing % 2 == 1:
-        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
-            day=1)
+        obs_sv['date'] = obs_sv['date'].apply(lambda dt: dt.replace(day=1))
     else:
-        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
-            day=15)
+        obs_sv['date'] = obs_sv['date'].apply(lambda dt: dt.replace(day=15))
     # Calculate scale required to give SV in nT/yr
     scaling_factor = 12 / mean_spacing
     obs_sv['dx'] = scaling_factor * obs_data['X'].diff(periods=mean_spacing)
@@ -121,11 +119,12 @@ def data_resampling(data, sampling='MS', average_date=True):
     return resampled
 
 
-def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
-    """Remove observatory data for days with Ap values above a threshold value.
+def apply_Ap_threshold(*, Ap_file=None, obs_data, threshold):
+    """Remove observatory data for hours with Ap values above threshold value.
 
     Args:
-        obs_data (pandas.DataFrame): dataframe containing daily means of
+        Ap_file (str): path to file containing hourly values for the Ap index
+        obs_data (pandas.DataFrame): dataframe containing hourly means of
         observed geomagnetic field values.
         threshold (int): the threshold Ap value. Data for days with a higher Ap
             value will be replaced with NaNs and omitted from monthly (or
@@ -134,18 +133,13 @@ def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
     Returns:
         residuals (pandas.DataFrame): dataframe containing SV residuals.
     """
-    Ap_daily = pd.read_csv(Ap_path, sep=' ',
-                           names=['year', 'month', 'day', 'Ap'])
-
-    date = Ap_daily.apply(lambda x: dt.datetime.strptime(
-        "{0} {1} {2}".format(int(x['year']), int(x['month']), int(x['day'])),
-        "%Y %m %d"),
-        axis=1)
-    Ap_daily.insert(0, 'date', date)
-    Ap_daily.drop(['year', 'month', 'day'], axis=1, inplace=True)
+    col_names = ['date', 'Ap']
+    Ap_hourly = pd.read_csv(Ap_file, names=col_names,
+                  dtype={'date': 'str', 'Ap': 'float'}, parse_dates=[0],
+                  skiprows=0, index_col=None)
     # Merge the two dataframes so that only dates contained within both are
     # retained
-    obs_data = pd.merge(obs_data, Ap_daily, on='date', how='inner')
+    obs_data = pd.merge(obs_data, Ap_hourly, on='date', how='inner')
     # Use the threshold to discard data from days with high external field
     # activity
     obs_data.loc[obs_data.Ap > threshold, 'X'] = np.NaN
@@ -154,7 +148,6 @@ def apply_Ap_threshold(*, Ap_path='data/Ap_daily.txt', obs_data, threshold):
     obs_data.drop(['Ap'], axis=1, inplace=True)
 
     return obs_data
-
 
 def remove_selected_points(*, data, fname):
     """Remove specified points from dataset based on list of points in a file.
@@ -187,6 +180,7 @@ def remove_selected_points(*, data, fname):
 
     return data
 
+
 def calculate_sv_index(obs_data, mean_spacing=1):
     """Calculate the secular variation of index
     """
@@ -195,11 +189,9 @@ def calculate_sv_index(obs_data, mean_spacing=1):
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
         months=int(np.floor(mean_spacing/2)), day=1)
     if mean_spacing % 2 == 1:
-        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
-            day=1)
+        obs_sv['date'] = obs_sv['date'].apply(lambda dt: dt.replace(day=1))
     else:
-        obs_sv['date'] = obs_data['date'] + pd.tseries.offsets.DateOffset(
-            day=15)
+        obs_sv['date'] = obs_sv['date'].apply(lambda dt: dt.replace(day=15))
     # Calculate scale required to give SV in nT/yr
     scaling_factor = 12 / mean_spacing
     obs_sv['mean'] = scaling_factor * obs_data['mean'].diff(periods=mean_spacing)
@@ -207,3 +199,28 @@ def calculate_sv_index(obs_data, mean_spacing=1):
 
     return obs_sv
 
+
+def calculate_correlation_dcx(*, dates, signal, dcx_file):
+    col_names = ['date', 'dcx']
+    dcx = pd.read_csv(dcx_file, names=col_names,
+                  dtype={'date': 'str', 'dcx': 'float'}, parse_dates=[0],
+                  skiprows=1, index_col=None)
+    df = pd.DataFrame({'date': dates, 'proxy': signal})
+    # Merge the two dataframes so that only dates contained within both are
+    # retained
+    merged = pd.merge(df.dropna(), dcx.dropna(), on='date', how='inner')
+    coeff = np.corrcoef(merged.dcx, merged.proxy)
+    return coeff.data[0, 1], merged
+
+
+def calculate_correlation_ae(*, dates, signal, ae_file):
+    col_names = ['date', 'ae']
+    ae = pd.read_csv(ae_file, names=col_names,
+                  dtype={'date': 'str', 'ae': 'float'}, parse_dates=[0],
+                  skiprows=1, index_col=None)
+    df = pd.DataFrame({'date': dates, 'proxy': signal})
+    # Merge the two dataframes so that only dates contained within both are
+    # retained
+    merged = pd.merge(df.dropna(), ae.dropna(), on='date', how='inner')
+    coeff = np.corrcoef(merged.ae, merged.proxy)
+    return coeff.data[0, 1], merged
