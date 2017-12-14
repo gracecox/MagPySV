@@ -1,33 +1,15 @@
 language: python
-
 python:
-  - "3.4"
-
-before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda update --yes conda
-
-# commands to install R (statistical language) for use with the rpy2 python package
-addons:
-  apt:
-    sources:
-    - r-packages-precise
-    packages:
-    - r-base
-
-# command to install dependencies
+- '3.5'
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose 
-  - pip install -r requirements.txt
-  - pip install pytest
-  - pip install pytest-cov
-  - pip install python-coveralls
-
-# command to run tests
+- pip install -r requirements.txt
+- pip install pytest
+- pip install pytest-cov
+- pip install python-coveralls
 script:
-  - py.test --cov-report term-missing --cov=magpy
-
+- py.test --cov-report term-missing --cov=magpysv
 after_success:
-  - coveralls
+- coveralls
+notifications:
+  slack:
+    secure: eF7FwbRnJv3NQOAuTl3v76IErgn24P25zlxNBFPuYyed4HSfclZFO9wUt0Whoyue1716S2TtqqV5fY+8XsDMnDb6b2TtFO2IV9CB1qPWDg5xGulYKPoZ4VS3V1EnxQWwo1pfsTCvUKqnIB+TsGKoCtXtkxOSx89TP2uZ2MX+RKSl4icY2NAUYDl6khP1VkmEEZyGeREY6yudkTga7oUMUhXEDZXKvIhJaqWUGhRnt2O1/adAFaDehWyTB7CLNHyxvJQM4U53l34GNulIpGVkWxPMkD8MZyPccvUf+GebElMOo0QBmtzNZcZ05r6YV+ORAL60LLgVZ9NbDUDiPasS40/gCckafdB11KQ8WsXt8vLe1gd2wxO5eLqJAIBAUlxadoP7bHEmfTElPxvX5/QQ45F1WXK41F6OiP/fDad2Ukb2k2YVAdxLePIdY7EFmjS2RolYlxcvjRD1hPjFeoiA3Q/QdsThPugRKhqA8FTsxQcknyYzb55C4HAeVwJQzn9RuSc7nLuhXqQOmsV67hcQfl7wPMpsrJ3nksNcc+8ULAoahbto3RCBKvZmFyVhNqQXSTIl2awvaltDxxIC7S/gut7jCSalBnweDPs8bW5Ao/Nzi9mApELDT9HE84HGB63SdTbUTRrF7uDNenDJrBdSFsvVGZqGLwaPxtknJhhWo/Y=
