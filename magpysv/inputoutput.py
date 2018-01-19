@@ -9,8 +9,8 @@ Part of the MagPySV package for geomagnetic data analysis. This module provides
 various functions to read, parse and manipulate the contents of World Data
 Centre (WDC) formatted files containing geomagnetic data and output data to
 comma separated values (CSV) files. Also contains functions to read output of
-the COV-OBS magnetic field model series by Gillet et al. (2013, Geochem.
-Geophys. Geosyst.; 2015, Earth, Planets and Space).
+code used for the COV-OBS magnetic field model series by Gillet et al. (2013,
+Geochem. Geophys. Geosyst.; 2015, Earth, Planets and Space).
 """
 
 
@@ -35,7 +35,7 @@ def wdc_parsefile(fname):
     Returns:
         data (pandas.DataFrame):
             dataframe containing hourly geomagnetic data. First column is a
-            series of datetime objects (in the format yyyy-mm-dd) and
+            series of datetime objects (in the format yyyy-mm-dd hh:30:00) and
             subsequent columns are the X, Y and Z components of the magnetic
             field at the specified times.
     """
@@ -86,6 +86,17 @@ def wdc_parsefile(fname):
 
 
 def separate_hourly_vals(hourstring):
+    """Separate individual hourly field means from the string containing all
+    24 values in the WDC file. Called by wdc_parsefile.
+
+    Args:
+        hourstring (str): string containing the hourly magnetic field means
+            parsed from a WDC file for a single day.
+
+    Returns:
+        hourly_vals_list (list):
+            list containing the hourly field values.
+    """
     n = 4
     hourly_vals_list = [hourstring[i:i+n] for i in range(0, len(hourstring),
                         n)]
@@ -102,13 +113,13 @@ def wdc_datetimes(data):
     Returns:
         data (pandas.DataFrame):
             the same dataframe with a series of datetime objects (in the format
-            yyyy-mm-dd) in the first column.
+            yyyy-mm-dd hh:30:00) in the first column.
     """
     # Convert the century/yr columns to a year
     data['year'] = 100 * data['century'] + data['yr']
 
     # Create datetime objects from the century, year, month and day columns of
-    # the WDC format data file
+    # the WDC format data file. The hourly mean is given at half past the hour
     dates = data.apply(lambda x: dt.datetime.strptime(
         "{0} {1} {2} {3} {4}".format(x['year'], x['month'], x['day'],
                                      x['hour'], 30), "%Y %m %d %H %M"), axis=1)
@@ -179,10 +190,10 @@ def hourly_mean_conversion(data):
             tabular base and hourly mean.
 
     Returns:
-        data (pandas.DataFrame):
-            the same dataframe with datetime objects in the first column and
-            hourly means of the field components in either nT or degrees
-            (depending on the component).
+        grp (pandas.DataFrame):
+            dataframe with datetime objects in the first column and hourly
+            means of the field components in either nT or degrees (depending on
+            the component).
     """
     grp = pd.DataFrame()
     for group in data.groupby('component'):
@@ -231,7 +242,7 @@ def angles_to_geographic(data):
 
 
 def wdc_readfile(fname):
-    """Wrapper function to call wdc_parsefile, wdc_readfile and wdc_xyz.
+    """Wrapper function to call wdc_parsefile, wdc_datetimes and wdc_xyz.
 
     Args:
         fname (str): path to a WDC datafile.
@@ -239,9 +250,9 @@ def wdc_readfile(fname):
     Returns:
         data (pandas.DataFrame):
             dataframe containing the data read from the WDC file. First column
-            is a series of datetime objects (in the format yyyy-mm-dd) and
-            subsequent columns are the X, Y and Z components of the magnetic
-            field at the specified times.
+            is a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
+            and subsequent columns are the X, Y and Z components of the
+            magnetic field at the specified times (hourly means).
     """
     rawdata = wdc_parsefile(fname)
     rawdata = wdc_datetimes(rawdata)
@@ -250,28 +261,28 @@ def wdc_readfile(fname):
     return data
 
 
-def append_wdc_data(*, obs_name,
-                    path='./data/BGS_data/hourval/single_obs/%s/*.wdc'):
-
+def append_wdc_data(*, obs_name, path=None):
     """Append all WDC data for an observatory into a single dataframe.
 
     Args:
         obs_name (str): observatory name (as 3-digit IAGA code).
-        path (str): path to a directory containing WDC datafiles for a single
-            observatory.
+        path (str): path to directory containing WDC datafiles. All files for
+            the observatory should be located in the same directory.
 
     Returns:
         data (pandas.DataFrame):
             dataframe containing all available hourly geomagnetic data at a
             single observatory. First column is a series of datetime objects
-            (in the format yyyy-mm-dd) and subsequent columns are the X, Y and
-            Z components of the magnetic field at the specified times.
+            (in the format yyyy-mm-dd hh:30:00) and subsequent columns are the
+            X, Y and Z components of the magnetic field at the specified times.
     """
     data = pd.DataFrame()
 
-    data_path = path % obs_name
-
+    data_path = path + obs_name.lower() + '*.wdc'
+    # Obtain a list of all files containing the observatory name and ending
+    # .wdc in the specified directory
     filenames = glob.glob(data_path)
+    # Iterate over the files and append them to previous files
     for file in filenames:
         print(file)
         try:
@@ -287,8 +298,10 @@ def covobs_parsefile(*, fname, data_type):
     """Loads MF and SV predictions from the COV-OBS geomagnetic field model.
 
     Load a datafile containing SV/MF predictions from the COV-OBS magnetic
-    field model series by Gillet et al. (2013, Geochem. Geophys. Geosyst.;
-    2015, Earth, Planets and Space) field model.
+    field model series by Gillet et al. (2013, Geochem. Geophys. Geosyst.,
+    https://doi.org/10.1002/ggge.20041;
+    2015, Earth, Planets and Space, https://doi.org/10.1186/s40623-015-0225-z)
+    field model.
 
     Args:
         fname (str): path to a COV-OBS datafile.
@@ -315,7 +328,7 @@ def covobs_datetimes(data):
     """Create datetime objects from COV-OBS field model output file.
 
     The format output by the field model is year.decimalmonth e.g. 1960.08 is
-    Jan 1960
+    Jan 1960.
 
     Args:
         data (pandas.DataFrame): needs a column for decimal year (in yyyy.mm
@@ -348,6 +361,11 @@ def covobs_datetimes(data):
 def covobs_readfile(*, fname, data_type):
     """Wrapper function to call covobs_parsefile and covobs_datetimes.
 
+    The COV-OBS code (publically available) can be used to produce synthetic
+    observatory time series for other field models if the appropriate spline
+    file is used. The output will be of the same format as COV-OBS output and
+    can be read using MagPySV.
+
     Args:
         fname (str): path to a COV-OBS format datafile.
         data_type (str): specify whether the file contains magnetic field data
@@ -366,38 +384,39 @@ def covobs_readfile(*, fname, data_type):
     return data
 
 
-def wdc_to_hourly_csv(*, fpath='./data/BGS_hourly/', write_path,
+def wdc_to_hourly_csv(*, wdc_path=None, write_path, obs_list,
                       print_obs=True):
-    """Converts WDC file to X, Y and Z hourly means and save to CSV file.
+    """Convert WDC file to X, Y and Z hourly means and save to CSV file.
 
     Finds WDC hourly data files for all observatories in a directory path
-    (assumes data for each observatory is located inside a directory named
-    after the observatory). The WDC distributes data inside directories
-    with the naming convention /hourval/single_obs/obs/obsyear.wdc where obs is
-    a three digit observatory name, year is a four digit year and the string
-    /hourval/single_obs prepends each directory name. e.g.
-    /hourval/single_obs/ngk/ngk1990.wdc or /hourval/single_obs/clf/clf2013.wdc.
-    This function converts the hourly WDC format data to hourly X, Y and Z
-    means, appends all years of data for a single observatory into a single
-    dataframe and saves the dataframe to a CSV file.
+    (assumes data for all observatories are located inside the same directory).
+    The BGS downloading app distributes data inside a single directory
+    with the naming convention obsyear.wdc where obs is a three digit
+    observatory name in lowercase and year is a four digit year,
+    e.g. ngk1990.wdc or clf2013.wdc. This function converts the hourly WDC
+    format data to hourly X, Y and Z means, appends all years of data for a
+    single observatory into a single dataframe and saves the dataframe to a
+    CSV file.
 
     Args:
-        fpath (str): path to the datafiles. Assumes data for each observatory
-            is stored in a directory named after the observatory.
+        wdc_path (str): path to the directory containing datafiles.
         write_path (str): path to which the output CSV files are written.
+        obs_list (list): list of observatory names (as 3-digit IAGA codes).
         print_obs (bool): choose whether to print each observatory name as the
             function goes through the directories. Useful for checking progress
-            as it can take a while to read the whole WDC dataset.
+            as it can take a while to read the whole WDC dataset. Defaults to
+            True.
     """
-    wdc_path = fpath + 'hourval/single_obs/*'
-    dir_list = glob.glob(wdc_path)
-    obs_names = [os.path.basename(obs_path) for obs_path in dir_list]
-    for observatory in obs_names:
+    # Create the output directory if it does not exist
+    if not os.path.exists(write_path):
+        os.makedirs(write_path)
+    # Iterate over each given observatory and call append_wdc_data
+    for observatory in obs_list:
         if print_obs is True:
             print(observatory)
         wdc_data = append_wdc_data(
             obs_name=observatory,
-            path=fpath + '/hourval/single_obs/%s/*.wdc')
+            path=wdc_path)
         write_csv_data(data=wdc_data, write_path=write_path,
                        obs_name=observatory)
 
@@ -416,6 +435,10 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
             written in decimal format rather than datetime objects. Defaults to
             False.
     """
+    # Create the output directory if it does not exist
+    if not os.path.exists(write_path):
+        os.makedirs(write_path)
+
     # Convert datetime objects to decimal dates if required
     if decimal_dates is True:
         data.date = data.date.apply(datetime_to_decimal)
@@ -576,7 +599,20 @@ def datetime_to_decimal(date):
 
 
 def ae_parsefile(fname):
-    """Load a WDC format AE datafile and place the contents into a dataframe.
+    """Load a WDC-like format AE file and place contents into a dataframe.
+
+    Load a file of AE (Auroral Electroject)
+    index hourly data in the format distributed by the Kyoto WDC at
+    http://wdc.kugi.kyoto-u.ac.jp/dstae/index.html and extract the contents.
+
+    Args:
+        fname (str): path to a WDC-like formatted AE file.
+
+    Returns:
+        data (pandas.DataFrame):
+            dataframe containing hourly AE data. First column is a
+            series of datetime objects (in the format yyyy-mm-dd hh:30:00) and
+            second column contains theAE values at the specified times.
     """
     # AE WDC file format
     cols = [(0, 2), (3, 5), (5, 7), (8, 10), (14, 16),
@@ -589,13 +625,14 @@ def ae_parsefile(fname):
         'day': int, 'century': int, 'base': int, 'hourly_values': str}
     data = pd.read_fwf(fname, colspecs=cols, names=col_names,
                        converters=types, header=None)
-    data = data.loc[data['code']=="AE"]
+    data = data.loc[data['code'] == "AE"]
+    # Separate the hourly values
     try:
         data['hourly_values'] = data['hourly_values'].apply(
                                                     separate_hourly_vals)
     except ValueError:
         data['hourly_values'] = data['hourly_values'].apply(
-                                                    separate_hourly_vals_ae)
+            separate_hourly_vals_ae)
     data = data.set_index(['code', 'yr', 'month', 'day',
                            'century', 'base'])['hourly_values'].apply(
                            pd.Series).stack()
@@ -607,6 +644,17 @@ def ae_parsefile(fname):
 
 
 def separate_hourly_vals_ae(hourstring):
+    """Separate individual hourly field means from the string containing all
+    24 values in the AE file. Called by ae_parsefile.
+
+    Args:
+        hourstring (str): string containing the hourly AE means parsed from
+            a Kyoto WDC-like file for a single day.
+
+    Returns:
+        hourly_vals_list (list):
+            list containing the hourly AE values.
+    """
     n = 4
     if hourstring[0] is not '-' and hourstring[0] is not ' ':
         hourstring = ' ' + hourstring
@@ -616,17 +664,51 @@ def separate_hourly_vals_ae(hourstring):
 
 
 def ae_readfile(fname):
+    """Wrapper function to call ae_parsefile and wdc_datetimes.
+
+    Args:
+        fname (str): path to a AE file in Kyoto WDC-like format. Assumes data
+            for all years are contained within this file.
+
+    Returns:
+        data (pandas.DataFrame):
+            dataframe containing the data read from the WDC file. First column
+            is a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
+            and second column contains AE values at the specified times
+            (hourly means).
+    """
     data = ae_parsefile(fname)
     data = wdc_datetimes(data)
     data['hourly_mean'] = 100.0 * data['base'] + \
-                data['hourly_mean_temp']
+        data['hourly_mean_temp']
     data.drop(['hourly_mean_temp', 'base'], axis=1, inplace=True)
     return data
 
 
 def append_ae_data(ae_data_path):
+    """Append AE data into a single dataframe containing all years.
+
+    Data downloaded from
+    ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/AURORAL_ELECTROJET/HOURLY/
+    come in WDC-like format files with one file per year named aeyyyy.wdc (data
+    provided by the WDC at Kyoto. Can be downloaded directly from
+    http://wdc.kugi.kyoto-u.ac.jp/dstae/index.html)
+
+    Args:
+        ae_data_path (str): path to directory containing WDC-like format AE
+            datafiles. All AE files should be located in the same directory.
+
+    Returns:
+        data (pandas.DataFrame):
+            dataframe containing all available hourly AE data. First column is
+               a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
+               and second column contains AE values at the specified times.
+    """
     data = pd.DataFrame()
+    # Obtain a list of all files containing 'ae' and ending in .wdc in the
+    # specified directory
     filenames = glob.glob(ae_data_path + 'ae*.txt')
+    # Iterate over the files and append them to previous files
     for file in filenames:
         print(file)
         try:
@@ -639,8 +721,26 @@ def append_ae_data(ae_data_path):
 
 
 def ap_readfile(fname):
+    """Load an kp/ap file and place the hourly ap values into a dataframe.
+
+    Load a datafile of 3-hourly ap data and extract the contents. Each of the
+    3-hourly values for a given day is repeated three times to give an hourly
+    mean for all 24 hours of the day. This function is designed to read files
+    downloaded from the GFZ, Potsdam server at
+    ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/.
+
+    Args:
+        fname (str): path to an ap datafile.
+
+    Returns:
+        data (pandas.DataFrame):
+            dataframe containing hourly ap data. First column is a
+            series of datetime objects (in the format yyyy-mm-dd hh:30:00) and
+            second column contains ap values at the specified times.
+    """
     col_names = ['full_string']
     types = {'full_string': str}
+    # Parse the file
     if fname[-8] == '2':
         cols = [(1, 55)]
         data = pd.read_fwf(fname, colspecs=cols, names=col_names,
@@ -656,7 +756,8 @@ def ap_readfile(fname):
         data['day'] = data.full_string.str[4:6]
         data['hourly_values'] = data.full_string.str[32:]
     data.drop(['full_string'], axis=1, inplace=True)
-    data['hourly_values'] = data['hourly_values'].apply(separate_three_hourly_vals)
+    data['hourly_values'] = data['hourly_values'].apply(
+        separate_three_hourly_vals)
     data = data.set_index(['month', 'day'])['hourly_values'].apply(
                                pd.Series).stack()
     data = data.reset_index()
@@ -673,15 +774,49 @@ def ap_readfile(fname):
 
 
 def separate_three_hourly_vals(hourstring):
+    """Separate 3-hourly ap means from the string containing all 8 values.
+
+    Separate the 8 individual 3-hourly ap means from the string containing all
+    values for the day. Each value is repeated 3 times to give a value for each
+    hour. Called by ap_readfile.
+
+    Args:
+        hourstring (str): string containing the 3-hourly ap means parsed from
+            a Kyoto WDC-like file for a single day.
+
+    Returns:
+        hourly_vals_list (list):
+            list containing the hourly ap values.
+    """
     n = 3
     hourly_vals_list = [hourstring[i:i+n] for i in range(0, len(hourstring),
                         n)]
-    hourly_vals_list = np.repeat(hourly_vals_list, n-1)
+    hourly_vals_list = np.repeat(hourly_vals_list, n)
     return hourly_vals_list
 
+
 def append_ap_data(ap_data_path):
+    """Append ap data into a single dataframe containing all years.
+
+    Data downloaded from ftp://ftp.gfz-potsdam.de/pub/home/obs/kp-ap/wdc/
+    come in WDC-like format files with one file per year named kpyyyy.wdc. This
+    function concatenates all years into a single dataframe.
+
+    Args:
+        ap_data_path (str): path to directory containing WDC-like format ap
+            datafiles. All ap files should be located in the same directory.
+
+    Returns:
+        data (pandas.DataFrame):
+            dataframe containing all available hourly ap data. First column is
+               a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
+               and second column contains ap values at the specified times.
+    """
     data = pd.DataFrame()
+    # Obtain a list of all files containing 'ap' and ending in .wdc in the
+    # specified directory
     filenames = glob.glob(ap_data_path + 'kp*.wdc')
+    # Iterate over all files and append data
     for file in filenames:
         print(file)
         try:

@@ -153,9 +153,10 @@
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="get_observatory_list"><a class="viewcode-back" href="../../model_prediction.html#magpysv.model_prediction.get_observatory_list">[docs]</a><span class="k">def</span> <span class="nf">get_observatory_list</span><span class="p">():</span>
+<div class="viewcode-block" id="get_observatory_list"><a class="viewcode-back" href="../../magpysv.html#magpysv.model_prediction.get_observatory_list">[docs]</a><span class="k">def</span> <span class="nf">get_observatory_list</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Obtain the complete list of observatory locations held by the WDC.</span>
 
 <span class="sd">    Obtains a dictionary containing information for all geomagnetic</span>
@@ -203,7 +204,7 @@
     <span class="k">return</span> <span class="n">stations</span></div>
 
 
-<div class="viewcode-block" id="run_covobs"><a class="viewcode-back" href="../../model_prediction.html#magpysv.model_prediction.run_covobs">[docs]</a><span class="k">def</span> <span class="nf">run_covobs</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">stations</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+<div class="viewcode-block" id="run_covobs"><a class="viewcode-back" href="../../magpysv.html#magpysv.model_prediction.run_covobs">[docs]</a><span class="k">def</span> <span class="nf">run_covobs</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">stations</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use observatory latitude, longitude and elevation to run COV-OBS.</span>
 
 <span class="sd">    Uses the dictionary of observatory information obtained from the WDC site</span>

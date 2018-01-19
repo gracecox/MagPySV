@@ -10,14 +10,14 @@ import numpy as np
 from math import pi
 
 
-def get_jump_info(jump_file_path):
+def get_baseline_info(file_path):
     col_names = ['observatory', 'jump_year', 'x_jump', 'y_jump', 'z_jump']
-    data = pd.read_csv('/Users/gracecox/Desktop/jump_records', sep=',', header=0, names=col_names)
+    data = pd.read_csv(file_path, sep=',', names=col_names)
     data['jump_year'] = pd.to_datetime(dict(year=data['jump_year'], month=1, day=1))
     return data
 
 
-def correct_baseline_jump(*, observatory, field_data, jump_data):
+def correct_baseline_change(*, observatory, field_data, jump_data):
     obs_jumps = jump_data.loc[jump_data['observatory'] == str.upper(observatory)]
     print(obs_jumps)
     for jump in obs_jumps.index:

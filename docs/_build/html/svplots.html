@@ -141,67 +141,13 @@
 <p>Part of the MagPySV package for geomagnetic data analysis. This module provides
 various plotting functions.</p>
 <dl class="function">
-<dt id="magpysv.svplots.plot_dcx">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_dcx</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_dcx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_dcx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the proxy used to denoise the SV data with the Dst index.</p>
-<p>Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
-used as a proxy for unmodelled external signal. Both time series are
-reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
-<li><strong>signal</strong> (<em>time series</em>) &#8211; proxy for unmodelled external signal used in the
-denoising process (principal component analysis). The proxy is the
-residual in the noisiest eigendirection(s).</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
-inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
-to True.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="magpysv.svplots.plot_dcx_fft">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_dcx_fft</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_dcx_fft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_dcx_fft" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the DFTs of the proxy signal with that of the Dst index.</p>
-<p>Loads Dcx data (extended, corrected Dst), calculates its DFT and plots it
-alongside the DFT of the signal used as a proxy for unmodelled external
-signal. The length of the time series are padded with zeroes up to the next
-power of two.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
-<li><strong>signal</strong> (<em>time series</em>) &#8211; proxy for unmodelled external signal used in the
-denoising process (principal component analysis). The proxy is the
-residual in the noisiest eigendirection(s).</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
-inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
-to True.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dt id="magpysv.svplots.compare_proxies">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">compare_proxies</code><span class="sig-paren">(</span><em>*</em>, <em>fname1</em>, <em>fname2</em>, <em>legend_text</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#compare_proxies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.compare_proxies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="magpysv.svplots.plot_eigenvalues">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>*</em>, <em>values</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_eigenvalues</code><span class="sig-paren">(</span><em>*</em>, <em>values</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_eigenvalues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_eigenvalues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot eigenvalues of the covariance matrix of SV residuals.</p>
 <p>Produces a plot of the eigenvalues obtained during the principal component
 analysis (PCA) of SV residuals. The largest eigenvalue represents the
@@ -229,7 +175,7 @@ inches.</li>
 
 <dl class="function">
 <dt id="magpysv.svplots.plot_eigenvectors">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_eigenvectors</code><span class="sig-paren">(</span><em>*</em>, <em>obs_names</em>, <em>eigenvecs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_eigenvectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_eigenvectors" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_eigenvectors</code><span class="sig-paren">(</span><em>*</em>, <em>obs_names</em>, <em>eigenvecs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_eigenvectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_eigenvectors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot eigenvectors of the covariance matrix of SV residuals.</p>
 <p>Produces a plot of the eigenvectors corresponding to the n largest
 eigenvalues of the covariance matrix obtained during PCA of SV residuals,
@@ -243,7 +189,7 @@ to the residuals (i.e. the &#8220;noisiest&#8221; directions). See Wardinski &am
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>obs_names</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of observatory names given as three digit IAGA
+<li><strong>obs_names</strong> (<em>list</em>) &#8211; list of observatory names given as three digit IAGA
 codes.</li>
 <li><strong>eigenvecs</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal</li>
 <li><strong>analysis of the SV residuals.</strong> (<em>component</em>) &#8211; </li>
@@ -259,8 +205,72 @@ inches.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="magpysv.svplots.plot_index">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_index</code><span class="sig-paren">(</span><em>*</em>, <em>index_file</em>, <em>dates</em>, <em>residuals</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em>, <em>save_fig=False</em>, <em>write_path=None</em>, <em>index_name='Dst'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the proxy used to denoise the SV data with a geomagnetic index.</p>
+<p>Loads geomagnetic index and plots it alongside the signal
+used as a proxy for unmodelled external signal. Both time series are
+reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>index_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the file containing index data</li>
+<li><strong>residuals</strong> (<em>time series</em>) &#8211; proxy for unmodelled external signal used in
+the denoising process (principal component analysis). The proxy is
+the residual in the noisiest eigendirection(s).</li>
+<li><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of index used in comparison e.g. Dst or Dcx.
+Defaults to Dst.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to True.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.plot_index_dft">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_index_dft</code><span class="sig-paren">(</span><em>*</em>, <em>index_file</em>, <em>dates</em>, <em>signal</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em>, <em>save_fig=False</em>, <em>write_path=None</em>, <em>index_name='Dst'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_index_dft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_index_dft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the proxy signal with that of a geomagnetic index.</p>
+<p>Loads index data, calculates its DFT using an FFT algorithm and plots it
+alongside the DFT of the signal used as a proxy for unmodelled external
+signal. The length of the time series are padded with zeroes up to the next
+power of two.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>signal</strong> (<em>time series</em>) &#8211; proxy for unmodelled external signal used in the
+denoising process (principal component analysis). The proxy is the
+residual in the noisiest eigendirection(s).</li>
+<li><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of index used in comparison e.g. Dst or Dcx.
+Defaults to Dst.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+to True.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="magpysv.svplots.plot_mf">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_mf</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>mf</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_mf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_mf" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_mf</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>mf</em>, <em>model</em>, <em>obs</em>, <em>model_name</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_mf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_mf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the SV and model prediction for a single observatory.</p>
 <p>Produces a plot of the X, Y and Z components of the SV and field
 model prediction for a single observatory.</p>
@@ -275,6 +285,7 @@ location.</li>
 <li><strong>model</strong> (<em>time series</em>) &#8211; X, Y and Z components of the field predicted by a
 field model for the same location as the data.</li>
 <li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
+<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
 <li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
 <li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
@@ -290,7 +301,7 @@ to True.</li>
 
 <dl class="function">
 <dt id="magpysv.svplots.plot_outliers">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>outliers</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>outliers</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the SV and identified outliers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -317,8 +328,28 @@ inches.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="magpysv.svplots.plot_residuals_dft">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_residuals_dft</code><span class="sig-paren">(</span><em>*</em>, <em>projected_residuals</em>, <em>dates</em>, <em>fig_size=(10</em>, <em>8)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=True</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_residuals_dft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_residuals_dft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the projected residuals with each other.</p>
+<p>Calculates the DFT of the residuals in each eigendirection given and plots
+it alongside the residuals themselves. The length of the time series are
+padded with zeroes up to the next
+power of two.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.plot_residuals_dft_all">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_residuals_dft_all</code><span class="sig-paren">(</span><em>*</em>, <em>projected_residuals</em>, <em>dates</em>, <em>fig_size=(10</em>, <em>8)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_residuals_dft_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_residuals_dft_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the projected residuals with each other.</p>
+<p>Calculates the DFT of the residuals in each eigendirection given and plots
+it alongside the residuals themselves. The length of the time series are
+padded with zeroes up to the next
+power of two.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="magpysv.svplots.plot_sv">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em>, <em>min_samples=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>sv</em>, <em>model</em>, <em>obs</em>, <em>model_name</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em>, <em>min_samples=3</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the SV and model prediction for a single observatory.</p>
 <p>Produces a plot of the X, Y and Z components of the SV and field
 model prediction for a single observatory.</p>
@@ -332,6 +363,7 @@ model prediction for a single observatory.</p>
 <li><strong>model</strong> (<em>time series</em>) &#8211; X, Y and Z components of the SV predicted by a
 field model for the same location as the data.</li>
 <li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
+<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
 <li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
 <li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
@@ -356,7 +388,7 @@ window are required to calculate the 12-month running average.)</li>
 
 <dl class="function">
 <dt id="magpysv.svplots.plot_sv_comparison">
-<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv_comparison</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>noisy_sv</em>, <em>denoised_sv</em>, <em>model</em>, <em>obs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em>, <em>min_samples=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv_comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv_comparison" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.svplots.</code><code class="descname">plot_sv_comparison</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>noisy_sv</em>, <em>denoised_sv</em>, <em>model</em>, <em>obs</em>, <em>model_name</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>plot_legend=False</em>, <em>plot_average=False</em>, <em>window_length=12</em>, <em>min_samples=3</em>, <em>save_fig=False</em>, <em>write_path=None</em>, <em>corrected_residuals</em>, <em>residuals</em>, <em>plot_rms=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#plot_sv_comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.plot_sv_comparison" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot noisy/denoised SV and model prediction for a single observatory.</p>
 <p>Produces a plot of the X, Y and Z components of the noisy SV, the denoised
 SV and field model prediction for a single observatory.</p>
@@ -372,6 +404,7 @@ single location.</li>
 single location.</li>
 <li><strong>model</strong> (<em>time series</em>) &#8211; X, Y and Z components of the SV predicted by a
 field model for the same location as the data.</li>
+<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
 <li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
 <li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
@@ -388,12 +421,19 @@ present in the window in order for the running average to be
 calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
 first differences this means that at least 3 months of data per
 window are required to calculate the 12-month running average.)</li>
+<li><strong>plot_rms</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to calculate the rms before and after denoising</li>
+<li><strong>display the values on the figure. Defaults to False.</strong> (<em>and</em>) &#8211; </li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="function">
+<dt id="magpysv.svplots.rms_ratios">
+<code class="descclassname">magpysv.svplots.</code><code class="descname">rms_ratios</code><span class="sig-paren">(</span><em>*</em>, <em>rms</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/svplots.html#rms_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.svplots.rms_ratios" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
