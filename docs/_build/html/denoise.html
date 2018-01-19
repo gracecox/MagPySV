@@ -143,15 +143,14 @@ various functions to denoise geomagnetic data by performing principal component
 analysis and identifying and removing outliers.</p>
 <dl class="function">
 <dt id="magpysv.denoise.detect_outliers">
-<code class="descclassname">magpysv.denoise.</code><code class="descname">detect_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>window_length</em>, <em>threshold</em>, <em>plot_fig=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/denoise.html#detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.denoise.detect_outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.denoise.</code><code class="descname">detect_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>window_length</em>, <em>threshold</em>, <em>plot_fig=False</em>, <em>save_fig=False</em>, <em>write_path=None</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/denoise.html#detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.denoise.detect_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect outliers in a time series and remove them.</p>
-<p>Use the following formula to detect outliers:</p>
-<p>(signal - median) &gt; threshold * standard deviation</p>
-<p>The time series are long and highly variable so it is not appropriate to
-use single values of median and standard deviation (std) to represent the
-whole series. The function uses a running median and std to better
-characterise the series (the window length and threshold value are
-specified by the user).</p>
+<p>Use the median absolute deviation from the median (MAD) to identify
+outliers. The time series are long and highly variable so it is not
+appropriate to use single values of median to represent the whole series.
+The function uses a running median to better characterise the series
+(the window length and a threshold value stating many MADs from the median
+a point must be before it is classed as an outlier are user-specified).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -163,18 +162,21 @@ the time series of interest.</li>
 <li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; states the component of interest and the three digit
 IAGA observatory name.</li>
 <li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
-median and running standard deviation.</li>
-<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the threshold value used in the above criterion.
-Typical values would be between two and three (so that the
-difference between the data and median is twice (or three times)
-the standard deviation).</li>
+median.</li>
+<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the minimum number of median absolute deviations a
+point must be away from the median in order to be considered an
+outlier.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the input signal with identified outliers removed (set to NaN).</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">masked_signal (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)">array</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/signal.html#module-signal" title="(in Python v2.7)">signal</a> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)">array</a>)</p>
 </td>
 </tr>
 </tbody>
@@ -209,13 +211,13 @@ values in the input dataframe are given as NaN values in the output.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
-<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
+<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
 monthly/annual means of the X, Y and Z components of the secular
 variation at the observatories of interest.</li>
-<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
+<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
 model prediction of the X, Y and Z components of the secular
 variation at the same observatories as in obs_data.</li>
-<li><strong>residuals</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
+<li><strong>residuals</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
 (difference between the observed data and model prediction).</li>
 <li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; directions used to create
 the proxy for the external signal removal. Default value is 1 (only
@@ -295,13 +297,13 @@ infill them.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
-<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
+<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
 monthly/annual means of the X, Y and Z components of the secular
 variation at the observatories of interest.</li>
-<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
+<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
 model prediction of the X, Y and Z components of the secular
 variation at the same observatories as in obs_data.</li>
-<li><strong>residuals</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
+<li><strong>residuals</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
 (difference between the observed data and model prediction).</li>
 <li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; directions used to create
 the proxy for the external signal removal. Default value is 1 (only

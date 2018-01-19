@@ -135,8 +135,8 @@ def apply_Ap_threshold(*, Ap_file=None, obs_data, threshold):
     """
     col_names = ['date', 'Ap']
     Ap_hourly = pd.read_csv(Ap_file, names=col_names,
-                  dtype={'date': 'str', 'Ap': 'float'}, parse_dates=[0],
-                  skiprows=0, index_col=None)
+                            dtype={'date': 'str', 'Ap': 'float'},
+                            parse_dates=[0], skiprows=0, index_col=None)
     # Merge the two dataframes so that only dates contained within both are
     # retained
     obs_data = pd.merge(obs_data, Ap_hourly, on='date', how='inner')
@@ -148,6 +148,7 @@ def apply_Ap_threshold(*, Ap_file=None, obs_data, threshold):
     obs_data.drop(['Ap'], axis=1, inplace=True)
 
     return obs_data
+
 
 def remove_selected_points(*, data, fname):
     """Remove specified points from dataset based on list of points in a file.
@@ -189,38 +190,26 @@ def calculate_sv_index(obs_data, mean_spacing=1):
     obs_sv['date'] = obs_data['date'] - pd.tseries.offsets.DateOffset(
         months=int(np.floor(mean_spacing/2)), day=1)
     if mean_spacing % 2 == 1:
-        obs_sv['date'] = obs_sv['date'].apply(lambda dt: dt.replace(day=1))
+        obs_sv['date'] = obs_sv['date'].apply(lambda x: x.replace(day=1))
     else:
-        obs_sv['date'] = obs_sv['date'].apply(lambda dt: dt.replace(day=15))
+        obs_sv['date'] = obs_sv['date'].apply(lambda x: x.replace(day=15))
     # Calculate scale required to give SV in nT/yr
     scaling_factor = 12 / mean_spacing
-    obs_sv['mean'] = scaling_factor * obs_data['mean'].diff(periods=mean_spacing)
+    obs_sv['mean'] = scaling_factor * obs_data['mean'].diff(
+            periods=mean_spacing)
     obs_sv.drop(obs_sv.head(mean_spacing).index, inplace=True)
 
     return obs_sv
 
 
-def calculate_correlation_dcx(*, dates, signal, dcx_file):
-    col_names = ['date', 'dcx']
-    dcx = pd.read_csv(dcx_file, names=col_names,
-                  dtype={'date': 'str', 'dcx': 'float'}, parse_dates=[0],
-                  skiprows=1, index_col=None)
+def calculate_correlation_index(*, dates, signal, index_file):
+    col_names = ['date', 'index_vals']
+    index_df = pd.read_csv(index_file, names=col_names,
+                           dtype={'date': 'str', 'index_vals': 'float'},
+                           parse_dates=[0], skiprows=1, index_col=None)
     df = pd.DataFrame({'date': dates, 'proxy': signal})
     # Merge the two dataframes so that only dates contained within both are
     # retained
-    merged = pd.merge(df.dropna(), dcx.dropna(), on='date', how='inner')
-    coeff = np.corrcoef(merged.dcx, merged.proxy)
-    return coeff.data[0, 1], merged
-
-
-def calculate_correlation_ae(*, dates, signal, ae_file):
-    col_names = ['date', 'ae']
-    ae = pd.read_csv(ae_file, names=col_names,
-                  dtype={'date': 'str', 'ae': 'float'}, parse_dates=[0],
-                  skiprows=1, index_col=None)
-    df = pd.DataFrame({'date': dates, 'proxy': signal})
-    # Merge the two dataframes so that only dates contained within both are
-    # retained
-    merged = pd.merge(df.dropna(), ae.dropna(), on='date', how='inner')
-    coeff = np.corrcoef(merged.ae, merged.proxy)
-    return coeff.data[0, 1], merged
+    merged = pd.merge(df.dropna(), index_df.dropna(), on='date', how='inner')
+    coeff = np.corrcoef(merged.index_vals, merged.proxy)
+    return np.abs(coeff.data[0, 1]), merged

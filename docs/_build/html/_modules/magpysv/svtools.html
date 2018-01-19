@@ -152,7 +152,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the secular variation from the observed magnetic field values.</span>
 
 <span class="sd">    Uses monthly means of geomagnetic observatory data to calculate the SV</span>
@@ -161,7 +161,7 @@
 <span class="sd">    samplings other than monthly differences, the datetime objects of the</span>
 <span class="sd">    calculated SV are taken the midpoint of the datetime objects of the field</span>
 <span class="sd">    data. E.g. differencing the means of the field January 1999 and in January</span>
-<span class="sd">    2000 yields the SV for August 1999.</span>
+<span class="sd">    2000 yields the SV for July 1999.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obs_data (pandas.DataFrame): dataframe containing means (usually</span>
@@ -177,7 +177,11 @@
     <span class="c1"># write function to calculate sv here</span>
     <span class="n">obs_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
-        <span class="n">months</span><span class="o">=</span><span class="n">mean_spacing</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">months</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">mean_spacing</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mean_spacing</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dt</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dt</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">15</span><span class="p">))</span>
     <span class="c1"># Calculate scale required to give SV in nT/yr</span>
     <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">/</span> <span class="n">mean_spacing</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
@@ -188,7 +192,7 @@
     <span class="k">return</span> <span class="n">obs_sv</span></div>
 
 
-<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate SV residuals (observed - prediction) using datetime objects.</span>
 
 <span class="sd">    Args:</span>
@@ -200,7 +204,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        residuals (pandas.DataFrame): dataframe containing SV residuals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])]</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">dates</span><span class="p">)]</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -208,10 +213,11 @@
     <span class="n">residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">obs_data</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
         <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">obs_data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">residuals</span></div>
 
 
-<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="n">average_date</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Resample the daily geomagnetic data to a specified frequency.</span>
 
 <span class="sd">    Args:</span>
@@ -225,6 +231,14 @@
 <span class="sd">            data for a whole year and sets the datetime object to the final</span>
 <span class="sd">            day of the year. Use &#39;AS&#39; to set the datetime object to the</span>
 <span class="sd">            first day of the year.</span>
+<span class="sd">        average_date (bool): the specified resampling intervals only have</span>
+<span class="sd">            options for setting the date to the first (&#39;MS&#39; and &#39;AS&#39;) or final</span>
+<span class="sd">            (&#39;M&#39; and &#39;A&#39;) day of the month or year. For monthly averages, a</span>
+<span class="sd">            more appropriate representative date is the middle of that month</span>
+<span class="sd">            (i.e. the 15th day of the month). For annual averages, an</span>
+<span class="sd">            appropriate representative date is the middle of that year (taken</span>
+<span class="sd">            as July 1st of the year.) This option is used to set the dates to</span>
+<span class="sd">            the centre of the sampling interval. Defaults to True.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        data (pandas.DataFrame):</span>
@@ -233,15 +247,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">sampling</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
+    <span class="k">if</span> <span class="n">average_date</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="s1">&#39;A&#39;</span> <span class="ow">in</span> <span class="n">sampling</span><span class="p">:</span>
+        <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
+                            <span class="n">month</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">average_date</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="s1">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">sampling</span><span class="p">:</span>
+        <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
+                            <span class="n">day</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">resampled</span></div>
 
 
-<div class="viewcode-block" id="apply_Ap_threshold"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.apply_Ap_threshold">[docs]</a><span class="k">def</span> <span class="nf">apply_Ap_threshold</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">Ap_path</span><span class="o">=</span><span class="s1">&#39;data/Ap_daily.txt&#39;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove observatory data for days with Ap values above a threshold value.</span>
+<div class="viewcode-block" id="apply_Ap_threshold"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.apply_Ap_threshold">[docs]</a><span class="k">def</span> <span class="nf">apply_Ap_threshold</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">Ap_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove observatory data for hours with Ap values above threshold value.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        obs_data (pandas.DataFrame): dataframe containing daily means of</span>
+<span class="sd">        Ap_file (str): path to file containing hourly values for the Ap index</span>
+<span class="sd">        obs_data (pandas.DataFrame): dataframe containing hourly means of</span>
 <span class="sd">        observed geomagnetic field values.</span>
 <span class="sd">        threshold (int): the threshold Ap value. Data for days with a higher Ap</span>
 <span class="sd">            value will be replaced with NaNs and omitted from monthly (or</span>
@@ -250,18 +270,13 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        residuals (pandas.DataFrame): dataframe containing SV residuals.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Ap_daily</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Ap_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
-                           <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;Ap&#39;</span><span class="p">])</span>
-
-    <span class="n">date</span> <span class="o">=</span> <span class="n">Ap_daily</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">])),</span>
-        <span class="s2">&quot;%Y %m </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span>
-        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">Ap_daily</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
-    <span class="n">Ap_daily</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;Ap&#39;</span><span class="p">]</span>
+    <span class="n">Ap_hourly</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Ap_file</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
+                            <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;Ap&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                            <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="c1"># Merge the two dataframes so that only dates contained within both are</span>
     <span class="c1"># retained</span>
-    <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">Ap_daily</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+    <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">Ap_hourly</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
     <span class="c1"># Use the threshold to discard data from days with high external field</span>
     <span class="c1"># activity</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
@@ -272,7 +287,7 @@
     <span class="k">return</span> <span class="n">obs_data</span></div>
 
 
-<div class="viewcode-block" id="remove_selected_points"><a class="viewcode-back" href="../../svtools.html#magpysv.svtools.remove_selected_points">[docs]</a><span class="k">def</span> <span class="nf">remove_selected_points</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_selected_points"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.remove_selected_points">[docs]</a><span class="k">def</span> <span class="nf">remove_selected_points</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove specified points from dataset based on list of points in a file.</span>
 
 <span class="sd">    Reads a list of unwanted points from a file and removes them from the</span>
@@ -302,6 +317,39 @@
             <span class="k">pass</span>
 
     <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="calculate_sv_index"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.calculate_sv_index">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv_index</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the secular variation of index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># write function to calculate sv here</span>
+    <span class="n">obs_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
+        <span class="n">months</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">mean_spacing</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mean_spacing</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">15</span><span class="p">))</span>
+    <span class="c1"># Calculate scale required to give SV in nT/yr</span>
+    <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">/</span> <span class="n">mean_spacing</span>
+    <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span>
+            <span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
+    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">obs_sv</span></div>
+
+
+<div class="viewcode-block" id="calculate_correlation_index"><a class="viewcode-back" href="../../magpysv.html#magpysv.svtools.calculate_correlation_index">[docs]</a><span class="k">def</span> <span class="nf">calculate_correlation_index</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">index_file</span><span class="p">):</span>
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;index_vals&#39;</span><span class="p">]</span>
+    <span class="n">index_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">index_file</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
+                           <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;index_vals&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                           <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">dates</span><span class="p">,</span> <span class="s1">&#39;proxy&#39;</span><span class="p">:</span> <span class="n">signal</span><span class="p">})</span>
+    <span class="c1"># Merge the two dataframes so that only dates contained within both are</span>
+    <span class="c1"># retained</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">index_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">merged</span><span class="o">.</span><span class="n">index_vals</span><span class="p">,</span> <span class="n">merged</span><span class="o">.</span><span class="n">proxy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">coeff</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">merged</span></div>
 </pre></div>
 
            </div>

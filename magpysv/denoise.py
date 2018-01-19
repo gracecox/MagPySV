@@ -94,20 +94,24 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
     # Use the method of Wardinski & Holme (2011) to remove unmodelled external
     # signal in the SV residuals. The variable 'proxy' contains the noisy
     # component residual for all observatories combined
-    noisy_direction = eig_vectors[0, :]
-    proxy = 0
-
-    if proxy_number == 1:
-        proxy = projected_residuals[:, 0]
-    elif proxy_number > 1:
-        for direction in range(proxy_number):
-            proxy = proxy + projected_residuals[:, direction]
 
     corrected_residuals = []
 
-    for idx in range(len(proxy)):
-        corrected_residuals.append(
-            imputed_residuals[idx, :] - proxy[idx] * noisy_direction)
+    if proxy_number == 1:
+        noisy_direction = eig_vectors[:, 0]
+        proxy = projected_residuals[:, 0]
+        for idx in range(len(proxy)):
+            corrected_residuals.append(
+                imputed_residuals.data[idx, :] - proxy[idx] * noisy_direction)
+    elif proxy_number > 1:
+        noisy_direction = eig_vectors[:, 0:proxy_number]
+        proxy = np.sum(projected_residuals[:, 0:proxy_number], axis=1)
+        for idx in range(len(projected_residuals[:, 0])):
+            corrected = imputed_residuals.data[idx, :]
+            for direction in range(proxy_number):
+                corrected = corrected - projected_residuals[idx, direction] \
+                    * noisy_direction[:, direction]
+            corrected_residuals.append(corrected)
 
     corrected_residuals = pd.DataFrame(corrected_residuals,
                                        columns=obs_data.columns)
@@ -116,7 +120,8 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
         columns=obs_data.columns)
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals
+    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals,\
+        corrected_residuals
 
 
 def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
@@ -200,44 +205,48 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
     # Use the method of Wardinski & Holme (2011) to remove unmodelled external
     # signal in the SV residuals. The variable 'proxy' contains the noisy
     # component residual for all observatories combined
-    noisy_direction = eig_vectors[:, 0]
-    proxy = 0
-
-    if proxy_number == 1:
-        proxy = projected_residuals[:, 0]
-    elif proxy_number > 1:
-        for direction in range(proxy_number):
-            proxy = proxy + projected_residuals[:, direction]
 
     corrected_residuals = []
 
-    for idx in range(len(proxy)):
-        corrected_residuals.append(
-            masked_residuals.data[idx, :] - proxy[idx] * noisy_direction)
+    if proxy_number == 1:
+        noisy_direction = eig_vectors[:, 0]
+        proxy = projected_residuals[:, 0]
+        for idx in range(len(proxy)):
+            corrected_residuals.append(
+                masked_residuals.data[idx, :] - proxy[idx] * noisy_direction)
+    elif proxy_number > 1:
+        noisy_direction = eig_vectors[:, 0:proxy_number]
+        proxy = np.sum(projected_residuals[:, 0:proxy_number], axis=1)
+        for idx in range(len(projected_residuals[:, 0])):
+            corrected = masked_residuals.data[idx, :]
+            for direction in range(proxy_number):
+                corrected = corrected - projected_residuals[idx, direction] \
+                    * noisy_direction[:, direction]
+            corrected_residuals.append(corrected)
 
     corrected_residuals = pd.DataFrame(corrected_residuals,
                                        columns=obs_data.columns)
     denoised_sv = pd.DataFrame(
         corrected_residuals.values + model_data.values,
         columns=obs_data.columns)
+
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals
+    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals,\
+        corrected_residuals.astype('float')
 
 
 def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
-                    plot_fig=False, save_fig=False, write_path=None):
+                    plot_fig=False, save_fig=False, write_path=None,
+                    fig_size=(8, 6), font_size=12, label_size=16):
     """Detect outliers in a time series and remove them.
 
-    Use the following formula to detect outliers:
-
-    (signal - median) > threshold * standard deviation
-
-    The time series are long and highly variable so it is not appropriate to
-    use single values of median and standard deviation (std) to represent the
-    whole series. The function uses a running median and std to better
-    characterise the series (the window length and threshold value are
-    specified by the user).
+    Use the median absolute deviation from the median (MAD) to identify
+    outliers. The time series are long and highly variable so it is not
+    appropriate to use single values of median to represent the whole series.
+    The function uses a running median to better characterise the series
+    (the window length and a threshold value stating many MADs from the median
+    a point must be before it is classed as an outlier are user-specified).
 
     Args:
         dates (datetime.datetime): dates of the time series measurements.
@@ -246,11 +255,14 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
         obs_name (str): states the component of interest and the three digit
            IAGA observatory name.
         window_length (int): number of months over which to take the running
-            median and running standard deviation.
-        threshold (float): the threshold value used in the above criterion.
-            Typical values would be between two and three (so that the
-            difference between the data and median is twice (or three times)
-            the standard deviation).
+            median.
+        threshold (float): the minimum number of median absolute deviations a
+            point must be away from the median in order to be considered an
+            outlier.
+        fig_size (array): figure size in inches. Defaults to 8 inches by 6
+            inches.
+        font_size (int): font size for axes. Defaults to 12 pt.
+        label_size (int): font size for axis labels. Defaults to 16 pt.
 
     Returns:
         signal (array):
@@ -264,22 +276,27 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
     # first ffill cannot overwrite the beginning of the next valid interval
     # (bfill values are used there instead).
     signal_temp = signal_temp.ffill(limit=window_length / 2 + 1).bfill()
-    # calculate the running median and standard deviation
+
+    # calculate the running median and median absolute standard deviation
     running_median = signal_temp.rolling(window=window_length,
                                          center=True).median().bfill().ffill()
-    running_std = signal_temp.rolling(window=window_length,
-                                      center=True).std().bfill().ffill()
-    # Identify outliers as (signal - median) > threshold * std
-    threshold_value = (signal_temp - running_median).abs()
-    difference = threshold_value - threshold * running_std.abs()
-    outliers = signal_temp[difference > 0]
+    diff = (signal_temp - running_median).abs()
+    med_abs_deviation = diff.rolling(window=window_length,
+                                     center=True).median().bfill().ffill()
+    # Normalise the median abolute deviation
+    modified_z_score = 0.6745 * diff / med_abs_deviation
+
+    # Identify outliers
+    outliers = signal_temp[modified_z_score > threshold]
 
     # Plot the outliers and original time series if required
     if plot_fig is True:
         svplots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
                               outliers=outliers, save_fig=save_fig,
-                              write_path=write_path)
-    # Set the outliers to nan
-    signal[difference[obs_name] > 0] = np.nan
+                              write_path=write_path, fig_size=fig_size,
+                              font_size=font_size, label_size=label_size)
+    # Set the outliers to NaN
+    idx = np.where(modified_z_score > threshold)[0]
+    signal.iloc[idx] = np.nan
 
-    return signal
+    return signal.astype('float')

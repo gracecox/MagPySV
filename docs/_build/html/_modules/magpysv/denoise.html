@@ -231,20 +231,24 @@
     <span class="c1"># Use the method of Wardinski &amp; Holme (2011) to remove unmodelled external</span>
     <span class="c1"># signal in the SV residuals. The variable &#39;proxy&#39; contains the noisy</span>
     <span class="c1"># component residual for all observatories combined</span>
-    <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
-    <span class="n">proxy</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="n">proxy_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">proxy</span> <span class="o">=</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">proxy_number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">proxy_number</span><span class="p">):</span>
-            <span class="n">proxy</span> <span class="o">=</span> <span class="n">proxy</span> <span class="o">+</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">]</span>
 
     <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proxy</span><span class="p">)):</span>
-        <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">imputed_residuals</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">proxy_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proxy</span><span class="p">)):</span>
+            <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">imputed_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">proxy_number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])):</span>
+            <span class="n">corrected</span> <span class="o">=</span> <span class="n">imputed_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">proxy_number</span><span class="p">):</span>
+                <span class="n">corrected</span> <span class="o">=</span> <span class="n">corrected</span> <span class="o">-</span> <span class="n">projected_residuals</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">direction</span><span class="p">]</span> \
+                    <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">]</span>
+            <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corrected</span><span class="p">)</span>
 
     <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corrected_residuals</span><span class="p">,</span>
                                        <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -253,7 +257,8 @@
         <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">denoised_sv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="p">,</span> <span class="n">projected_residuals</span><span class="p">,</span>\
+        <span class="n">corrected_residuals</span></div>
 
 
 <div class="viewcode-block" id="eigenvalue_analysis"><a class="viewcode-back" href="../../magpysv.html#magpysv.denoise.eigenvalue_analysis">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
@@ -337,44 +342,48 @@
     <span class="c1"># Use the method of Wardinski &amp; Holme (2011) to remove unmodelled external</span>
     <span class="c1"># signal in the SV residuals. The variable &#39;proxy&#39; contains the noisy</span>
     <span class="c1"># component residual for all observatories combined</span>
-    <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="n">proxy</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="n">proxy_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">proxy</span> <span class="o">=</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">proxy_number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">proxy_number</span><span class="p">):</span>
-            <span class="n">proxy</span> <span class="o">=</span> <span class="n">proxy</span> <span class="o">+</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">]</span>
 
     <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proxy</span><span class="p">)):</span>
-        <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">masked_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">proxy_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proxy</span><span class="p">)):</span>
+            <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">masked_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">proxy_number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])):</span>
+            <span class="n">corrected</span> <span class="o">=</span> <span class="n">masked_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">proxy_number</span><span class="p">):</span>
+                <span class="n">corrected</span> <span class="o">=</span> <span class="n">corrected</span> <span class="o">-</span> <span class="n">projected_residuals</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">direction</span><span class="p">]</span> \
+                    <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">]</span>
+            <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corrected</span><span class="p">)</span>
 
     <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corrected_residuals</span><span class="p">,</span>
                                        <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">denoised_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
         <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
     <span class="n">denoised_sv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="p">,</span> <span class="n">projected_residuals</span><span class="p">,</span>\
+        <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="detect_outliers"><a class="viewcode-back" href="../../magpysv.html#magpysv.denoise.detect_outliers">[docs]</a><span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span>
-                    <span class="n">plot_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                    <span class="n">plot_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">label_size</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detect outliers in a time series and remove them.</span>
 
-<span class="sd">    Use the following formula to detect outliers:</span>
-
-<span class="sd">    (signal - median) &gt; threshold * standard deviation</span>
-
-<span class="sd">    The time series are long and highly variable so it is not appropriate to</span>
-<span class="sd">    use single values of median and standard deviation (std) to represent the</span>
-<span class="sd">    whole series. The function uses a running median and std to better</span>
-<span class="sd">    characterise the series (the window length and threshold value are</span>
-<span class="sd">    specified by the user).</span>
+<span class="sd">    Use the median absolute deviation from the median (MAD) to identify</span>
+<span class="sd">    outliers. The time series are long and highly variable so it is not</span>
+<span class="sd">    appropriate to use single values of median to represent the whole series.</span>
+<span class="sd">    The function uses a running median to better characterise the series</span>
+<span class="sd">    (the window length and a threshold value stating many MADs from the median</span>
+<span class="sd">    a point must be before it is classed as an outlier are user-specified).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dates (datetime.datetime): dates of the time series measurements.</span>
@@ -383,42 +392,51 @@
 <span class="sd">        obs_name (str): states the component of interest and the three digit</span>
 <span class="sd">           IAGA observatory name.</span>
 <span class="sd">        window_length (int): number of months over which to take the running</span>
-<span class="sd">            median and running standard deviation.</span>
-<span class="sd">        threshold (float): the threshold value used in the above criterion.</span>
-<span class="sd">            Typical values would be between two and three (so that the</span>
-<span class="sd">            difference between the data and median is twice (or three times)</span>
-<span class="sd">            the standard deviation).</span>
+<span class="sd">            median.</span>
+<span class="sd">        threshold (float): the minimum number of median absolute deviations a</span>
+<span class="sd">            point must be away from the median in order to be considered an</span>
+<span class="sd">            outlier.</span>
+<span class="sd">        fig_size (array): figure size in inches. Defaults to 8 inches by 6</span>
+<span class="sd">            inches.</span>
+<span class="sd">        font_size (int): font size for axes. Defaults to 12 pt.</span>
+<span class="sd">        label_size (int): font size for axis labels. Defaults to 16 pt.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        masked_signal (array):</span>
+<span class="sd">        signal (array):</span>
 <span class="sd">            the input signal with identified outliers removed (set to NaN).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">signal_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">signal</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
     <span class="c1"># Account for missing values when using rolling_median and rolling_std.</span>
     <span class="c1"># ffill (bfill) propagates the closest value forwards (backwards) through</span>
-    <span class="c1"># nan values. E.g. [np.nan, np.nan, 1, 5, 6, np.nan, np.nan] returns as</span>
-    <span class="c1"># [1, 1, 1, 5, 6, 6, 6]. The limit of half the window length is used so the</span>
+    <span class="c1"># nan values. E.g. [np.nan, np.nan, 1, 9, 7, np.nan, np.nan] returns as</span>
+    <span class="c1"># [1, 1, 1, 9, 7, 7, 7]. The limit of half the window length is used so the</span>
     <span class="c1"># first ffill cannot overwrite the beginning of the next valid interval</span>
     <span class="c1"># (bfill values are used there instead).</span>
     <span class="n">signal_temp</span> <span class="o">=</span> <span class="n">signal_temp</span><span class="o">.</span><span class="n">ffill</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">window_length</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">bfill</span><span class="p">()</span>
-    <span class="c1"># calculate the running median and standard deviation</span>
+
+    <span class="c1"># calculate the running median and median absolute standard deviation</span>
     <span class="n">running_median</span> <span class="o">=</span> <span class="n">signal_temp</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">window_length</span><span class="p">,</span>
                                          <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">bfill</span><span class="p">()</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
-    <span class="n">running_std</span> <span class="o">=</span> <span class="n">signal_temp</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">window_length</span><span class="p">,</span>
-                                      <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">bfill</span><span class="p">()</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
-    <span class="c1"># Identify outliers as (signal - median) &gt; threshold * std</span>
-    <span class="n">threshold_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">signal_temp</span> <span class="o">-</span> <span class="n">running_median</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
-    <span class="n">outliers</span> <span class="o">=</span> <span class="n">signal_temp</span><span class="p">[</span><span class="n">threshold_value</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">running_std</span><span class="o">.</span><span class="n">abs</span><span class="p">()]</span>
-    <span class="c1"># Set the outliers to nan</span>
-    <span class="n">signal_temp</span><span class="p">[</span><span class="n">threshold_value</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">running_std</span><span class="o">.</span><span class="n">abs</span><span class="p">()]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">masked_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">signal_temp</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">masked_signal</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">masked_signal</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">signal_temp</span> <span class="o">-</span> <span class="n">running_median</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+    <span class="n">med_abs_deviation</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">window_length</span><span class="p">,</span>
+                                     <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">bfill</span><span class="p">()</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+    <span class="c1"># Normalise the median abolute deviation</span>
+    <span class="n">modified_z_score</span> <span class="o">=</span> <span class="mf">0.6745</span> <span class="o">*</span> <span class="n">diff</span> <span class="o">/</span> <span class="n">med_abs_deviation</span>
 
+    <span class="c1"># Identify outliers</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="n">signal_temp</span><span class="p">[</span><span class="n">modified_z_score</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">]</span>
+
+    <span class="c1"># Plot the outliers and original time series if required</span>
     <span class="k">if</span> <span class="n">plot_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">svplots</span><span class="o">.</span><span class="n">plot_outliers</span><span class="p">(</span><span class="n">dates</span><span class="o">=</span><span class="n">dates</span><span class="p">,</span> <span class="n">obs_name</span><span class="o">=</span><span class="n">obs_name</span><span class="p">,</span> <span class="n">signal</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span>
-                              <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">)</span>
+                              <span class="n">outliers</span><span class="o">=</span><span class="n">outliers</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="n">save_fig</span><span class="p">,</span>
+                              <span class="n">write_path</span><span class="o">=</span><span class="n">write_path</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="n">fig_size</span><span class="p">,</span>
+                              <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">,</span> <span class="n">label_size</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+    <span class="c1"># Set the outliers to NaN</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">modified_z_score</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">signal</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
-    <span class="k">return</span> <span class="n">masked_signal</span><span class="o">.</span><span class="n">data</span></div>
+    <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

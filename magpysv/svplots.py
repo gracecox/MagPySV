@@ -44,7 +44,7 @@ def plot_eigenvalues(*, values, fig_size=(8, 6), font_size=12, label_size=16,
         label_size (int): font size for axis labels. Defaults to 16 pt.
     """
     plt.figure(figsize=fig_size)
-    plt.plot(values, 'bx-')
+    plt.semilogy(values, 'bx-')
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
 #    plt.axis('tight')
@@ -78,28 +78,31 @@ def plot_eigenvectors(*, obs_names, eigenvecs, fig_size=(8, 6), font_size=12,
         font_size (int): font size for axes. Defaults to 12 pt.
         label_size (int): font size for axis labels. Defaults to 16 pt.
     """
-    plt.figure(figsize=fig_size)
     # Loop over directions and plot each eigenvector on a separate subplot
     for direction in range(eigenvecs.shape[1]):
-        plt.subplot(eigenvecs.shape[1], 1, direction + 1)
+        plt.figure(figsize=fig_size)
         plt.plot(np.abs(eigenvecs[::3, direction]), 'bx',
                  np.abs(eigenvecs[1::3, direction]), 'rx',
-                 np.abs(eigenvecs[2::3, direction]), 'cx')
+                 np.abs(eigenvecs[2::3, direction]), 'cx',
+                 markersize=10, mew=3)
         plt.ylim(0, 1)
+        plt.grid()
         plt.yticks(fontsize=font_size)
         plt.xticks(range(len(obs_names)), obs_names, fontsize=font_size)
-        plt.ylabel(r'$\mathbf{{v}}_{}$'.format(direction), fontsize=label_size)
-    plt.legend(['x direction', 'y direction', 'z direction'],
-               loc='upper right', frameon=False)
-    plt.xlabel('Location', fontsize=label_size)
-    if save_fig is True:
-        fpath = write_path + 'noisy_eigenvectors.pdf'
-        plt.savefig(fpath, bbox_inches='tight')
-        plt.close()
+        plt.xticks(rotation=60)
+        plt.ylabel(r'$\mathbf{{v}}_{%03d}$' % (direction), fontsize=label_size)
+        plt.legend(['x direction', 'y direction', 'z direction'],
+                   loc='upper right', frameon=False, fontsize=16)
+        plt.xlabel('Location', fontsize=label_size)
+        if save_fig is True:
+            fpath = write_path + 'eigendirection%03d.pdf' % direction
+            plt.savefig(fpath, bbox_inches='tight')
+            plt.close()
 
 
-def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
-            label_size=16, plot_legend=True, save_fig=False, write_path=None):
+def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
+            font_size=12, label_size=16, plot_legend=True, save_fig=False,
+            write_path=None):
     """Plot the SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the SV and field
@@ -112,6 +115,7 @@ def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
         model (time series): X, Y and Z components of the field predicted by a
             field model for the same location as the data.
         obs (str): observatory name given as three digit IAGA code.
+        model_name (str): field model name.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         font_size (int): font size for axes. Defaults to 12 pt.
@@ -122,6 +126,7 @@ def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
     plt.figure(figsize=fig_size)
     # X component
     plt.subplot(3, 1, 1)
+    plt.title(obs, fontsize=label_size)
     plt.gca().xaxis_date()
     plt.plot(dates, mf.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
     plt.gcf().autofmt_xdate()
@@ -149,15 +154,15 @@ def plot_mf(*, dates, mf, model, obs, fig_size=(8, 6), font_size=12,
     plt.xlabel('Year', fontsize=label_size)
     plt.ylabel(r'$Z$ (nT)', fontsize=label_size)
     if plot_legend is True:
-        plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
+        plt.legend([obs, model_name], loc='best', frameon=False)
     if save_fig is True:
         fpath = write_path + obs + '.pdf'
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
 
-def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
-            label_size=16, plot_legend=False, plot_average=False,
+def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
+            font_size=12, label_size=16, plot_legend=False, plot_average=False,
             window_length=12, min_samples=3, save_fig=False, write_path=None):
     """Plot the SV and model prediction for a single observatory.
 
@@ -170,6 +175,7 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         model (time series): X, Y and Z components of the SV predicted by a
             field model for the same location as the data.
         obs (str): observatory name given as three digit IAGA code.
+        model_name (str): field model name.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         font_size (int): font size for axes. Defaults to 12 pt.
@@ -190,10 +196,11 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.figure(figsize=fig_size)
         # X component
         plt.subplot(3, 1, 1)
+        plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 0], 'b', dates, sv.ix[:, 0].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'c', dates, model.ix[:, 0], 'r')
+            'r', dates, model.ix[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -204,7 +211,7 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 1], 'b', dates, sv.ix[:, 1].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'c', dates, model.ix[:, 1], 'r')
+            'r', dates, model.ix[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -215,7 +222,7 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 2], 'b', dates, sv.ix[:, 2].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'c', dates, model.ix[:, 2], 'r')
+            'r', dates, model.ix[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -223,12 +230,13 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.xlabel('Year', fontsize=label_size)
         plt.ylabel(r'$\dot{z}$ (nT/yr)', fontsize=label_size)
         if plot_legend is True:
-            plt.legend([obs, 'Running average', 'COV-OBS'], loc='upper right',
+            plt.legend([obs, 'Running average', model_name], loc='best',
                        frameon=False)
     else:
         plt.figure(figsize=fig_size)
         # X component
         plt.subplot(3, 1, 1)
+        plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
         plt.plot(dates, sv.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
         plt.gcf().autofmt_xdate()
@@ -257,18 +265,19 @@ def plot_sv(*, dates, sv, model, obs, fig_size=(8, 6), font_size=12,
         plt.ylabel(r'$\dot{z}$ (nT/yr)', fontsize=label_size)
 
         if plot_legend is True:
-            plt.legend([obs, 'COV-OBS'], loc='upper right', frameon=False)
+            plt.legend([obs, model_name], loc='best', frameon=False)
     if save_fig is True:
-        fpath = write_path + obs + '.pdf'
+        fpath = write_path + 'clean_' + obs + '.pdf'
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
 
-def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
+def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
                        fig_size=(8, 6), font_size=12, label_size=16,
                        plot_legend=False, plot_average=False,
                        window_length=12, min_samples=3, save_fig=False,
-                       write_path=None):
+                       write_path=None, corrected_residuals, residuals,
+                       plot_rms=False):
     """Plot noisy/denoised SV and model prediction for a single observatory.
 
     Produces a plot of the X, Y and Z components of the noisy SV, the denoised
@@ -282,6 +291,7 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
             single location.
         model (time series): X, Y and Z components of the SV predicted by a
             field model for the same location as the data.
+        model_name (str): field model name.
         obs (str): observatory name given as three digit IAGA code.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
@@ -298,11 +308,26 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
             calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
             first differences this means that at least 3 months of data per
             window are required to calculate the 12-month running average.)
+        plot_rms (bool): option to calculate the rms before and after denoising
+        and display the values on the figure. Defaults to False.
     """
     plt.figure(figsize=fig_size)
+    plt.title(obs, fontsize=label_size)
+    if plot_rms is True:
+        # Calculate the rms before and after denoising
+        rms_x_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 0])))
+        rms_x_denoised = np.sqrt(np.nanmean(np.square(
+            corrected_residuals.ix[:, 0])))
+        rms_y_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 1])))
+        rms_y_denoised = np.sqrt(np.nanmean(np.square(
+            corrected_residuals.ix[:, 1])))
+        rms_z_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 2])))
+        rms_z_denoised = np.sqrt(np.nanmean(np.square(
+            corrected_residuals.ix[:, 2])))
     if plot_average is True:
         # X component
         plt.subplot(3, 1, 1)
+        plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
         plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
                  'r', dates, denoised_sv.ix[:, 0].rolling(window=window_length,
@@ -313,6 +338,13 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         plt.ylabel(r'$\dot{x}$ (nT/yr)', fontsize=label_size)
+        if plot_rms is True:
+            plt.annotate('rms = ' + "{:.0f}".format(rms_x_noisy),
+                         xy=(0.05, 0.9), xycoords='axes fraction',
+                         fontsize=font_size, color='b')
+            plt.annotate('rms = ' + "{:.0f}".format(rms_x_denoised),
+                         xy=(0.05, 0.8), xycoords='axes fraction',
+                         fontsize=font_size, color='r')
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
@@ -325,6 +357,13 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         plt.ylabel(r'$\dot{y}$ (nT/yr)', fontsize=label_size)
+        if plot_rms is True:
+            plt.annotate('rms = ' + "{:.0f}".format(rms_y_noisy),
+                         xy=(0.05, 0.9), xycoords='axes fraction',
+                         fontsize=font_size, color='b')
+            plt.annotate('rms = ' + "{:.0f}".format(rms_y_denoised),
+                         xy=(0.05, 0.8), xycoords='axes fraction',
+                         fontsize=font_size, color='r')
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
@@ -338,13 +377,20 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.yticks(fontsize=font_size)
         plt.xlabel('Year', fontsize=label_size)
         plt.ylabel(r'$\dot{z}$ (nT/yr)', fontsize=label_size)
-
+        if plot_rms is True:
+            plt.annotate('rms = ' + "{:.0f}".format(rms_z_noisy),
+                         xy=(0.05, 0.9), xycoords='axes fraction',
+                         fontsize=font_size, color='b')
+            plt.annotate('rms = ' + "{:.0f}".format(rms_z_denoised),
+                         xy=(0.05, 0.8), xycoords='axes fraction',
+                         fontsize=font_size, color='r')
         if plot_legend is True:
-            plt.legend([obs, 'Denoised SV', 'Running average', 'COV-OBS'],
-                       loc='upper right', frameon=False)
+            plt.legend([obs, 'Denoised SV', 'Running average', model_name],
+                       loc='best', frameon=False)
     else:
         # X component
         plt.subplot(3, 1, 1)
+        plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
         plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
                  'r', dates, model.ix[:, 0], 'k')
@@ -353,6 +399,13 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         plt.ylabel(r'$\dot{x}$ (nT/yr)', fontsize=label_size)
+        if plot_rms is True:
+            plt.annotate('rms = ' + "{:.0f}".format(rms_x_noisy),
+                         xy=(0.05, 0.9), xycoords='axes fraction',
+                         fontsize=font_size, color='b')
+            plt.annotate('rms = ' + "{:.0f}".format(rms_x_denoised),
+                         xy=(0.05, 0.8), xycoords='axes fraction',
+                         fontsize=font_size, color='r')
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
@@ -363,6 +416,13 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         plt.ylabel(r'$\dot{y}$ (nT/yr)', fontsize=label_size)
+        if plot_rms is True:
+            plt.annotate('rms = ' + "{:.0f}".format(rms_y_noisy),
+                         xy=(0.05, 0.9), xycoords='axes fraction',
+                         fontsize=font_size, color='b')
+            plt.annotate('rms = ' + "{:.0f}".format(rms_y_denoised),
+                         xy=(0.05, 0.8), xycoords='axes fraction',
+                         fontsize=font_size, color='r')
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
@@ -374,29 +434,44 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs,
         plt.yticks(fontsize=font_size)
         plt.xlabel('Year', fontsize=label_size)
         plt.ylabel(r'$\dot{z}$ (nT/yr)', fontsize=label_size)
-
+        if plot_rms is True:
+            plt.annotate('rms = ' + "{:.0f}".format(rms_z_noisy),
+                         xy=(0.05, 0.9), xycoords='axes fraction',
+                         fontsize=font_size, color='b')
+            plt.annotate('rms = ' + "{:.0f}".format(rms_z_denoised),
+                         xy=(0.05, 0.8), xycoords='axes fraction',
+                         fontsize=font_size, color='r')
         if plot_legend is True:
-            plt.legend([obs, 'Denoised SV', 'COV-OBS'],
-                       loc='upper right', frameon=False)
+            plt.legend([obs, 'Denoised SV', model_name],
+                       loc='best', frameon=False)
     if save_fig is True:
         fpath = write_path + obs + '.pdf'
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
+    if plot_rms is True:
+        return rms_x_denoised/rms_x_noisy, rms_y_denoised/rms_y_noisy,\
+            rms_z_denoised/rms_z_noisy
+    else:
+        return
 
 
-def plot_ae(*, ae_file, dates, signal, fig_size=(8, 6), font_size=12,
-            label_size=16, plot_legend=True, save_fig=False, write_path=None):
-    """Compare the proxy used to denoise the SV data with the AE index.
+def plot_index(*, index_file, dates, residuals, fig_size=(8, 6), font_size=12,
+               label_size=16, plot_legend=True, save_fig=False,
+               write_path=None, index_name='Dst'):
+    """Compare the proxy used to denoise the SV data with a geomagnetic index.
 
-    Loads AE data and plots it alongside the signal
+    Loads geomagnetic index and plots it alongside the signal
     used as a proxy for unmodelled external signal. Both time series are
     reduced to zero mean and unit variance (i.e. their zscore) for plotting.
 
     Args:
         dates (datetime.datetime): dates of time series measurements.
-        signal (time series): proxy for unmodelled external signal used in the
-            denoising process (principal component analysis). The proxy is the
-            residual in the noisiest eigendirection(s).
+        index_file (str): path to the file containing index data
+        residuals (time series): proxy for unmodelled external signal used in
+            the denoising process (principal component analysis). The proxy is
+            the residual in the noisiest eigendirection(s).
+        index_name (str): name of index used in comparison e.g. Dst or Dcx.
+            Defaults to Dst.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         font_size (int): font size for axes. Defaults to 12 pt.
@@ -404,79 +479,39 @@ def plot_ae(*, ae_file, dates, signal, fig_size=(8, 6), font_size=12,
         plot_legend (bool): option to include a legend on the plot. Defaults
             to True.
     """
-    coeff, df = svtools.calculate_correlation_ae(
-        dates=dates, signal=signal, ae_file=ae_file)
-    # Plot the zscore of the two time series
-    plt.figure(figsize=fig_size)
-    plt.gca().xaxis_date()
-    plt.plot(df.date, sp.stats.mstats.zscore(df.ae), 'b', dates,
-             sp.stats.mstats.zscore(signal), 'r')
-    plt.gcf().autofmt_xdate()
-    plt.axis('tight')
-    plt.xlabel('Year', fontsize=label_size)
-    plt.ylabel('Signal (nT/yr)', fontsize=label_size)
-    plt.xticks(fontsize=font_size)
-    plt.yticks(fontsize=font_size)
-    plt.annotate('r = ' + "{:.2f}".format(coeff), xy=(0.05, 0.95),
-                 xycoords='axes fraction')
-    if plot_legend is True:
-        plt.legend(['AE', 'proxy'], loc='upper right', frameon=False)
-    if save_fig is True:
-        fpath = write_path + 'ae_comparison.pdf'
-        plt.savefig(fpath, bbox_inches='tight')
-        plt.close()
+    for direction in range(residuals.shape[1]):
+        signal = residuals[:, direction]
+        coeff, df = svtools.calculate_correlation_index(
+            dates=dates, signal=signal, index_file=index_file)
+        # Plot the zscore of the two time series
+        plt.figure(figsize=fig_size)
+        plt.gca().xaxis_date()
+        plt.plot(df.date, sp.stats.mstats.zscore(df.index_vals), 'b',
+                 dates, sp.stats.mstats.zscore(signal), 'r')
+        plt.gcf().autofmt_xdate()
+        plt.axis('tight')
+        plt.xlabel('Year', fontsize=label_size)
+        plt.ylabel('Signal (nT/yr)', fontsize=label_size)
+        plt.xticks(fontsize=font_size)
+        plt.yticks(fontsize=font_size)
+        plt.annotate('|r| = ' + "{:.2f}".format(np.abs(coeff)), xy=(0.05, 0.9),
+                     xycoords='axes fraction', fontsize=16)
+        if plot_legend is True:
+            plt.legend([index_name, 'proxy'], loc='best', frameon=False,
+                       fontsize=16)
+        if save_fig is True:
+            fpath = write_path + index_name \
+                + '_eigendirection%03d.pdf' % direction
+            plt.savefig(fpath, bbox_inches='tight')
+            plt.close()
 
 
-def plot_dcx(*, dcx_file, dates, signal, fig_size=(8, 6), font_size=12,
-             label_size=16, plot_legend=True, save_fig=False, write_path=None):
-    """Compare the proxy used to denoise the SV data with the Dst index.
+def plot_index_dft(*, index_file, dates, signal, fig_size=(8, 6), font_size=12,
+                   label_size=16, plot_legend=True, save_fig=False,
+                   write_path=None, index_name='Dst'):
+    """Compare the DFTs of the proxy signal with that of a geomagnetic index.
 
-    Loads Dcx data (extended, corrected Dst) and plots it alongside the signal
-    used as a proxy for unmodelled external signal. Both time series are
-    reduced to zero mean and unit variance (i.e. their zscore) for plotting.
-
-    Args:
-        dates (datetime.datetime): dates of time series measurements.
-        dcx_file (str): path to the file containing Dcx data
-        signal (time series): proxy for unmodelled external signal used in the
-            denoising process (principal component analysis). The proxy is the
-            residual in the noisiest eigendirection(s).
-        fig_size (array): figure size in inches. Defaults to 8 inches by 6
-            inches.
-        font_size (int): font size for axes. Defaults to 12 pt.
-        label_size (int): font size for axis labels. Defaults to 16 pt.
-        plot_legend (bool): option to include a legend on the plot. Defaults
-            to True.
-    """
-    coeff, df = svtools.calculate_correlation_dcx(
-        dates=dates, signal=signal, dcx_file=dcx_file)
-    # Plot the zscore of the two time series
-    plt.figure(figsize=fig_size)
-    plt.gca().xaxis_date()
-    plt.plot(df.date, sp.stats.mstats.zscore(df.dcx), 'b',
-             dates, sp.stats.mstats.zscore(signal), 'r')
-    plt.gcf().autofmt_xdate()
-    plt.axis('tight')
-    plt.xlabel('Year', fontsize=label_size)
-    plt.ylabel('Signal (nT/yr)', fontsize=label_size)
-    plt.xticks(fontsize=font_size)
-    plt.yticks(fontsize=font_size)
-    plt.annotate('r = ' + "{:.2f}".format(coeff), xy=(0.05, 0.95),
-                 xycoords='axes fraction')
-    if plot_legend is True:
-        plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)
-    if save_fig is True:
-        fpath = write_path + 'dcx_comparison.pdf'
-        plt.savefig(fpath, bbox_inches='tight')
-        plt.close()
-
-
-def plot_dcx_fft(*, dcx_file, dates, signal, fig_size=(8, 6), font_size=12,
-                label_size=16, plot_legend=True, save_fig=False,
-                write_path=None):
-    """Compare the DFTs of the proxy signal with that of the Dcx index.
-
-    Loads Dcx data, calculates its DFT and plots it
+    Loads index data, calculates its DFT using an FFT algorithm and plots it
     alongside the DFT of the signal used as a proxy for unmodelled external
     signal. The length of the time series are padded with zeroes up to the next
     power of two.
@@ -486,6 +521,8 @@ def plot_dcx_fft(*, dcx_file, dates, signal, fig_size=(8, 6), font_size=12,
         signal (time series): proxy for unmodelled external signal used in the
             denoising process (principal component analysis). The proxy is the
             residual in the noisiest eigendirection(s).
+        index_name (str): name of index used in comparison e.g. Dst or Dcx.
+            Defaults to Dst.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         font_size (int): font size for axes. Defaults to 12 pt.
@@ -493,108 +530,45 @@ def plot_dcx_fft(*, dcx_file, dates, signal, fig_size=(8, 6), font_size=12,
         plot_legend (bool): option to include a legend on the plot. Defaults
             to True.
     """
-    coeff, df = svtools.calculate_correlation_dcx(
-        dates=dates, signal=signal, dcx_file=dcx_file)
+    coeff, df = svtools.calculate_correlation_index(
+        dates=dates, signal=signal, index_file=index_file)
     sampling_period = 1 / 12.0   # Sampling time in years
 
     # Find the next power of two higher than the length of the time series and
-    # perform the FFT with the series padded with zeroes to this length
+    # perform the DFT with the series padded with zeroes to this length
     sample_length = int(pow(2, np.ceil(np.log2(len(df.proxy)))))
-    dcx_fft = sp.fft(df.dcx, sample_length)
-    proxy_fft = sp.fft(df.proxy, sample_length)
+    index_dft = sp.fft(df.index_vals, sample_length)
+    proxy_dft = sp.fft(df.proxy, sample_length)
     freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
-    dcx_power = (2.0 / sample_length) * np.abs(dcx_fft[:sample_length // 2])
+    index_power = (2.0 / sample_length) * np.abs(
+        index_dft[:sample_length // 2])
     proxy_power = (2.0 / sample_length) * np.abs(
-        proxy_fft[:sample_length // 2])
+        proxy_dft[:sample_length // 2])
 
     plt.figure(figsize=fig_size)
     # Time domain
     plt.subplot(2, 1, 1)
     plt.gca().xaxis_date()
-    plt.plot(df.date, df.dcx, 'b', df.date, df.proxy, 'r')
+    plt.plot(df.date, df.index_vals, 'b', df.date, df.proxy, 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
     plt.ylabel('Signal (nT/yr)', fontsize=label_size)
-    plt.annotate('r = ' + "{:.2f}".format(coeff), xy=(0.05, 0.9),
+    plt.annotate('|r| = ' + "{:.2f}".format(np.abs(coeff)), xy=(0.05, 0.9),
                  xycoords='axes fraction')
     # Frequency domain
     plt.subplot(2, 1, 2)
-    plt.plot(freq, dcx_power, 'b', freq, proxy_power, 'r')
+    plt.plot(freq, index_power, 'b', freq, proxy_power, 'r')
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
     plt.xlabel('Frequency (cycles/year)', fontsize=label_size)
     plt.ylabel('Power', fontsize=label_size)
     if plot_legend is True:
-        plt.legend(['Dcx', 'proxy'], loc='upper right', frameon=False)
+        plt.legend([index_name, 'proxy'], loc='best', frameon=False)
     if save_fig is True:
-        fpath = write_path + 'dcx_comparison_fft.pdf'
-        plt.savefig(fpath, bbox_inches='tight')
-        plt.close()
-
-
-def plot_ae_fft(*, ae_file, dates, signal, fig_size=(8, 6), font_size=12,
-                label_size=16, plot_legend=True, save_fig=False,
-                write_path=None):
-    """Compare the DFTs of the proxy signal with that of the AE index.
-
-    Loads AE data, calculates its DFT and plots it
-    alongside the DFT of the signal used as a proxy for unmodelled external
-    signal. The length of the time series are padded with zeroes up to the next
-    power of two.
-
-    Args:
-        dates (datetime.datetime): dates of time series measurements.
-        signal (time series): proxy for unmodelled external signal used in the
-            denoising process (principal component analysis). The proxy is the
-            residual in the noisiest eigendirection(s).
-        fig_size (array): figure size in inches. Defaults to 8 inches by 6
-            inches.
-        font_size (int): font size for axes. Defaults to 12 pt.
-        label_size (int): font size for axis labels. Defaults to 16 pt.
-        plot_legend (bool): option to include a legend on the plot. Defaults
-            to True.
-    """
-    coeff, df = svtools.calculate_correlation_ae(
-        dates=dates, signal=signal, ae_file=ae_file)
-    sampling_period = 1 / 12.0   # Sampling time in years
-
-    # Find the next power of two higher than the length of the time series and
-    # perform the FFT with the series padded with zeroes to this length
-    sample_length = int(pow(2, np.ceil(np.log2(len(df.proxy)))))
-    ae_fft = sp.fft(df.ae, sample_length)
-    proxy_fft = sp.fft(df.proxy, sample_length)
-    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
-    ae_power = (2.0 / sample_length) * np.abs(ae_fft[:sample_length // 2])
-    proxy_power = (2.0 / sample_length) * np.abs(
-        proxy_fft[:sample_length // 2])
-
-    plt.figure(figsize=fig_size)
-    # Time domain
-    plt.subplot(2, 1, 1)
-    plt.gca().xaxis_date()
-    plt.plot(df.date, df.ae, 'b', df.date, df.proxy, 'r')
-    plt.gcf().autofmt_xdate()
-    plt.axis('tight')
-    plt.xticks(fontsize=font_size)
-    plt.yticks(fontsize=font_size)
-    plt.ylabel('Signal (nT/yr)', fontsize=label_size)
-    plt.annotate('r = ' + "{:.2f}".format(coeff), xy=(0.05, 0.9),
-                 xycoords='axes fraction')
-    # Frequency domain
-    plt.subplot(2, 1, 2)
-    plt.plot(freq, ae_power, 'b', freq, proxy_power, 'r')
-    plt.axis('tight')
-    plt.xticks(fontsize=font_size)
-    plt.yticks(fontsize=font_size)
-    plt.xlabel('Frequency (cycles/year)', fontsize=label_size)
-    plt.ylabel('Power', fontsize=label_size)
-    if plot_legend is True:
-        plt.legend(['AE', 'proxy'], loc='upper right', frameon=False)
-    if save_fig is True:
-        fpath = write_path + 'ae_comparison_fft.pdf'
+        fpath = write_path + index_name + '_dft.pdf'
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -622,17 +596,17 @@ def plot_outliers(*, dates, signal, obs_name, outliers, fig_size=(8, 6),
     plt.plot(dates, signal, 'k', dates, outliers, 'r^')
     plt.axis('tight')
     plt.xlabel('Year', fontsize=label_size)
-    plt.ylabel('SV', fontsize=label_size)
+    plt.ylabel('SV (nT/yr)', fontsize=label_size)
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
-    plt.legend([obs_name, 'outlier'], loc='upper right', frameon=False)
+    plt.legend([obs_name, 'outlier'], loc='best', frameon=False)
     if save_fig is True:
         fpath = write_path + obs_name + '_outliers.pdf'
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
 
-def plot_residuals_fft(*, projected_residuals, dates, fig_size=(10, 8),
+def plot_residuals_dft(*, projected_residuals, dates, fig_size=(10, 8),
                        font_size=12, label_size=16, plot_legend=True,
                        save_fig=False, write_path=None):
     """Compare the DFTs of the projected residuals with each other.
@@ -647,14 +621,15 @@ def plot_residuals_fft(*, projected_residuals, dates, fig_size=(10, 8),
     sampling_period = 1 / 12.0   # Sampling time in years
     sample_length = int(pow(2, np.ceil(np.log2(projected_residuals.shape[0]))))
     for direction in range(projected_residuals.shape[1]):
-        residual_fft = sp.fft(projected_residuals[:, direction], sample_length)
+        residual_dft = sp.fft(projected_residuals[:, direction], sample_length)
         freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
                            sample_length / 2)
         residual_power = (2.0 / sample_length) * np.abs(
-            residual_fft[:sample_length // 2])
+            residual_dft[:sample_length // 2])
         plt.subplot(projected_residuals.shape[1], 2, direction + fig_count)
         plt.gca().xaxis_date()
         plt.plot(dates, projected_residuals[:, direction], 'b')
+        plt.xticks(rotation=60)
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -668,10 +643,111 @@ def plot_residuals_fft(*, projected_residuals, dates, fig_size=(10, 8),
         plt.yticks(fontsize=font_size)
     fig.text(0.00, 0.5, 'Residuals (nT/yr)', va='center', rotation='vertical',
              fontsize=label_size)
-    fig.text(0.25, 0.04, 'Date', ha='center', fontsize=label_size)
-    fig.text(0.75, 0.04, 'Frequency (cycles/yr)', ha='center',
+    fig.text(0.25, 0.02, 'Date', ha='center', fontsize=label_size)
+    fig.text(0.75, 0.02, 'Frequency (cycles/yr)', ha='center',
              fontsize=label_size)
     if save_fig is True:
-        fpath = write_path + 'residuals_fft.pdf'
+        fpath = write_path + 'residuals_dft.pdf'
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
+
+
+def plot_residuals_dft_all(*, projected_residuals, dates, fig_size=(10, 8),
+                           font_size=12, label_size=16,
+                           save_fig=False, write_path=None):
+    """Compare the DFTs of the projected residuals with each other.
+
+    Calculates the DFT of the residuals in each eigendirection given and plots
+    it alongside the residuals themselves. The length of the time series are
+    padded with zeroes up to the next
+    power of two."""
+
+    sampling_period = 1 / 12.0   # Sampling time in years
+    sample_length = int(pow(2, np.ceil(np.log2(projected_residuals.shape[0]))))
+    for direction in range(projected_residuals.shape[1]):
+        residual_dft = sp.fft(projected_residuals[:, direction], sample_length)
+        freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
+                           sample_length / 2)
+        residual_power = (2.0 / sample_length) * np.abs(
+            residual_dft[:sample_length // 2])
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=fig_size)
+        plt.subplot(2, 1, 1)
+        plt.gca().xaxis_date()
+        plt.plot(dates, projected_residuals[:, direction], 'b')
+        plt.xticks(rotation=60)
+        plt.axis('tight')
+        plt.xticks(fontsize=font_size)
+        plt.yticks(fontsize=font_size)
+        plt.ylabel('Residuals (nT/yr)', fontsize=label_size)
+        plt.subplot(2, 1, 2)
+        # Frequency domain
+        plt.plot(freq, residual_power, 'b')
+        plt.axis('tight')
+        plt.xticks(fontsize=font_size)
+        plt.yticks(fontsize=font_size)
+        plt.xlabel('Frequency (cycles/yr)', fontsize=label_size)
+        plt.ylabel('DFT', fontsize=label_size)
+        if save_fig is True:
+            fpath = write_path \
+                 + 'dft_eigendirection%03d.pdf' % direction
+            plt.savefig(fpath, bbox_inches='tight')
+            plt.close()
+
+
+def compare_proxies(*, fname1, fname2, legend_text, fig_size=(8, 6),
+                    font_size=12, label_size=16,
+                    save_fig=False, write_path=None):
+    proxy1 = pd.read_csv(fname1, parse_dates=[0], names=['date', 'proxy1'],
+                         skiprows=1, index_col=None)
+    proxy2 = pd.read_csv(fname2, parse_dates=[0], names=['date', 'proxy2'],
+                         skiprows=1, index_col=None)
+
+    # Merge the two dataframes so that only dates contained within both are
+    # retained
+    df = pd.merge(proxy1.dropna(), proxy2.dropna(), on='date', how='inner')
+    coeff = np.corrcoef(df.proxy1, df.proxy2)
+    # Plot the zscore of the two time series
+    plt.figure(figsize=fig_size)
+    plt.gca().xaxis_date()
+    plt.plot(df.date, sp.stats.mstats.zscore(df.proxy1), 'b',
+             df.date, sp.stats.mstats.zscore(df.proxy2), 'r')
+    plt.gcf().autofmt_xdate()
+    plt.axis('tight')
+    plt.xlabel('Year', fontsize=label_size)
+    plt.ylabel('Proxy signal (nT/yr)', fontsize=label_size)
+    plt.xticks(fontsize=font_size)
+    plt.yticks(fontsize=font_size)
+    plt.legend(legend_text, loc='upper right', frameon=False, fontsize=16)
+    plt.annotate('|r| = ' + "{:.2f}".format(np.abs(coeff.data[0, 1])),
+                 xy=(0.05, 0.9),
+                 xycoords='axes fraction', fontsize=16)
+    if save_fig is True:
+        fpath = write_path + 'proxy_comparison_' + legend_text[0] + '_' \
+            + legend_text[1] + '.pdf'
+        plt.savefig(fpath, bbox_inches='tight')
+        plt.close()
+
+
+def rms_ratios(*, rms, fig_size=(8, 6), font_size=12, label_size=16,
+               save_fig=False, write_path=None):
+    for observatory in rms.keys():
+        plt.figure(figsize=fig_size)
+        plt.plot(range(0, 3*len(rms.keys())), rms[observatory]['x'], 'bx-',
+                 markersize=7, mew=2)
+        plt.plot(range(0, 3*len(rms.keys())), rms[observatory]['y'], 'rx-',
+                 markersize=7, mew=2)
+        plt.plot(range(0, 3*len(rms.keys())), rms[observatory]['z'], 'cx-',
+                 markersize=7, mew=2)
+        plt.legend(['x', 'y', 'z'],
+                   loc='best', frameon=False, fontsize=16)
+        plt.xlabel('Eigendirections removed', fontsize=label_size)
+        plt.ylabel('%s rms/denoised rms' % observatory, fontsize=label_size)
+        plt.ylim([0, 1.2])
+        plt.xlim([0, 3*len(rms.keys())-1])
+        plt.xticks(fontsize=font_size)
+        plt.yticks(fontsize=font_size)
+        plt.grid()
+        if save_fig is True:
+            fpath = write_path + 'rms_ratio_%s.pdf' % observatory
+            plt.savefig(fpath, bbox_inches='tight')
+            plt.close()
