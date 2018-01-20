@@ -2,6 +2,8 @@
 """
 Created on Thu Feb  2 16:45:42 2017
 
+Testing functions for svtools.py.
+
 @author: gracecox
 """
 import unittest

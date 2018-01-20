@@ -2,6 +2,8 @@
 """
 Created on Sun Feb 21 13:26:22 2016
 
+Testing the file io functionality of inputoutput.py.
+
 @author: Grace
 """
 import unittest
@@ -44,38 +46,40 @@ class WDCDatetimesTestCase(unittest.TestCase):
     def setUp(self):
 
         self.data = pd.DataFrame(
-            index=[0], columns=['century', 'yr', 'month', 'day', 'code'])
+            index=[0], columns=['century', 'yr', 'month', 'day', 'hour'])
         self.data['century'] = 19
-        self.data['yr'] = 63
-        self.data['month'] = 1
-        self.data['day'] = 15
-        self.data['code'] = 'NGK'
-
+        self.data['yr'] = 88
+        self.data['month'] = 9
+        self.data['day'] = 21
+        self.data['hour'] = 2
+        self.data['code'] = 'ESK'
+        
     def test_wdc_datetimes(self):
 
         df = inputoutput.wdc_datetimes(self.data)
 
         self.assertTrue(isinstance(df.date[0], pd.datetime))
-        self.assertEqual(df.date[0], dt.datetime(day=15, month=1, year=1963))
+        self.assertEqual(df.date[0], dt.datetime(day=21, month=9, year=1988, 
+                                                 hour=2, minute=30))
 
 
-class DailyMeanConversionTestCase(unittest.TestCase):
+class HourlyMeanConversionTestCase(unittest.TestCase):
 
     def setUp(self):
 
         self.data = pd.DataFrame(
             index=[0, 1], columns=[
-                'date', 'component', 'base', 'daily_mean_temp'])
+                'date', 'component', 'base', 'hourly_mean_temp'])
         self.data.component = ['I', 'X']
         self.data.base = [53, 200]
-        self.data.daily_mean_temp = [1200, 530]
+        self.data.hourly_mean_temp = [1200, 530]
 
-    def test_daily_mean_conversion(self):
+    def test_hourly_mean_conversion(self):
 
-        df = inputoutput.daily_mean_conversion(self.data)
+        df = inputoutput.hourly_mean_conversion(self.data)
 
-        self.assertAlmostEqual(df.iloc[0].daily_mean, 55)
-        self.assertAlmostEqual(df.iloc[1].daily_mean, 20530)
+        self.assertAlmostEqual(df.iloc[0].hourly_mean, 55)
+        self.assertAlmostEqual(df.iloc[1].hourly_mean, 20530)
 
 
 class AnglesToGeographicTestCase(unittest.TestCase):
@@ -106,10 +110,10 @@ class WDCXYZTestCase(unittest.TestCase):
 
         self.data = pd.DataFrame(
             index=[0, 1, 2, 3, 4, 5], columns=[
-                'date', 'component', 'base', 'daily_mean_temp'])
+                'date', 'component', 'base', 'hourly_mean_temp'])
         self.data.component = ['H', 'D', 'X', 'Y', 'Z', 'X']
         self.data.base = [200, 53, np.nan, np.nan, 300, 9999]
-        self.data.daily_mean_temp = [530, 1200, np.nan, np.nan, 430, 9999]
+        self.data.hourly_mean_temp = [530, 1200, np.nan, np.nan, 430, 9999]
         self.data.date.iloc[0:5] = dt.date(day=15, month=1, year=1963)
         self.data.date.iloc[5] = dt.date(day=20, month=1, year=1963)
 
@@ -121,3 +125,17 @@ class WDCXYZTestCase(unittest.TestCase):
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
         self.assertAlmostEqual(df.iloc[0].Z, 30430.000000000000)
         self.assertTrue(np.isnan(df.iloc[1].X))
+
+    def test_wdc_xyz_is_nan_if_Z_missing(self):
+        
+        self.data = self.data[self.data.component != 'Z']
+        df = inputoutput.wdc_xyz(self.data)
+        self.assertTrue(np.isnan(df.iloc[1].Z))
+
+    def test_wdc_xyz_is_nan_if_DHXY_missing(self):
+        
+        self.data = self.data[~(self.data.component.isin(['D', 'H', 'X', 'Y']))]
+        df = inputoutput.wdc_xyz(self.data)
+        
+        self.assertTrue(np.isnan(df.iloc[0].X))
+        self.assertTrue(np.isnan(df.iloc[0].Y))
