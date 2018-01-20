@@ -2,14 +2,14 @@
 """
 Created on Sun Feb 21 13:26:22 2016
 
-Testing the file io functionality of inputoutput.py.
+Testing the file io functionality of io.py.
 
 @author: Grace
 """
 import unittest
 from ddt import ddt, data, unpack
 import os
-from .. import inputoutput
+from .. import io
 import pandas as pd
 import datetime as dt
 import numpy as np
@@ -30,7 +30,7 @@ class WDCParsefileTestCase(unittest.TestCase):
 
         testfile = os.path.join(self.path, filename)
 
-        data = inputoutput.wdc_parsefile(testfile)
+        data = io.wdc_parsefile(testfile)
         # Observatory code
         self.assertEqual(data.code[0], code)
         self.assertEqual(len(data.code.unique()), 1)
@@ -56,7 +56,7 @@ class WDCDatetimesTestCase(unittest.TestCase):
         
     def test_wdc_datetimes(self):
 
-        df = inputoutput.wdc_datetimes(self.data)
+        df = io.wdc_datetimes(self.data)
 
         self.assertTrue(isinstance(df.date[0], pd.datetime))
         self.assertEqual(df.date[0], dt.datetime(day=21, month=9, year=1988, 
@@ -76,7 +76,7 @@ class HourlyMeanConversionTestCase(unittest.TestCase):
 
     def test_hourly_mean_conversion(self):
 
-        df = inputoutput.hourly_mean_conversion(self.data)
+        df = io.hourly_mean_conversion(self.data)
 
         self.assertAlmostEqual(df.iloc[0].hourly_mean, 55)
         self.assertAlmostEqual(df.iloc[1].hourly_mean, 20530)
@@ -98,7 +98,7 @@ class AnglesToGeographicTestCase(unittest.TestCase):
 
     def test_angles_to_geographic(self):
 
-        df = inputoutput.angles_to_geographic(self.data)
+        df = io.angles_to_geographic(self.data)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -119,7 +119,7 @@ class WDCXYZTestCase(unittest.TestCase):
 
     def test_wdc_xyz(self):
 
-        df = inputoutput.wdc_xyz(self.data)
+        df = io.wdc_xyz(self.data)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -129,13 +129,13 @@ class WDCXYZTestCase(unittest.TestCase):
     def test_wdc_xyz_is_nan_if_Z_missing(self):
         
         self.data = self.data[self.data.component != 'Z']
-        df = inputoutput.wdc_xyz(self.data)
+        df = io.wdc_xyz(self.data)
         self.assertTrue(np.isnan(df.iloc[1].Z))
 
     def test_wdc_xyz_is_nan_if_DHXY_missing(self):
         
         self.data = self.data[~(self.data.component.isin(['D', 'H', 'X', 'Y']))]
-        df = inputoutput.wdc_xyz(self.data)
+        df = io.wdc_xyz(self.data)
         
         self.assertTrue(np.isnan(df.iloc[0].X))
         self.assertTrue(np.isnan(df.iloc[0].Y))
