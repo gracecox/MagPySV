@@ -7,12 +7,13 @@
 
 Part of the MagPySV package for geomagnetic data analysis. This module provides
 various functions to denoise geomagnetic data by performing principal component
-analysis and identifying and removing outliers.
+analysis and identifying and removing outliers. Also contains an outlier
+detection function based on median absolute deviation from the median (MAD).
 """
 
 
 import pandas as pd
-import magpysv.svplots as svplots
+import magpysv.plots as plots
 import numpy as np
 from sklearn.decomposition import PCA as sklearnPCA
 from sklearn.preprocessing import Imputer
@@ -41,7 +42,7 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
     Note that the SVD algorithm cannot be used if any data are missing, which
     is why imputation is needed with this method. The function
     denoise.eigenvalue_analysis permits missing values and does not
-    infill them.
+    infill them - that is the more robust function.
 
     Smallest eigenvalue: 'quiet' direction
 
@@ -81,6 +82,10 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
             singular values of the data matrix. For example, if the residuals
             in the two 'noisiest' directions are used as the proxy for external
             signal, then these two eigenvectors are returned.
+        - projected_residuals (*array*):
+            SV residuals rotated into the eigendirections.
+        - corrected_residuals (*array*):
+            SV residuals after the denoising process.
     """
     # Fill in missing SV values (indicated as NaN in the data files)
     imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
@@ -121,7 +126,7 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
     denoised_sv.insert(0, 'date', dates)
 
     return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals,\
-        corrected_residuals
+        corrected_residuals.astype('float')
 
 
 def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
@@ -183,6 +188,10 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
             eigenvalues of the data matrix. For example, if the residuals
             in the two 'noisiest' directions are used as the proxy for external
             signal, then these two eigenvectors are returned.
+        - projected_residuals (*array*):
+            SV residuals rotated into the eigendirections.
+        - corrected_residuals (*array*):
+            SV residuals after the denoising process.
     """
     # Create a masked version of the residuals array so that we can perform the
     # PCA ignoring all nan values
@@ -259,6 +268,10 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
         threshold (float): the minimum number of median absolute deviations a
             point must be away from the median in order to be considered an
             outlier.
+        plot_fig (bool): option to plot figure of the time series and
+            identified outliers. Defaults to False.
+        save_fig (bool): option to save figure if plotted. Defaults to False.
+        write_path (str): output path for figure if saved.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         font_size (int): font size for axes. Defaults to 12 pt.
@@ -291,10 +304,10 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
 
     # Plot the outliers and original time series if required
     if plot_fig is True:
-        svplots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
-                              outliers=outliers, save_fig=save_fig,
-                              write_path=write_path, fig_size=fig_size,
-                              font_size=font_size, label_size=label_size)
+        plots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
+                            outliers=outliers, save_fig=save_fig,
+                            write_path=write_path, fig_size=fig_size,
+                            font_size=font_size, label_size=label_size)
     # Set the outliers to NaN
     idx = np.where(modified_z_score > threshold)[0]
     signal.iloc[idx] = np.nan

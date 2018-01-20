@@ -1,7 +1,6 @@
-./magpysv/data/*
-./magpysv/data/denoised_sv/**/*
-./magpysv/data/monthly_mf/*
-./magpysv/data/monthly_sv/**/*
-./magpysv/data/wdc_daily/*
-./magpysv/data/BGS_hourly/**/**/*
 *.bak
+*.pyc
+__pycache__/
+.coverage
+.cache
+.DS_Store

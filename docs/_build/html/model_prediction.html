@@ -34,8 +34,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="index.html"/>
-        <link rel="next" title="svplots module" href="svplots.html"/>
-        <link rel="prev" title="inputoutput module" href="inputoutput.html"/> 
+        <link rel="next" title="plots module" href="plots.html"/>
+        <link rel="prev" title="io module" href="io.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -87,10 +87,10 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">model_prediction module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="svplots.html">svplots module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="svtools.html">svtools module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">tools module</a></li>
 </ul>
 
             
@@ -141,8 +141,12 @@
 <p>Part of the MagPySV package for geomagnetic data analysis. Contains a function
 to obtain a complete list of geomagnetic observatory locations from the WDC
 webserver and another function to run the COV-OBS magnetic field model by
-Gillet et al. (2015, Earth, Planets and Space) to obtain model predictions for
-these observatory locations.</p>
+Gillet et al. (2013, Geochem. Geophys. Geosyst.,
+<a class="reference external" href="https://doi.org/10.1002/ggge.20041">https://doi.org/10.1002/ggge.20041</a>; 2015, Earth, Planets and Space,
+<a class="reference external" href="https://doi.org/10.1186/s40623-015-0225-z2013">https://doi.org/10.1186/s40623-015-0225-z2013</a>) to obtain model
+predictions for these observatory locations. The code can be obtained from
+<a class="reference external" href="http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/">http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/</a> and no modifications
+are necessary to run it using MagPySV.</p>
 <dl class="function">
 <dt id="magpysv.model_prediction.get_observatory_list">
 <code class="descclassname">magpysv.model_prediction.</code><code class="descname">get_observatory_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/model_prediction.html#get_observatory_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.model_prediction.get_observatory_list" title="Permalink to this definition">¶</a></dt>
@@ -185,18 +189,24 @@ observatory.</td>
 <code class="descclassname">magpysv.model_prediction.</code><code class="descname">run_covobs</code><span class="sig-paren">(</span><em>*</em>, <em>stations</em>, <em>model_path</em>, <em>output_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/model_prediction.html#run_covobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.model_prediction.run_covobs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use observatory latitude, longitude and elevation to run COV-OBS.</p>
 <p>Uses the dictionary of observatory information obtained from the WDC site
-to run the COV-OBS field model Gillet et al. (2015, Earth, Planets and
-Space) for every location. Converts latitude in degrees to colatitude in
-radians, longitude in degrees (0 to 360) into radians (-pi to pi) and
-elevation in m to km. It then runs the fortran exectuable for the field
-model and passes the location data as command line arguments. The output
-files are stored as mf_obs.dat and sv_obs.dat for magnetic field and
-secular variation predictions respectively (e.g. mf_ngk.dat and sv_ngk.dat
-for Niemegk.)</p>
+to run the COV-OBS field model Gillet et al. (2013, Geochem. Geophys.
+Geosyst.,
+<a class="reference external" href="https://doi.org/10.1002/ggge.20041">https://doi.org/10.1002/ggge.20041</a>; 2015, Earth, Planets and Space,
+<a class="reference external" href="https://doi.org/10.1186/s40623-015-0225-z2013">https://doi.org/10.1186/s40623-015-0225-z2013</a>) for a given location given
+in geodetic coordinates (model output is also in geodetic coordinates).
+Converts latitude in degrees to colatitude in radians, longitude in degrees
+(0 to 360) into radians (-pi to pi) and elevation in m to km. It then runs
+the fortran exectuable for the field model and passes the location data as
+command line arguments. The output files are stored as mf_obs.dat and
+sv_obs.dat for magnetic field and secular variation predictions
+respectively (e.g. mf_ngk.dat and sv_ngk.dat for Niemegk.)</p>
 <p>Assumes that the user has compiled the fortran source code and called the
 executable &#8220;a.out&#8221;.  No modification to the fortran source code is
 required (code can be downloaded from
 <a class="reference external" href="http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/">http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/</a>).</p>
+<p>The COV-OBS code can also be used to run other field models if modified to
+accept a different spline file as input, rather than the supplied
+COV-OBS.x1-int file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -223,10 +233,10 @@ should be stored.</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="svplots.html" class="btn btn-neutral float-right" title="svplots module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="plots.html" class="btn btn-neutral float-right" title="plots module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="inputoutput.html" class="btn btn-neutral" title="inputoutput module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="io.html" class="btn btn-neutral" title="io module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
