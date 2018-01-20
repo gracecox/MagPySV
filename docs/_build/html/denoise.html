@@ -34,7 +34,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="index.html"/>
-        <link rel="next" title="inputoutput module" href="inputoutput.html"/>
+        <link rel="next" title="io module" href="io.html"/>
         <link rel="prev" title="Welcome to MagPySV’s documentation!" href="index.html"/> 
 
   
@@ -87,10 +87,10 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">denoise module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="svplots.html">svplots module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="svtools.html">svtools module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">tools module</a></li>
 </ul>
 
             
@@ -140,7 +140,8 @@
 <p>Module containing functions to remove external signal from geomagnetic data.</p>
 <p>Part of the MagPySV package for geomagnetic data analysis. This module provides
 various functions to denoise geomagnetic data by performing principal component
-analysis and identifying and removing outliers.</p>
+analysis and identifying and removing outliers. Also contains an outlier
+detection function based on median absolute deviation from the median (MAD).</p>
 <dl class="function">
 <dt id="magpysv.denoise.detect_outliers">
 <code class="descclassname">magpysv.denoise.</code><code class="descname">detect_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>window_length</em>, <em>threshold</em>, <em>plot_fig=False</em>, <em>save_fig=False</em>, <em>write_path=None</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/denoise.html#detect_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.denoise.detect_outliers" title="Permalink to this definition">¶</a></dt>
@@ -166,6 +167,10 @@ median.</li>
 <li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the minimum number of median absolute deviations a
 point must be away from the median in order to be considered an
 outlier.</li>
+<li><strong>plot_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to plot figure of the time series and
+identified outliers. Defaults to False.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure if plotted. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 <li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
 <li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
@@ -255,6 +260,16 @@ in the two &#8216;noisiest&#8217; directions are used as the proxy for external
 signal, then these two eigenvectors are returned.</dd>
 </dl>
 </li>
+<li><dl class="first docutils">
+<dt>projected_residuals (<em>array</em>):</dt>
+<dd>SV residuals rotated into the eigendirections.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>corrected_residuals (<em>array</em>):</dt>
+<dd>SV residuals after the denoising process.</dd>
+</dl>
+</li>
 </ul>
 </p>
 </td>
@@ -288,7 +303,7 @@ direction in the final column.</p>
 <p>Note that the SVD algorithm cannot be used if any data are missing, which
 is why imputation is needed with this method. The function
 denoise.eigenvalue_analysis permits missing values and does not
-infill them.</p>
+infill them - that is the more robust function.</p>
 <p>Smallest eigenvalue: &#8216;quiet&#8217; direction</p>
 <p>Largest eiegenvalue: &#8216;noisy&#8217; direction</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -342,6 +357,16 @@ in the two &#8216;noisiest&#8217; directions are used as the proxy for external
 signal, then these two eigenvectors are returned.</dd>
 </dl>
 </li>
+<li><dl class="first docutils">
+<dt>projected_residuals (<em>array</em>):</dt>
+<dd>SV residuals rotated into the eigendirections.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>corrected_residuals (<em>array</em>):</dt>
+<dd>SV residuals after the denoising process.</dd>
+</dl>
+</li>
 </ul>
 </p>
 </td>
@@ -362,7 +387,7 @@ signal, then these two eigenvectors are returned.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="inputoutput.html" class="btn btn-neutral float-right" title="inputoutput module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="io.html" class="btn btn-neutral float-right" title="io module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Welcome to MagPySV’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

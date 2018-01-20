@@ -8,15 +8,18 @@
 Part of the MagPySV package for geomagnetic data analysis. Contains a function
 to obtain a complete list of geomagnetic observatory locations from the WDC
 webserver and another function to run the COV-OBS magnetic field model by
-Gillet et al. (2015, Earth, Planets and Space) to obtain model predictions for
-these observatory locations.
+Gillet et al. (2013, Geochem. Geophys. Geosyst.,
+https://doi.org/10.1002/ggge.20041; 2015, Earth, Planets and Space,
+https://doi.org/10.1186/s40623-015-0225-z2013) to obtain model
+predictions for these observatory locations. The code can be obtained from
+http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/ and no modifications
+are necessary to run it using MagPySV.
 """
 
 import os
 from subprocess import Popen, PIPE
 import numpy as np
 import requests
-import pandas as pd
 
 
 def get_observatory_list():
@@ -71,19 +74,26 @@ def run_covobs(*, stations, model_path, output_path):
     """Use observatory latitude, longitude and elevation to run COV-OBS.
 
     Uses the dictionary of observatory information obtained from the WDC site
-    to run the COV-OBS field model Gillet et al. (2015, Earth, Planets and
-    Space) for every location. Converts latitude in degrees to colatitude in
-    radians, longitude in degrees (0 to 360) into radians (-pi to pi) and
-    elevation in m to km. It then runs the fortran exectuable for the field
-    model and passes the location data as command line arguments. The output
-    files are stored as mf_obs.dat and sv_obs.dat for magnetic field and
-    secular variation predictions respectively (e.g. mf_ngk.dat and sv_ngk.dat
-    for Niemegk.)
+    to run the COV-OBS field model Gillet et al. (2013, Geochem. Geophys.
+    Geosyst.,
+    https://doi.org/10.1002/ggge.20041; 2015, Earth, Planets and Space,
+    https://doi.org/10.1186/s40623-015-0225-z2013) for a given location given
+    in geodetic coordinates (model output is also in geodetic coordinates).
+    Converts latitude in degrees to colatitude in radians, longitude in degrees
+    (0 to 360) into radians (-pi to pi) and elevation in m to km. It then runs
+    the fortran exectuable for the field model and passes the location data as
+    command line arguments. The output files are stored as mf_obs.dat and
+    sv_obs.dat for magnetic field and secular variation predictions
+    respectively (e.g. mf_ngk.dat and sv_ngk.dat for Niemegk.)
 
     Assumes that the user has compiled the fortran source code and called the
     executable "a.out".  No modification to the fortran source code is
     required (code can be downloaded from
     http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/).
+
+    The COV-OBS code can also be used to run other field models if modified to
+    accept a different spline file as input, rather than the supplied
+    COV-OBS.x1-int file.
 
     Args:
         stations (dict): dictionary containing information about each

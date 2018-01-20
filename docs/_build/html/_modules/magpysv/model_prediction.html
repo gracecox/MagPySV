@@ -86,10 +86,10 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../inputoutput.html">inputoutput module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../model_prediction.html">model_prediction module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../svplots.html">svplots module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../svtools.html">svtools module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots.html">plots module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">tools module</a></li>
 </ul>
 
             
@@ -145,18 +145,21 @@
 <span class="sd">Part of the MagPySV package for geomagnetic data analysis. Contains a function</span>
 <span class="sd">to obtain a complete list of geomagnetic observatory locations from the WDC</span>
 <span class="sd">webserver and another function to run the COV-OBS magnetic field model by</span>
-<span class="sd">Gillet et al. (2015, Earth, Planets and Space) to obtain model predictions for</span>
-<span class="sd">these observatory locations.</span>
+<span class="sd">Gillet et al. (2013, Geochem. Geophys. Geosyst.,</span>
+<span class="sd">https://doi.org/10.1002/ggge.20041; 2015, Earth, Planets and Space,</span>
+<span class="sd">https://doi.org/10.1186/s40623-015-0225-z2013) to obtain model</span>
+<span class="sd">predictions for these observatory locations. The code can be obtained from</span>
+<span class="sd">http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/ and no modifications</span>
+<span class="sd">are necessary to run it using MagPySV.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="get_observatory_list"><a class="viewcode-back" href="../../magpysv.html#magpysv.model_prediction.get_observatory_list">[docs]</a><span class="k">def</span> <span class="nf">get_observatory_list</span><span class="p">():</span>
+<div class="viewcode-block" id="get_observatory_list"><a class="viewcode-back" href="../../model_prediction.html#magpysv.model_prediction.get_observatory_list">[docs]</a><span class="k">def</span> <span class="nf">get_observatory_list</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Obtain the complete list of observatory locations held by the WDC.</span>
 
 <span class="sd">    Obtains a dictionary containing information for all geomagnetic</span>
@@ -204,23 +207,30 @@
     <span class="k">return</span> <span class="n">stations</span></div>
 
 
-<div class="viewcode-block" id="run_covobs"><a class="viewcode-back" href="../../magpysv.html#magpysv.model_prediction.run_covobs">[docs]</a><span class="k">def</span> <span class="nf">run_covobs</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">stations</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+<div class="viewcode-block" id="run_covobs"><a class="viewcode-back" href="../../model_prediction.html#magpysv.model_prediction.run_covobs">[docs]</a><span class="k">def</span> <span class="nf">run_covobs</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">stations</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use observatory latitude, longitude and elevation to run COV-OBS.</span>
 
 <span class="sd">    Uses the dictionary of observatory information obtained from the WDC site</span>
-<span class="sd">    to run the COV-OBS field model Gillet et al. (2015, Earth, Planets and</span>
-<span class="sd">    Space) for every location. Converts latitude in degrees to colatitude in</span>
-<span class="sd">    radians, longitude in degrees (0 to 360) into radians (-pi to pi) and</span>
-<span class="sd">    elevation in m to km. It then runs the fortran exectuable for the field</span>
-<span class="sd">    model and passes the location data as command line arguments. The output</span>
-<span class="sd">    files are stored as mf_obs.dat and sv_obs.dat for magnetic field and</span>
-<span class="sd">    secular variation predictions respectively (e.g. mf_ngk.dat and sv_ngk.dat</span>
-<span class="sd">    for Niemegk.)</span>
+<span class="sd">    to run the COV-OBS field model Gillet et al. (2013, Geochem. Geophys.</span>
+<span class="sd">    Geosyst.,</span>
+<span class="sd">    https://doi.org/10.1002/ggge.20041; 2015, Earth, Planets and Space,</span>
+<span class="sd">    https://doi.org/10.1186/s40623-015-0225-z2013) for a given location given</span>
+<span class="sd">    in geodetic coordinates (model output is also in geodetic coordinates).</span>
+<span class="sd">    Converts latitude in degrees to colatitude in radians, longitude in degrees</span>
+<span class="sd">    (0 to 360) into radians (-pi to pi) and elevation in m to km. It then runs</span>
+<span class="sd">    the fortran exectuable for the field model and passes the location data as</span>
+<span class="sd">    command line arguments. The output files are stored as mf_obs.dat and</span>
+<span class="sd">    sv_obs.dat for magnetic field and secular variation predictions</span>
+<span class="sd">    respectively (e.g. mf_ngk.dat and sv_ngk.dat for Niemegk.)</span>
 
 <span class="sd">    Assumes that the user has compiled the fortran source code and called the</span>
 <span class="sd">    executable &quot;a.out&quot;.  No modification to the fortran source code is</span>
 <span class="sd">    required (code can be downloaded from</span>
 <span class="sd">    http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/).</span>
+
+<span class="sd">    The COV-OBS code can also be used to run other field models if modified to</span>
+<span class="sd">    accept a different spline file as input, rather than the supplied</span>
+<span class="sd">    COV-OBS.x1-int file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        stations (dict): dictionary containing information about each</span>

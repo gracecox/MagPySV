@@ -16,8 +16,8 @@ MagPySV is a python toolbox for processing and analysing geomagnetic observatory
     :target: https://travis-ci.org/gracecox/MagPySV
     :alt: Build Status
 
-.. |docs-status| image:: https://readthedocs.org/projects/magpy/badge/?version=latest
-    :target: http://magpy.readthedocs.io/en/latest/?badge=latest
+.. |docs-status| image:: https://readthedocs.org/projects/magpysv/badge/?version=latest
+    :target: http://magpysv.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 .. |coverage| image:: https://coveralls.io/repos/github/gracecox/MagPySV/badge.svg?branch=master
@@ -31,17 +31,15 @@ MagPySV is a python toolbox for processing and analysing geomagnetic observatory
    :target: https://landscape.io/github/gracecox/MagPySV/master
    :alt: Code Health
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    denoise
-   inputoutput
+   io
    model_prediction
-   svplots
-   svtools
+   plots
+   tools
 
 Indices and tables
 ==================
