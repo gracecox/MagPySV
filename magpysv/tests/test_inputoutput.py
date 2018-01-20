@@ -5,6 +5,7 @@ Created on Sun Feb 21 13:26:22 2016
 @author: Grace
 """
 import unittest
+from ddt import ddt, data, unpack
 import os
 from .. import inputoutput
 import pandas as pd
@@ -12,39 +13,30 @@ import datetime as dt
 import numpy as np
 
 
+@ddt
 class WDCParsefileTestCase(unittest.TestCase):
 
     def setUp(self):
         # Directory where the test files are located
         self.path = os.path.join(os.path.dirname(__file__), 'data')
 
-    def test_wdc_parsefile1(self):
+    @data({'filename': 'testdata1.wdc', 'code': 'NGK', 'component1': 'D', 'component2': 'Z'},
+          {'filename': 'testdata2.wdc', 'code': 'NGK', 'component1': 'D', 'component2': 'Z'},
+          {'filename': 'testdata3.wdc', 'code': 'PSM', 'component1': 'H', 'component2': 'F'})
+    @unpack
+    def test_wdc_parsefile_newformat(self, filename, code, component1, component2):
 
-        testfile = os.path.join(self.path, 'testdata1.wdc')
+        testfile = os.path.join(self.path, filename)
 
         data = inputoutput.wdc_parsefile(testfile)
         # Observatory code
-        self.assertEqual(data.code[0], 'NGK')
+        self.assertEqual(data.code[0], code)
         self.assertEqual(len(data.code.unique()), 1)
         # Components
         self.assertTrue(any(
             x in {'X', 'Y', 'Z', 'D', 'I', 'H'} for x in data.component))
-        self.assertEqual(data.component[3], 'D')
-        self.assertEqual(data.component.values[-1], 'Z')
-
-    def test_wdc_parsefile2(self):
-
-        testfile = os.path.join(self.path, 'testdata2.wdc')
-
-        data = inputoutput.wdc_parsefile(testfile)
-        # Observatory code
-        self.assertEqual(data.code[0], 'NGK')
-        self.assertEqual(len(data.code.unique()), 1)
-        # Components
-        self.assertTrue(any(
-            x in {'X', 'Y', 'Z', 'D', 'I', 'H'} for x in data.component))
-        self.assertEqual(data.component[3], 'D')
-        self.assertEqual(data.component.values[-1], 'Z')
+        self.assertEqual(data.component[3], component1)
+        self.assertEqual(data.component.values[-1], component2)
 
 
 class WDCDatetimesTestCase(unittest.TestCase):
