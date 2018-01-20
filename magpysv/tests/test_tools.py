@@ -2,13 +2,13 @@
 """
 Created on Thu Feb  2 16:45:42 2017
 
-Testing functions for svtools.py.
+Testing functions for tools.py.
 
 @author: gracecox
 """
 import unittest
 import os
-from .. import svtools
+from .. import tools
 import pandas as pd
 import datetime as dt
 import numpy as np
@@ -22,7 +22,7 @@ class DataResamplingTestCase(unittest.TestCase):
         self.col_names = ['date', 'code', 'component', 'daily_mean']
         self.data = pd.read_csv(testfile, sep=' ', header=0,
                                 names=self.col_names, parse_dates=[0])
-        self.averaged = svtools.data_resampling(self.data)
+        self.averaged = tools.data_resampling(self.data)
 
     def test_data_resampling(self):
 
