@@ -3,7 +3,7 @@ test-warnings: yes
 strictness: high
 max-line-length: 80
 pep8:
-  full: yes
+   full: yes
 autodetect: yes
 requirements:
     - requirements.txt
