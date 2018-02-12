@@ -101,7 +101,7 @@ def plot_eigenvectors(*, obs_names, eigenvecs, fig_size=(8, 6), font_size=12,
         plt.xticks(rotation=60)
         plt.ylabel(r'$\mathbf{{v}}_{%03d}$' % (direction), fontsize=label_size)
         plt.legend(['x direction', 'y direction', 'z direction'],
-                   loc='upper right', frameon=False, fontsize=16)
+                   loc='upper right', frameon=False, fontsize=label_size)
         plt.xlabel('Location', fontsize=label_size)
 
         if save_fig is True:
@@ -621,7 +621,7 @@ def plot_index_dft(*, index_file, dates, signal, fig_size=(8, 6), font_size=12,
     # Time domain
     plt.subplot(2, 1, 1)
     plt.gca().xaxis_date()
-    plt.plot(df.date, df.index_vals, 'b', df.date, df.proxy, 'r')
+    plt.plot(df.date, df.index_vals, 'b', dates, signal, 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -650,8 +650,8 @@ def plot_index_dft(*, index_file, dates, signal, fig_size=(8, 6), font_size=12,
         plt.close()
 
 
-def plot_outliers(*, dates, signal, obs_name, outliers, fig_size=(8, 6),
-                  font_size=12, label_size=16, save_fig=False,
+def plot_outliers(*, dates, signal, obs_name, outliers, signal_type='SV',
+                  fig_size=(8, 6), font_size=12, label_size=16, save_fig=False,
                   write_path=None):
     """Plot the SV and identified outliers.
 
@@ -664,6 +664,8 @@ def plot_outliers(*, dates, signal, obs_name, outliers, fig_size=(8, 6),
             SV data for all observatories combined.
         outliers (array): outliers identified by the denoise.detect_outliers
             function
+        signal_type (str): specify whether magnetic field ('MF') or secular
+            variation ('SV') is plotted. Defaults to SV.
         fig_size (array): figure size in inches. Defaults to 8 inches by 6
             inches.
         font_size (int): font size for axes. Defaults to 12 pt.
@@ -675,7 +677,10 @@ def plot_outliers(*, dates, signal, obs_name, outliers, fig_size=(8, 6),
     plt.plot(dates, signal, 'k', dates, outliers, 'r^')
     plt.axis('tight')
     plt.xlabel('Year', fontsize=label_size)
-    plt.ylabel('SV (nT/yr)', fontsize=label_size)
+    if signal_type is 'SV':
+        plt.ylabel('SV (nT/yr)', fontsize=label_size)
+    else:
+        plt.ylabel('MF (nT)', fontsize=label_size)
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
     plt.legend([obs_name, 'outlier'], loc='best', frameon=False)

@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="index.html"/>
         <link rel="next" title="model_prediction module" href="model_prediction.html"/>
         <link rel="prev" title="denoise module" href="denoise.html"/> 
@@ -87,7 +84,7 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">io module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tools.html">tools module</a></li>
@@ -113,7 +110,7 @@
         <div class="rst-content">
           
 
- 
+
 
 
 
@@ -125,7 +122,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/io.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/io.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -155,13 +152,14 @@ index hourly data in the format distributed by the Kyoto WDC at
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a WDC-like formatted AE file.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a WDC-like formatted AE file.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing hourly AE data. First column is a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing hourly AE data. First column is a
 series of datetime objects (in the format yyyy-mm-dd hh:30:00) and
 second column contains theAE values at the specified times.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -175,15 +173,16 @@ second column contains theAE values at the specified times.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a AE file in Kyoto WDC-like format. Assumes data
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a AE file in Kyoto WDC-like format. Assumes data
 for all years are contained within this file.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing the data read from the WDC file. First column
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing the data read from the WDC file. First column
 is a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
 and second column contains AE values at the specified times
 (hourly means).</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -205,11 +204,12 @@ and east (X) components as follows:</p>
 objects and hourly means of the magnetic field components (D, I, F,
 H, X, Y or Z).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the same dataframe with datetime objects in the first column and
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with datetime objects in the first column and
 hourly means of the field components in either nT or degrees
 (depending on the component).</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -228,13 +228,14 @@ downloaded from the GFZ, Potsdam server at
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to an ap datafile.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to an ap datafile.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing hourly ap data. First column is a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing hourly ap data. First column is a
 series of datetime objects (in the format yyyy-mm-dd hh:30:00) and
 second column contains ap values at the specified times.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -253,14 +254,15 @@ provided by the WDC at Kyoto. Can be downloaded directly from
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ae_data_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to directory containing WDC-like format AE
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ae_data_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to directory containing WDC-like format AE
 datafiles. All AE files should be located in the same directory.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing all available hourly AE data. First column is
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing all available hourly AE data. First column is
 a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
 and second column contains AE values at the specified times.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -277,14 +279,15 @@ function concatenates all years into a single dataframe.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ap_data_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to directory containing WDC-like format ap
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ap_data_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to directory containing WDC-like format ap
 datafiles. All ap files should be located in the same directory.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing all available hourly ap data. First column is
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing all available hourly ap data. First column is
 a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
 and second column contains ap values at the specified times.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -299,19 +302,20 @@ and second column contains ap values at the specified times.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name (as 3-digit IAGA code).</li>
-<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to directory containing WDC datafiles. All files for
+<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name (as 3-digit IAGA code).</li>
+<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to directory containing WDC datafiles. All files for
 the observatory should be located in the same directory.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing all available hourly geomagnetic data at a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> &#8211;
+dataframe containing all available hourly geomagnetic data at a
 single observatory. First column is a series of datetime objects
 (in the format yyyy-mm-dd hh:30:00) and subsequent columns are the
 X, Y and Z components of the magnetic field at the specified times.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -333,9 +337,9 @@ observatories.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start_date</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; the start date of the data analysis.</li>
-<li><strong>end_date</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; the end date of the analysis.</li>
-<li><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the sampling rate for the period of interest. The
+<li><strong>start_date</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; the start date of the data analysis.</li>
+<li><strong>end_date</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; the end date of the analysis.</li>
+<li><strong>sampling_rate</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the sampling rate for the period of interest. The
 default is &#8216;MS&#8217;, which creates a range of dates between the
 specified values at monthly intervals with the day fixed as the
 first of each month. Use &#8216;M&#8217; for the final day of each month. Other
@@ -343,9 +347,9 @@ useful options are &#8216;AS&#8217; (a series of dates at annual intervals,
 with the day and month fixed at 01 and January respectively) and
 &#8216;A&#8217; (as for &#8216;AS&#8217; but with the day/month fixed as 31 December.)</li>
 <li><strong>obs_list</strong> (<em>list</em>) &#8211; list of observatory names (as 3-digit IAGA codes).</li>
-<li><strong>data_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the CSV files containing observatory data.</li>
-<li><strong>model_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the CSV files containing model SV data.</li>
-<li><strong>day_of_month</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; For SV data, first differences of
+<li><strong>data_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the CSV files containing observatory data.</li>
+<li><strong>model_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the CSV files containing model SV data.</li>
+<li><strong>day_of_month</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; For SV data, first differences of
 monthly means have dates at the start of the month (i.e. MF of
 mid-Feb minus MF of mid-Jan should give SV at Feb 1st. For annual
 differences of monthly means the MF of mid-Jan year 2 minus MF of
@@ -359,29 +363,32 @@ will have dates set at the first day of the month.)</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
-<ul class="simple">
+<ul>
 <li><dl class="first docutils">
 <dt>obs_data (<em>pandas.DataFrame</em>):</dt>
-<dd>dataframe containing SV data for all observatories in obs_list.</dd>
+<dd><p class="first last">dataframe containing SV data for all observatories in obs_list.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>model_sv_data (<em>pandas.DataFrame</em>):</dt>
-<dd>dataframe containing SV predictions for all observatories in
-obs_list.</dd>
+<dd><p class="first last">dataframe containing SV predictions for all observatories in
+obs_list.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>model_mf_data (<em>pandas.DataFrame</em>):</dt>
-<dd>dataframe containing magnetic field predictions for all
-observatories in obs_list.</dd>
+<dd><p class="first last">dataframe containing magnetic field predictions for all
+observatories in obs_list.</p>
+</dd>
 </dl>
 </li>
 </ul>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(tuple)</p>
 </td>
 </tr>
 </tbody>
@@ -401,10 +408,11 @@ Jan 1960.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; needs a column for decimal year (in yyyy.mm
 format).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the same dataframe with the decimal year column replced with a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with the decimal year column replced with a
 series of datetime objects in the format yyyy-mm-dd.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -424,19 +432,20 @@ field model.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a COV-OBS datafile.</li>
-<li><strong>data_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether the file contains magnetic field data
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a COV-OBS datafile.</li>
+<li><strong>data_type</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether the file contains magnetic field data
 (&#8216;mf&#8217;) or or secular variation data (&#8216;sv&#8217;)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing hourly geomagnetic data. First column is a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>model_data</strong> &#8211;
+dataframe containing hourly geomagnetic data. First column is a
 series of datetime objects (in the format yyyy-mm-dd) and
 subsequent columns are the X, Y and Z components of the SV/MF at
 the specified times.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">model_data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -456,19 +465,20 @@ can be read using MagPySV.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a COV-OBS format datafile.</li>
-<li><strong>data_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether the file contains magnetic field data
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a COV-OBS format datafile.</li>
+<li><strong>data_type</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether the file contains magnetic field data
 (&#8216;mf&#8217;) or or secular variation data (&#8216;sv&#8217;)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing the data read from the file. First column is a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> &#8211;
+dataframe containing the data read from the file. First column is a
 series of datetime objects (in the format yyyy-mm-dd) and
 subsequent columns are the X, Y and Z components of the SV/MF at
 the specified times.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -483,12 +493,13 @@ the specified times.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; datetime object representing an observation
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; datetime object representing an observation
 time.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the same date represented as a decimal year.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>date</strong> &#8211;
+the same date represented as a decimal year.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">date (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
 </tr>
 </tbody>
 </table>
@@ -511,11 +522,12 @@ Z components and in degrees for D or I components. Called by wdc_xyz.</p>
 objects, magnetic field component (D, I, F, H, X, Y or Z), the
 tabular base and hourly mean.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe with datetime objects in the first column and hourly
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>obs_data</strong> &#8211;
+dataframe with datetime objects in the first column and hourly
 means of the field components in either nT or degrees (depending on
 the component).</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">obs_data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -530,16 +542,17 @@ the component).</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a CSV datafile.</li>
-<li><strong>data_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether the file contains magnetic field data
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a CSV datafile.</li>
+<li><strong>data_type</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether the file contains magnetic field data
 (&#8216;mf&#8217;) or or secular variation data (&#8216;sv&#8217;)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing the data read from the CSV file.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> &#8211;
+dataframe containing the data read from the CSV file.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -555,12 +568,13 @@ the component).</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hourstring</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; string containing the hourly magnetic field means
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hourstring</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; string containing the hourly magnetic field means
 parsed from a WDC file for a single day.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list containing the hourly field values.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>hourly_vals_list</strong> &#8211;
+list containing the hourly field values.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">hourly_vals_list (list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
 </tbody>
 </table>
@@ -575,12 +589,13 @@ parsed from a WDC file for a single day.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hourstring</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; string containing the hourly AE means parsed from
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hourstring</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; string containing the hourly AE means parsed from
 a Kyoto WDC-like file for a single day.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list containing the hourly AE values.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>hourly_vals_list</strong> &#8211;
+list containing the hourly AE values.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">hourly_vals_list (list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
 </tbody>
 </table>
@@ -597,12 +612,13 @@ hour. Called by ap_readfile.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hourstring</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; string containing the 3-hourly ap means parsed from
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hourstring</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; string containing the 3-hourly ap means parsed from
 a Kyoto WDC-like file for a single day.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list containing the hourly ap values.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>hourly_vals_list</strong> &#8211;
+list containing the hourly ap values.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">hourly_vals_list (list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
 </tbody>
 </table>
@@ -619,10 +635,11 @@ a Kyoto WDC-like file for a single day.</td>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; needs columns for century, year (yy format),
 month, day and hour. Called by wdc_parsefile.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the same dataframe with a series of datetime objects (in the format
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with a series of datetime objects (in the format
 yyyy-mm-dd hh:30:00) in the first column.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -642,14 +659,15 @@ can be found at <a class="reference external" href="http://www.wdc.bgs.ac.uk/cat
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a WDC datafile.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a WDC datafile.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing hourly geomagnetic data. First column is a
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing hourly geomagnetic data. First column is a
 series of datetime objects (in the format yyyy-mm-dd hh:30:00) and
 subsequent columns are the X, Y and Z components of the magnetic
 field at the specified times.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -663,14 +681,15 @@ field at the specified times.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a WDC datafile.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a WDC datafile.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dataframe containing the data read from the WDC file. First column
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+dataframe containing the data read from the WDC file. First column
 is a series of datetime objects (in the format yyyy-mm-dd hh:30:00)
 and subsequent columns are the X, Y and Z components of the
 magnetic field at the specified times (hourly means).</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -694,10 +713,10 @@ CSV file.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>wdc_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the directory containing datafiles.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to which the output CSV files are written.</li>
+<li><strong>wdc_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the directory containing datafiles.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to which the output CSV files are written.</li>
 <li><strong>obs_list</strong> (<em>list</em>) &#8211; list of observatory names (as 3-digit IAGA codes).</li>
-<li><strong>print_obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; choose whether to print each observatory name as the
+<li><strong>print_obs</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; choose whether to print each observatory name as the
 function goes through the directories. Useful for checking progress
 as it can take a while to read the whole WDC dataset. Defaults to
 True.</li>
@@ -721,10 +740,11 @@ True.</li>
 objects, magnetic field component (D, I, F, H, X, Y or Z), the
 tabular base and hourly mean.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the same dataframe with datetime objects in the first column and
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong> &#8211;
+the same dataframe with datetime objects in the first column and
 columns for X, Y and Z components of magnetic field (in nT).</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">data (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a>)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -732,7 +752,7 @@ columns for X, Y and Z components of magnetic field (in nT).</td>
 
 <dl class="function">
 <dt id="magpysv.io.write_csv_data">
-<code class="descclassname">magpysv.io.</code><code class="descname">write_csv_data</code><span class="sig-paren">(</span><em>*</em>, <em>data</em>, <em>write_path</em>, <em>obs_name</em>, <em>file_prefix=None</em>, <em>decimal_dates=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/io.html#write_csv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.io.write_csv_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.io.</code><code class="descname">write_csv_data</code><span class="sig-paren">(</span><em>*</em>, <em>data</em>, <em>write_path</em>, <em>obs_name</em>, <em>file_prefix=None</em>, <em>decimal_dates=False</em>, <em>header=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/io.html#write_csv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.io.write_csv_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write dataframe to a CSV file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -740,13 +760,14 @@ columns for X, Y and Z components of magnetic field (in nT).</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; data to be written to file.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to which the output CSV file is written.</li>
-<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of observatory at which the data were obtained.</li>
-<li><strong>file_prefix</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; optional string to prefix the output CSV filenames
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to which the output CSV file is written.</li>
+<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of observatory at which the data were obtained.</li>
+<li><strong>file_prefix</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; optional string to prefix the output CSV filenames
 (useful for specifying parameters used to create the dataset etc).</li>
-<li><strong>decimal_dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; optional argument to specify that dates should be
+<li><strong>decimal_dates</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; optional argument to specify that dates should be
 written in decimal format rather than datetime objects. Defaults to
 False.</li>
+<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include header in file. Defaults to True.</li>
 </ul>
 </td>
 </tr>

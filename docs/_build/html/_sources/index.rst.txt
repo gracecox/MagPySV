@@ -7,10 +7,27 @@ Welcome to MagPySV's documentation!
 ===================================
 |build-status| |docs-status| |coverage| |code-health| |license|
 
-Purpose
--------
+Introduction
+------------
 
-MagPySV is a python toolbox for processing and analysing geomagnetic observatory data. A work in progress...
+MagPySV is an open-source Python package designed to provide a consistent, and automated as far as possible, means of generating high resolution SV time series from raw observatory hourly means distributed by the World Data Centre (WDC) for Geomagnetism at the British Geological Survey (BGS), Edinburgh. It uses a second python package developed by BGS to download data for a given time range and list of observatories.
+
+The package may be run on the command line or within an interactive Jupyter notebook, and allows the user to obtain data in WDC format from BGS servers for a user-specified time period and list of observatories. It produces time series of the X, Y and Z components of the internally-generated magnetic field and secular variation (SV) at the desired frequency (typically monthly or annual means), and applies corrections for all documented baseline changes. Optionally, the user may exclude data using the \emph{ap} index, which removes effects from documented high solar activity periods such as geomagnetic storms. Robust statistics are used to identify and remove outliers. 
+
+The software develops previously published denoising methods, which aim to remove external field contamination from the internal field, using principal component analysis, a method that uses the covariance matrix of the residual between the observed SV and that predicted by a global field model to create and remove a proxy for external field signal from the data. This method, based on Wardinski & Home, 2011, GJI, https://doi.org/10.1111/j.1365-246X.2011.04988.x, creates a single covariance matrix for all observatories of interest combined and applies the external field correction to all locations simultaneously, resulting in cleaner time series of the internally-generated SV.
+
+In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, previously well-studied using annual differences, and annual differences for northern high latitude regions, which are often neglected from studies due to their high noise content. The examples directory of this package includes two notebooks that can be used to download the relevant data and reproduce the figures for these case studies.
+
+Installation
+------------
+
+MagPySV can be installed via the Python Package Index (PyPI) using the command
+```pip install magpysv```
+
+Contributing to MagPySV
+-----------------------
+
+We hope others in the geomagnetism community find this code useful and we welcome suggestions, feedback and contributions.
 
 .. |build-status| image:: https://travis-ci.org/gracecox/MagPySV.svg?branch=master
     :target: https://travis-ci.org/gracecox/MagPySV

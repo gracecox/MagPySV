@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="#"/>
         <link rel="next" title="denoise module" href="denoise.html"/> 
 
@@ -112,7 +109,7 @@
         <div class="rst-content">
           
 
- 
+
 
 
 
@@ -124,7 +121,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -137,11 +134,39 @@
   <div class="section" id="welcome-to-magpysv-s-documentation">
 <h1>Welcome to MagPySV&#8217;s documentation!<a class="headerlink" href="#welcome-to-magpysv-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://travis-ci.org/gracecox/MagPySV"><img alt="Build Status" src="https://travis-ci.org/gracecox/MagPySV.svg?branch=master" /></a> <a class="reference external" href="http://magpysv.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/magpysv/badge/?version=latest" /></a> <a class="reference external" href="https://coveralls.io/github/gracecox/MagPySV?branch=master"><img alt="Coverage" src="https://coveralls.io/repos/github/gracecox/MagPySV/badge.svg?branch=master" /></a> <a class="reference external" href="https://landscape.io/github/gracecox/MagPySV/master"><img alt="Code Health" src="https://landscape.io/github/gracecox/MagPySV/master/landscape.svg?style=flat" /></a> <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="license" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a></p>
-<div class="section" id="purpose">
-<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h2>
-<p>MagPySV is a python toolbox for processing and analysing geomagnetic observatory data. A work in progress...</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>MagPySV is an open-source Python package designed to provide a consistent, and automated as far as possible, means of generating high resolution SV time series from raw observatory hourly means distributed by the World Data Centre (WDC) for Geomagnetism at the British Geological Survey (BGS), Edinburgh. It uses a second Python package developed by BGS to download data for a given time range and list of observatories.</p>
+<p>The package may be run on the command line or within an interactive Jupyter notebook, and allows the user to obtain data in WDC format from BGS servers for a user-specified time period and list of observatories. It produces time series of the X, Y and Z components of the internally-generated magnetic field and secular variation (SV) at the desired frequency (typically monthly or annual means), and applies corrections for all documented baseline changes. Optionally, the user may exclude data using the <a class="reference external" href="https://www.gfz-potsdam.de/en/kp-index/">ap index</a>, which removes effects from documented high solar activity periods such as geomagnetic storms. Robust statistics are used to identify and remove outliers.</p>
+<p>The software develops previously published denoising methods, which aim to remove external field contamination from the internal field, using principal component analysis, a method that uses the covariance matrix of the residual between the observed SV and that predicted by a global field model to create and remove a proxy for external field signal from the data. This method, based on <a class="reference external" href="https://doi.org/10.1111/j.1365-246X.2011.04988.x">Wardinski &amp; Holme (2011)</a>, creates a single covariance matrix for all observatories of interest combined and applies the external field correction to all locations simultaneously, resulting in cleaner time series of the internally-generated SV.</p>
+</div>
+<div class="section" id="example-workflows">
+<h2>Example workflows<a class="headerlink" href="#example-workflows" title="Permalink to this headline">¶</a></h2>
+<p>In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. The examples directory of this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies. To open the notebooks, type <code class="docutils literal"><span class="pre">`jupyter</span> <span class="pre">notebook`</span></code> into the command line from the examples directory and then select the desired notebook from the list that appears in your web browser. The <a class="reference external" href="https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/">Jupyter documentation</a> contains a step-by-step tutorial on installing and running notebooks, and is aimed at new users who have no familiarity with Python.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>MagPySV can be installed via the Python Package Index (PyPI) using the command
+<code class="docutils literal"><span class="pre">`pip</span> <span class="pre">install</span> <span class="pre">magpysv`</span></code>. This also installs all required dependencies, including the BGS data downloading app.</p>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>We hope others in the geomagnetism community find this code useful and welcome suggestions, feedback and contributions. Requesting new features or reporting bugs can be done by creating a <a class="reference external" href="https://github.com/gracecox/MagPySV/issues">Github issue</a> for the repository.</p>
+<p>If you would like to fix bugs or implement new features yourself, this is very welcome! This is done by</p>
+<ol class="arabic simple">
+<li>Forking MagPySV&#8217;s Github repository</li>
+<li>Creating a branch for your changes</li>
+<li>Making your changes to the code</li>
+<li>Submitting a pull request to the repository</li>
+</ol>
+<p>Those unfamiliar with this process might find <a class="reference external" href="https://guides.github.com/">Github&#8217;s tutorials</a> useful. If this still looks too complicated, you are welcome to create a Github issue or get in touch with us directly for help.</p>
+</div>
+<div class="section" id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
+<p>A manuscript describing MagPySV is currently in preparation. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks.</p>
+<p>The project&#8217;s main directory contains the readme file, license and various setup files. The <cite>magpysv</cite> directory contains all of the Python modules that make up the Python package, detailed descriptions of all functions contained within each module are found at the links below the contents section of this page. The code documentation can also be accessed using Python&#8217;s help function by typing a command in this format: <code class="docutils literal"><span class="pre">`help(magpysv.modulename.functionname)`</span></code></p>
+<div class="toctree-wrapper compound" id="contents">
+<p class="caption"><span class="caption-text">Contents:</span><a class="headerlink" href="#contents" title="Permalink to this toctree">¶</a></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
@@ -155,9 +180,9 @@
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
 </div>
 

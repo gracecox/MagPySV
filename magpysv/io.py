@@ -402,7 +402,7 @@ def wdc_to_hourly_csv(*, wdc_path=None, write_path, obs_list,
 
 
 def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
-                   decimal_dates=False):
+                   decimal_dates=False, header=True):
     """Write dataframe to a CSV file.
 
     Args:
@@ -414,6 +414,7 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
         decimal_dates (bool): optional argument to specify that dates should be
             written in decimal format rather than datetime objects. Defaults to
             False.
+        header (bool): option to include header in file. Defaults to True.
     """
     # Create the output directory if it does not exist
     if not os.path.exists(write_path):
@@ -426,7 +427,7 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
         fpath = write_path + file_prefix + obs_name + '.csv'
     else:
         fpath = write_path + obs_name + '.csv'
-    data.to_csv(fpath, sep=',', na_rep='NA', header=True, index=False)
+    data.to_csv(fpath, sep=',', na_rep='NA', header=header, index=False)
 
 
 def read_csv_data(*, fname, data_type):

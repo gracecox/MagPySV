@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="index.html"/>
         <link rel="next" title="tools module" href="tools.html"/>
         <link rel="prev" title="model_prediction module" href="model_prediction.html"/> 
@@ -89,7 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">plots module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">plots module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tools.html">tools module</a></li>
 </ul>
 
@@ -113,7 +110,7 @@
         <div class="rst-content">
           
 
- 
+
 
 
 
@@ -125,7 +122,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/plots.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/plots.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -154,15 +151,15 @@ reduced to zero-mean and unit-variance on the plots (zscore).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fname1</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to file containing a time series of proxy for noise.</li>
-<li><strong>fname2</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a second file containing a proxy for noise.</li>
-<li><strong>legend_text</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; text to include on the plot legend.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fname1</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to file containing a time series of proxy for noise.</li>
+<li><strong>fname2</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to a second file containing a proxy for noise.</li>
+<li><strong>legend_text</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; text to include on the plot legend.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -186,14 +183,14 @@ direction). See Wardinski &amp; Holme (2011, GJI,
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>values</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal component
+<li><strong>values</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal component
 analysis of the SV residuals.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -220,14 +217,14 @@ for further details.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>obs_names</strong> (<em>list</em>) &#8211; list of observatory names given as three digit IAGA
 codes.</li>
-<li><strong>eigenvecs</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal</li>
+<li><strong>eigenvecs</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal</li>
 <li><strong>analysis of the SV residuals.</strong> (<em>component</em>) &#8211; </li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -247,22 +244,22 @@ reduced to zero mean and unit variance (i.e. their zscore) for plotting.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
-<li><strong>index_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the file containing index data.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>index_file</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the file containing index data.</li>
 <li><strong>projected_residuals</strong> (<em>time series</em>) &#8211; difference between modelled and
 SV rotated into the eigendirections obtained during denoising
 (principal component analysis). The proxy for unmodelled external
 signal is the residual projected in the noisiest eigendirection(s).</li>
-<li><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of index used in comparison e.g. Dst or ap.
+<li><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of index used in comparison e.g. Dst or ap.
 Defaults to Dst.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
 to True.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -283,21 +280,21 @@ power of two.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>signal</strong> (<em>time series</em>) &#8211; proxy for unmodelled external signal used in the
 denoising process (principal component analysis). The proxy is the
 residual in the noisiest eigendirection(s).</li>
-<li><strong>index_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the file containing index data.</li>
-<li><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of index used in comparison e.g. Dst or Dcx.
+<li><strong>index_file</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to the file containing index data.</li>
+<li><strong>index_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of index used in comparison e.g. Dst or Dcx.
 Defaults to Dst.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
 to True.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -316,21 +313,21 @@ model prediction for a single observatory.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>mf</strong> (<em>time series</em>) &#8211; X, Y and Z components of magnetic field at a single
 location.</li>
 <li><strong>model</strong> (<em>time series</em>) &#8211; X, Y and Z components of the field predicted by a
 field model for the same location as the data.</li>
-<li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
-<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
+<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
 to True.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -340,27 +337,29 @@ to True.</li>
 
 <dl class="function">
 <dt id="magpysv.plots.plot_outliers">
-<code class="descclassname">magpysv.plots.</code><code class="descname">plot_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>outliers</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/plots.html#plot_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.plots.plot_outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">magpysv.plots.</code><code class="descname">plot_outliers</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>signal</em>, <em>obs_name</em>, <em>outliers</em>, <em>signal_type='SV'</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/plots.html#plot_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.plots.plot_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the SV and identified outliers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>signal</strong> (<em>time series</em>) &#8211; single component of SV at a single location.</li>
-<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; states the SV component and observatory name given as
+<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; states the SV component and observatory name given as
 three digit IAGA code. For example, the X component at NGK would be
 x_ngk if obs_name is taken from the pandas.DataFrame containing
 SV data for all observatories combined.</li>
-<li><strong>outliers</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; outliers identified by the denoise.detect_outliers
+<li><strong>outliers</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; outliers identified by the denoise.detect_outliers
 function</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>signal_type</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; specify whether magnetic field (&#8216;MF&#8217;) or secular
+variation (&#8216;SV&#8217;) is plotted. Defaults to SV.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -382,19 +381,19 @@ series are padded with zeroes up to the next power of two.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>projected_residuals</strong> (<em>time series</em>) &#8211; difference between modelled and
 SV rotated into the eigendirections obtained during denoising
 (principal component analysis). The proxy for unmodelled external
 signal is the residual projected in the noisiest eigendirection(s).</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults to
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults to
 True.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -416,19 +415,19 @@ series are padded with zeroes up to the next power of two.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>projected_residuals</strong> (<em>time series</em>) &#8211; difference between modelled and
 SV rotated into the eigendirections obtained during denoising
 (principal component analysis). The proxy for unmodelled external
 signal is the residual projected in the noisiest eigendirection(s).</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults to
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults to
 True.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -447,29 +446,29 @@ model prediction for a single observatory.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>sv</strong> (<em>time series</em>) &#8211; X, Y and Z components of SV at a single location.</li>
 <li><strong>model</strong> (<em>time series</em>) &#8211; X, Y and Z components of the SV predicted by a
 field model for the same location as the data.</li>
-<li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
-<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
+<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
 to False.</li>
-<li><strong>plot_average</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a running average of the SV time
+<li><strong>plot_average</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a running average of the SV time
 series on the plot. Defaults to False.</li>
-<li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
+<li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
 average if this is plotted. Defaults to 12 months.</li>
-<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; minimum number of non-NaN values that must be
+<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; minimum number of non-NaN values that must be
 present in the window in order for the running average to be
 calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
 first differences this means that at least 3 months of data per
 window are required to calculate the 12-month running average.)</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
@@ -488,7 +487,7 @@ SV and field model prediction for a single observatory.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/2/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
 <li><strong>noisy_sv</strong> (<em>time series</em>) &#8211; X, Y and Z components of uncorrected SV at a
 single location.</li>
 <li><strong>denoised_sv</strong> (<em>time series</em>) &#8211; X, Y and Z components of denoised SV at a
@@ -498,55 +497,58 @@ single location.</li>
 denoised observed SV.</li>
 <li><strong>model</strong> (<em>time series</em>) &#8211; X, Y and Z components of the SV predicted by a
 field model for the same location as the data.</li>
-<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
-<li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; field model name.</li>
+<li><strong>obs</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; observatory name given as three digit IAGA code.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults
 to False.</li>
-<li><strong>plot_average</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a running average of the SV time
+<li><strong>plot_average</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to include a running average of the SV time
 series on the plot. Defaults to False.</li>
-<li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
+<li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of months over which to take the running
 average if this is plotted. Defaults to 12 months.</li>
-<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; minimum number of non-NaN values that must be
+<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; minimum number of non-NaN values that must be
 present in the window in order for the running average to be
 calculated rather than set to NaN. Defaults to 3 (e.g. for monthly
 first differences this means that at least 3 months of data per
 window are required to calculate the 12-month running average.)</li>
-<li><strong>plot_rms</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to calculate the rms before and after denoising</li>
+<li><strong>plot_rms</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to calculate the rms before and after denoising</li>
 <li><strong>display the values on the figure. Defaults to False.</strong> (<em>and</em>) &#8211; </li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
-<ul class="simple">
+<ul>
 <li><dl class="first docutils">
 <dt>rms_ratio_x (<em>float</em>):</dt>
-<dd>ratio of rms values for X component residuals before and after
-denoising.</dd>
+<dd><p class="first last">ratio of rms values for X component residuals before and after
+denoising.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>rms_ratio_y (<em>float</em>):</dt>
-<dd>ratio of rms values for Y component residuals before and after
-denoising.</dd>
+<dd><p class="first last">ratio of rms values for Y component residuals before and after
+denoising.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>rms_ratio_z (<em>float</em>):</dt>
-<dd>ratio of rms values for Z component residuals before and after
-denoising.</dd>
+<dd><p class="first last">ratio of rms values for Z component residuals before and after
+denoising.</p>
+</dd>
 </dl>
 </li>
 </ul>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(tuple)</p>
 </td>
 </tr>
 </tbody>
@@ -570,15 +572,15 @@ function is run with the option plot_rms=True.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>rms</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; rms ratios for each component after running
+<li><strong>rms</strong> (<a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; rms ratios for each component after running
 eigenvalue_analysis with different values for the proxy_number
 argument.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
 </ul>
 </td>
 </tr>

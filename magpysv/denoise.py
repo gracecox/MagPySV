@@ -30,8 +30,9 @@ def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
     to fill in missing data points and calculates the singular values of the
     data matrix for n observatories (uses Singular Values Decomposition, SVD).
     The residuals are rotated into the eigendirections and denoised using the
-    method detailed in Wardinski & Holme (2011). The SV residuals of the noisy
-    component for all observatories combined are used as a proxy for the
+    method detailed in Wardinski & Holme (2011, GJI,
+    https://doi.org/10.1111/j.1365-246X.2011.04988.x). The SV residuals of the
+    noisy component for all observatories combined are used as a proxy for the
     unmodelled external signal. The denoised data are then rotated back into
     geographic coordinates. The pca algorithm outputs the singular values
     (these are equal to the square root of the eigenvalues of the covariance
@@ -140,7 +141,8 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
     points and calculates the eigenvalues/vectors of the (3nx3n) covariance
     matrix for n observatories. The residuals are rotated into the
     eigendirections and denoised using the method detailed in Wardinski & Holme
-    (2011, GJI). The SV residuals of the noisy component for all observatories
+    (2011, GJI, https://doi.org/10.1111/j.1365-246X.2011.04988.x). The SV
+    residuals of the noisy component for all observatories
     combined are used as a proxy for the unmodelled external signal. The
     denoised data are then rotated back into geographic coordinates. The PCA
     algorithm outputs the eigenvalues sorted from largest to smallest, so the
@@ -246,8 +248,9 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
 
 
 def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
-                    plot_fig=False, save_fig=False, write_path=None,
-                    fig_size=(8, 6), font_size=12, label_size=16):
+                    signal_type='SV', plot_fig=False, save_fig=False,
+                    write_path=None, fig_size=(8, 6), font_size=12,
+                    label_size=16):
     """Detect outliers in a time series and remove them.
 
     Use the median absolute deviation from the median (MAD) to identify
@@ -268,6 +271,8 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
         threshold (float): the minimum number of median absolute deviations a
             point must be away from the median in order to be considered an
             outlier.
+        signal_type (str): specify whether magnetic field ('MF') or secular
+            variation ('SV') is plotted. Defaults to SV.
         plot_fig (bool): option to plot figure of the time series and
             identified outliers. Defaults to False.
         save_fig (bool): option to save figure if plotted. Defaults to False.
@@ -297,7 +302,7 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
     med_abs_deviation = diff.rolling(window=window_length,
                                      center=True).median().bfill().ffill()
     # Normalise the median abolute deviation
-    modified_z_score = 0.6745 * diff / med_abs_deviation
+    modified_z_score = diff / med_abs_deviation
 
     # Identify outliers
     outliers = signal_temp[modified_z_score > threshold]
@@ -307,7 +312,8 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
         plots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
                             outliers=outliers, save_fig=save_fig,
                             write_path=write_path, fig_size=fig_size,
-                            font_size=font_size, label_size=label_size)
+                            font_size=font_size, label_size=label_size,
+                            signal_type=signal_type)
     # Set the outliers to NaN
     idx = np.where(modified_z_score > threshold)[0]
     signal.iloc[idx] = np.nan

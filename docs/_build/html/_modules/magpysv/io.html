@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
@@ -151,11 +148,11 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="wdc_parsefile"><a class="viewcode-back" href="../../io.html#magpysv.io.wdc_parsefile">[docs]</a><span class="k">def</span> <span class="nf">wdc_parsefile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
@@ -188,7 +185,7 @@
         <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;hourly_values&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">}</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
-                       <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                       <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
                                                       <span class="n">separate_hourly_vals</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span>
@@ -238,11 +235,11 @@
     <span class="c1"># Create datetime objects from the century, year, month and day columns of</span>
     <span class="c1"># the WDC format data file. The hourly mean is given at half past the hour</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> </span><span class="si">{3}</span><span class="s2"> </span><span class="si">{4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">],</span>
+        <span class="s2">&quot;{0} {1} {2} {3} {4}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">],</span>
                                      <span class="n">x</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">],</span> <span class="mi">30</span><span class="p">),</span> <span class="s2">&quot;%Y %m </span><span class="si">%d</span><span class="s2"> %H %M&quot;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;yr&#39;</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">],</span>
-              <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+              <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -263,15 +260,15 @@
 <span class="sd">            columns for X, Y and Z components of magnetic field (in nT).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Replace missing values with NaNs</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="c1"># Group the data by field component, calculate the hourly means and form</span>
     <span class="c1"># a dataframe with separate columns for each field component</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">hourly_mean_conversion</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">,</span>
                             <span class="n">values</span><span class="o">=</span><span class="s1">&#39;hourly_mean&#39;</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="c1"># Call helper function to convert D and H components to X and Y</span>
     <span class="k">if</span> <span class="s1">&#39;D&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;H&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -318,11 +315,11 @@
         <span class="k">if</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;D&#39;</span> <span class="ow">or</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span>
             <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;hourly_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">+</span> \
                 <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">600.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">]</span>
-            <span class="n">obs_data</span> <span class="o">=</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">obs_data</span> <span class="o">=</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;hourly_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">+</span> \
                 <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">]</span>
-            <span class="n">obs_data</span> <span class="o">=</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">obs_data</span> <span class="o">=</span> <span class="n">obs_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">obs_data</span></div>
 
 
@@ -378,7 +375,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="append_wdc_data"><a class="viewcode-back" href="../../io.html#magpysv.io.append_wdc_data">[docs]</a><span class="k">def</span> <span class="nf">append_wdc_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="append_wdc_data"><a class="viewcode-back" href="../../io.html#magpysv.io.append_wdc_data">[docs]</a><span class="k">def</span> <span class="nf">append_wdc_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Append all WDC data for an observatory into a single dataframe.</span>
 
 <span class="sd">    Args:</span>
@@ -400,11 +397,11 @@
     <span class="c1"># .wdc in the specified directory</span>
     <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
     <span class="c1"># Iterate over the files and append them to previous files</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="n">wdc_readfile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">wdc_readfile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -432,7 +429,7 @@
 <span class="sd">            subsequent columns are the X, Y and Z components of the SV/MF at</span>
 <span class="sd">            the specified times.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">model_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">r&#39;\s+&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">model_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">r&#39;\s+&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                              <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="s1">&#39;mf&#39;</span><span class="p">:</span>
         <span class="n">model_data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;year_decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]</span>
@@ -465,12 +462,12 @@
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="n">months</span><span class="p">)</span>
 
     <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">])),</span> <span class="s2">&quot;%Y %m&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;{0} {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">])),</span> <span class="s2">&quot;%Y %m&quot;</span><span class="p">),</span>
         <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
 
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;year_decimal&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;year_decimal&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -501,8 +498,8 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="wdc_to_hourly_csv"><a class="viewcode-back" href="../../io.html#magpysv.io.wdc_to_hourly_csv">[docs]</a><span class="k">def</span> <span class="nf">wdc_to_hourly_csv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">wdc_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_list</span><span class="p">,</span>
-                      <span class="n">print_obs</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="wdc_to_hourly_csv"><a class="viewcode-back" href="../../io.html#magpysv.io.wdc_to_hourly_csv">[docs]</a><span class="k">def</span> <span class="nf">wdc_to_hourly_csv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">wdc_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_list</span><span class="p">,</span>
+                      <span class="n">print_obs</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert WDC file to X, Y and Z hourly means and save to CSV file.</span>
 
 <span class="sd">    Finds WDC hourly data files for all observatories in a directory path</span>
@@ -529,8 +526,8 @@
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
     <span class="c1"># Iterate over each given observatory and call append_wdc_data</span>
     <span class="k">for</span> <span class="n">observatory</span> <span class="ow">in</span> <span class="n">obs_list</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">print_obs</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">observatory</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">print_obs</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">observatory</span><span class="p">)</span>
         <span class="n">wdc_data</span> <span class="o">=</span> <span class="n">append_wdc_data</span><span class="p">(</span>
             <span class="n">obs_name</span><span class="o">=</span><span class="n">observatory</span><span class="p">,</span>
             <span class="n">path</span><span class="o">=</span><span class="n">wdc_path</span><span class="p">)</span>
@@ -538,8 +535,8 @@
                        <span class="n">obs_name</span><span class="o">=</span><span class="n">observatory</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_csv_data"><a class="viewcode-back" href="../../io.html#magpysv.io.write_csv_data">[docs]</a><span class="k">def</span> <span class="nf">write_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">decimal_dates</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="write_csv_data"><a class="viewcode-back" href="../../io.html#magpysv.io.write_csv_data">[docs]</a><span class="k">def</span> <span class="nf">write_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">write_path</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">decimal_dates</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write dataframe to a CSV file.</span>
 
 <span class="sd">    Args:</span>
@@ -551,19 +548,20 @@
 <span class="sd">        decimal_dates (bool): optional argument to specify that dates should be</span>
 <span class="sd">            written in decimal format rather than datetime objects. Defaults to</span>
 <span class="sd">            False.</span>
+<span class="sd">        header (bool): option to include header in file. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Create the output directory if it does not exist</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
 
     <span class="c1"># Convert datetime objects to decimal dates if required</span>
-    <span class="k">if</span> <span class="n">decimal_dates</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">decimal_dates</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">datetime_to_decimal</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">file_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">file_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">fpath</span> <span class="o">=</span> <span class="n">write_path</span> <span class="o">+</span> <span class="n">file_prefix</span> <span class="o">+</span> <span class="n">obs_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fpath</span> <span class="o">=</span> <span class="n">write_path</span> <span class="o">+</span> <span class="n">obs_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_csv_data"><a class="viewcode-back" href="../../io.html#magpysv.io.read_csv_data">[docs]</a><span class="k">def</span> <span class="nf">read_csv_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">data_type</span><span class="p">):</span>
@@ -658,17 +656,17 @@
         <span class="n">obs_data_temp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dX&#39;</span><span class="p">:</span> <span class="s1">&#39;dX&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
                      <span class="s1">&#39;dY&#39;</span><span class="p">:</span> <span class="s1">&#39;dY&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
-                     <span class="s1">&#39;dZ&#39;</span><span class="p">:</span> <span class="s1">&#39;dZ&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                     <span class="s1">&#39;dZ&#39;</span><span class="p">:</span> <span class="s1">&#39;dZ&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">obs_data_temp</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data_temp</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">dt</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">model_sv_data_temp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dX&#39;</span><span class="p">:</span> <span class="s1">&#39;dX&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
                      <span class="s1">&#39;dY&#39;</span><span class="p">:</span> <span class="s1">&#39;dY&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
-                     <span class="s1">&#39;dZ&#39;</span><span class="p">:</span> <span class="s1">&#39;dZ&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                     <span class="s1">&#39;dZ&#39;</span><span class="p">:</span> <span class="s1">&#39;dZ&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">model_mf_data_temp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="s1">&#39;X&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
                      <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="s1">&#39;Y&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">,</span>
-                     <span class="s1">&#39;Z&#39;</span><span class="p">:</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                     <span class="s1">&#39;Z&#39;</span><span class="p">:</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">observatory</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="c1"># Combine the current observatory data with those of other</span>
         <span class="c1"># observatories</span>
         <span class="k">if</span> <span class="n">observatory</span> <span class="o">==</span> <span class="n">obs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -742,7 +740,7 @@
         <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;century&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;hourly_values&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">}</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
-                       <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                       <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;AE&quot;</span><span class="p">]</span>
     <span class="c1"># Separate the hourly values</span>
     <span class="k">try</span><span class="p">:</span>
@@ -799,7 +797,7 @@
     <span class="n">data</span> <span class="o">=</span> <span class="n">wdc_datetimes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">+</span> \
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">]</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;hourly_mean_temp&#39;</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -827,11 +825,11 @@
     <span class="c1"># specified directory</span>
     <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">ae_data_path</span> <span class="o">+</span> <span class="s1">&#39;ae*.txt&#39;</span><span class="p">)</span>
     <span class="c1"># Iterate over the files and append them to previous files</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="n">ae_readfile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">ae_readfile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -862,18 +860,18 @@
     <span class="k">if</span> <span class="n">fname</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">55</span><span class="p">)]</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
-                           <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                           <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">full_string</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">full_string</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">full_string</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">30</span><span class="p">:]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">55</span><span class="p">)]</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_fwf</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">colspecs</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
-                           <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                           <span class="n">converters</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">full_string</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">full_string</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">full_string</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">32</span><span class="p">:]</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;full_string&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;full_string&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
         <span class="n">separate_three_hourly_vals</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">])[</span><span class="s1">&#39;hourly_values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -883,11 +881,11 @@
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;hourly_mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fname</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> </span><span class="si">{2}</span><span class="s2"> </span><span class="si">{3}</span><span class="s2"> </span><span class="si">{4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">],</span>
+        <span class="s2">&quot;{0} {1} {2} {3} {4}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">],</span>
                                      <span class="n">x</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">],</span> <span class="mi">30</span><span class="p">),</span> <span class="s2">&quot;%Y %m </span><span class="si">%d</span><span class="s2"> %H %M&quot;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
     <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">],</span>
-              <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+              <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -935,11 +933,11 @@
     <span class="c1"># specified directory</span>
     <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">ap_data_path</span> <span class="o">+</span> <span class="s1">&#39;kp*.wdc&#39;</span><span class="p">)</span>
     <span class="c1"># Iterate over all files and append data</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="n">ap_readfile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">ap_readfile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="k">pass</span>
 
