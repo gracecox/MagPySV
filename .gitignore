@@ -4,3 +4,4 @@ __pycache__/
 .coverage
 .cache
 .DS_Store
+magpysv/data/
