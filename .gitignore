@@ -5,3 +5,4 @@ __pycache__/
 .cache
 .DS_Store
 examples/data/
+magpysv/data/
