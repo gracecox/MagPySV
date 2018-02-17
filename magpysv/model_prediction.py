@@ -104,6 +104,10 @@ def run_covobs(*, stations, model_path, output_path):
     """
     mycwd = os.getcwd()
     os.chdir(model_path)
+    # Create the output directory if it does not exist
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     for ob in stations.keys():
         print(ob)
         # Convert from latitude in degrees to colatitude in radians

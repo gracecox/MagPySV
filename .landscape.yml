@@ -1,3 +1,0 @@
-ignore-paths: docs/conf.py
-ignore-patterns: ^.*\.ipynb
-python-targets: 3
