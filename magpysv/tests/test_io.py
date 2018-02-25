@@ -10,25 +10,24 @@ import unittest
 from ddt import ddt, data, unpack
 import os
 from .. import io
+from pandas.util.testing import assert_frame_equal
 import pandas as pd
 import datetime as dt
 import numpy as np
 
+# Directory where the test files are located
+TEST_DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
 @ddt
 class WDCParsefileTestCase(unittest.TestCase):
 
-    def setUp(self):
-        # Directory where the test files are located
-        self.path = os.path.join(os.path.dirname(__file__), 'data')
-
     @data({'filename': 'testdata1.wdc', 'code': 'NGK', 'component1': 'D', 'component2': 'Z'},
           {'filename': 'testdata2.wdc', 'code': 'NGK', 'component1': 'D', 'component2': 'Z'},
-          {'filename': 'testdata3.wdc', 'code': 'PSM', 'component1': 'H', 'component2': 'F'})
+          {'filename': 'testdata3.wdc', 'code': 'PSM', 'component1': 'H', 'component2': 'D'})
     @unpack
     def test_wdc_parsefile_newformat(self, filename, code, component1, component2):
 
-        testfile = os.path.join(self.path, filename)
+        testfile = os.path.join(TEST_DATA_PATH, filename)
 
         data = io.wdc_parsefile(testfile)
         # Observatory code
@@ -139,3 +138,36 @@ class WDCXYZTestCase(unittest.TestCase):
         
         self.assertTrue(np.isnan(df.iloc[0].X))
         self.assertTrue(np.isnan(df.iloc[0].Y))
+
+
+class WDCReadAndAppendTestCase(unittest.TestCase):
+
+    def setUp(self):
+
+        self.data = pd.DataFrame(columns=['date', 'X', 'Y', 'Z'])
+        self.data.columns.name = 'component'
+        self.data.date = pd.date_range('1883-01-01 00:30:00', freq='H',
+                                       periods=5)
+        self.data.X = [np.nan, 18656.736886, 18657.537749, 18660.729592,
+                  18658.976990]
+        self.data.Y = [np.nan, -5487.438180, -5491.801722, -5480.946278,
+                  -5493.994785]
+        self.data.Z = [np.nan, np.nan, np.nan, np.nan, np.nan]
+        
+        self.filename = os.path.join(TEST_DATA_PATH, 'testdata3.wdc')
+
+    def test_wdc_readfile(self):
+        
+        df = io.wdc_readfile(self.filename)
+
+        assert_frame_equal(df.head(), self.data)
+
+#    def test_append_wdc_data(self):
+#        
+#        df = io.wdc_readfile(self.filename)
+#        
+#        df = df.head()
+#        
+#        df = append_wdc_data(obs_name='testdata', path=TEST_DATA_PATH):
+    #need other files from same obs to append from test directory
+    
