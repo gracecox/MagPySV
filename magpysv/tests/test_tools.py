@@ -11,7 +11,6 @@ import os
 from .. import tools
 import pandas as pd
 import datetime as dt
-import numpy as np
 
 class DataResamplingTestCase(unittest.TestCase):
 
@@ -31,9 +30,9 @@ class DataResamplingTestCase(unittest.TestCase):
                                33335.750000)
         self.assertAlmostEqual(self.averaged.daily_mean.values[-1],
                                45115.500000)
-        self.assertEqual(self.averaged.date[0], dt.datetime(day=1, month=1,
+        self.assertEqual(self.averaged.date[0], dt.datetime(day=15, month=1,
                          year=2000))
-        self.assertEqual(self.averaged.date[1], dt.datetime(day=1, month=2,
+        self.assertEqual(self.averaged.date[1], dt.datetime(day=15, month=2,
                          year=2000))
-        self.assertEqual(self.averaged.date[7], dt.datetime(day=1, month=8,
+        self.assertEqual(self.averaged.date[7], dt.datetime(day=15, month=8,
                          year=2000))
