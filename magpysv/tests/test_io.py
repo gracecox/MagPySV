@@ -140,7 +140,7 @@ class WDCXYZTestCase(unittest.TestCase):
         self.assertTrue(np.isnan(df.iloc[0].Y))
 
 
-class WDCReadAndAppendTestCase(unittest.TestCase):
+class WDCReadTestCase(unittest.TestCase):
 
     def setUp(self):
 
@@ -162,12 +162,20 @@ class WDCReadAndAppendTestCase(unittest.TestCase):
 
         assert_frame_equal(df.head(), self.data)
 
-#    def test_append_wdc_data(self):
-#        
-#        df = io.wdc_readfile(self.filename)
-#        
-#        df = df.head()
-#        
-#        df = append_wdc_data(obs_name='testdata', path=TEST_DATA_PATH):
-    #need other files from same obs to append from test directory
-    
+
+class WDCAppendTestCase(unittest.TestCase):
+
+    def setUp(self):
+
+        self.value1 = ['1911-01-01T00:30:00.000000000']
+        self.value2 = [45294.0]
+        self.dimensions = (1416, 4)
+        self.filename = 'testappenddata'
+
+    def test_append_wdc_data(self):
+
+        df = io.append_wdc_data(obs_name=self.filename, path=TEST_DATA_PATH)
+
+        self.assertEqual(self.dimensions, df.shape)
+        self.assertEqual(self.value1, df['date'].head(1).values)
+        self.assertAlmostEqual(self.value2, df['Z'].tail(1).values)
