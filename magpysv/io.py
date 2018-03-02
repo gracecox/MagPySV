@@ -259,7 +259,7 @@ def append_wdc_data(*, obs_name, path=None):
     """
     data = pd.DataFrame()
 
-    data_path = path + obs_name.lower() + '*.wdc'
+    data_path = os.path.join(path, obs_name.lower() + '*.wdc')
     # Obtain a list of all files containing the observatory name and ending
     # .wdc in the specified directory
     filenames = glob.glob(data_path)
