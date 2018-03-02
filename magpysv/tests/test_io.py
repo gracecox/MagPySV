@@ -167,7 +167,8 @@ class WDCAppendTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        self.value1 = ['1911-01-01T00:30:00.000000000']
+        # the type never quite matches unless this is a single value range...
+        self.value1 = [pd.date_range('1911-1-1 0:30', '1911-1-1 0:30')]
         self.value2 = [45294.0]
         self.dimensions = (1416, 4)
         self.filename = 'testappenddata'
