@@ -6,10 +6,13 @@ Testing the file io functionality of io.py.
 
 @author: Grace
 """
+
 import unittest
+import mock
 from ddt import ddt, data, unpack
+from io import StringIO  # io
 import os
-from .. import io
+from .. import io  # magpysv.io
 from pandas.util.testing import assert_frame_equal
 import pandas as pd
 import datetime as dt
@@ -21,11 +24,15 @@ TEST_DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 @ddt
 class WDCParsefileTestCase(unittest.TestCase):
 
-    @data({'filename': 'testdata1.wdc', 'code': 'NGK', 'component1': 'D', 'component2': 'Z'},
-          {'filename': 'testdata2.wdc', 'code': 'NGK', 'component1': 'D', 'component2': 'Z'},
-          {'filename': 'testdata3.wdc', 'code': 'PSM', 'component1': 'H', 'component2': 'D'})
+    @data({'filename': 'testdata1.wdc', 'code': 'NGK', 'component1': 'D',
+           'component2': 'Z'},
+          {'filename': 'testdata2.wdc', 'code': 'NGK', 'component1': 'D',
+          'component2': 'Z'},
+          {'filename': 'testdata3.wdc', 'code': 'PSM', 'component1': 'H',
+          'component2': 'D'})
     @unpack
-    def test_wdc_parsefile_newformat(self, filename, code, component1, component2):
+    def test_wdc_parsefile_newformat(self, filename, code, component1,
+                                     component2):
 
         testfile = os.path.join(TEST_DATA_PATH, filename)
 
@@ -133,7 +140,8 @@ class WDCXYZTestCase(unittest.TestCase):
 
     def test_wdc_xyz_is_nan_if_DHXY_missing(self):
         
-        self.data = self.data[~(self.data.component.isin(['D', 'H', 'X', 'Y']))]
+        self.data = self.data[~(self.data.component.isin(['D', 'H', 'X',
+                                                          'Y']))]
         df = io.wdc_xyz(self.data)
         
         self.assertTrue(np.isnan(df.iloc[0].X))
@@ -167,7 +175,7 @@ class WDCAppendTestCase(unittest.TestCase):
 
     def setUp(self):
 
-        # the type never quite matches unless this is a single value range...
+        # the type matches when this is a single value range...
         self.value1 = [pd.date_range('1911-1-1 0:30', '1911-1-1 0:30')]
         self.value2 = [45294.0]
         self.dimensions = (1416, 4)
@@ -180,3 +188,64 @@ class WDCAppendTestCase(unittest.TestCase):
         self.assertEqual(self.dimensions, df.shape)
         self.assertEqual(self.value1, df['date'].head(1).values)
         self.assertAlmostEqual(self.value2, df['Z'].tail(1).values)
+
+
+class WDCHourlyToCSVTestCase(unittest.TestCase):
+    """
+    Mock the calls I don't want to actually make or are tested elsewhere, and
+    beware that patches are applied in _reverse_ order, becauses whoever wrote
+    mock is the devil
+    """
+
+    def setUp(self):
+        self.wdc_path = 'data'
+        self.write_dir = './a-test-path/to-nowhere'
+        self.obs_list = ['ESK']
+        self.print_obs = True
+        self.wdc_data = pd.DataFrame()
+
+    @mock.patch('magpysv.io.write_csv_data')
+    @mock.patch('magpysv.io.append_wdc_data')
+    @mock.patch('os.makedirs')
+    @mock.patch('os.path.exists', return_value=False)
+    def test_wdc_to_hourly_csv_path_exists(self, mock_exists, mock_makedirs, 
+                                           mock_append_wdc_data,
+                                           mock_write_csv_data):
+
+        io.wdc_to_hourly_csv(wdc_path=self.wdc_path,
+                             write_dir=self.write_dir,
+                             obs_list=self.obs_list,
+                             print_obs=self.print_obs)
+        assert mock_makedirs.call_count == 1
+        mock_makedirs.assert_called_with(self.write_dir)
+
+    @mock.patch('magpysv.io.write_csv_data')
+    @mock.patch('magpysv.io.append_wdc_data')
+    @mock.patch('sys.stdout', new_callable=StringIO)
+    @mock.patch('os.path.exists', return_value=True)
+    def test_wdc_to_hourly_csv_call_print(self, mock_exists, mock_print,
+                                          mock_append_wdc_data,
+                                          mock_write_csv_data):
+
+        io.wdc_to_hourly_csv(wdc_path=self.wdc_path,
+                             write_dir=self.write_dir,
+                             obs_list=self.obs_list,
+                             print_obs=self.print_obs)
+        self.assertEqual(self.obs_list[0] + '\n', mock_print.getvalue())
+
+
+    @mock.patch('magpysv.io.write_csv_data')
+    @mock.patch('magpysv.io.append_wdc_data')
+    @mock.patch('os.path.exists', return_value=True)
+    def test_wdc_to_hourly_csv_call_write(self, mock_exists,
+                                          mock_append_wdc_data, 
+                                          mock_write_csv_data):
+
+        mock_append_wdc_data.return_value = self.wdc_data
+        io.wdc_to_hourly_csv(wdc_path=self.wdc_path,
+                             write_dir=self.write_dir,
+                             obs_list=self.obs_list,
+                             print_obs=self.print_obs)
+        mock_write_csv_data.assert_called_with(data=self.wdc_data,
+                                               write_dir=self.write_dir, 
+                                               obs_name=self.obs_list[0])
