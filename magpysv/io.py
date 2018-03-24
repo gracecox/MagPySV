@@ -11,6 +11,8 @@ Centre (WDC) formatted files containing geomagnetic data and output data to
 comma separated values (CSV) files. Also contains functions to read output of
 code used for the COV-OBS magnetic field model series by Gillet et al. (links
 below).
+
+@author: Grace
 """
 
 

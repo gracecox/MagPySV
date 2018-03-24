@@ -5,3 +5,4 @@ __pycache__/
 .cache
 .DS_Store
 magpysv/data/
+htmlcov

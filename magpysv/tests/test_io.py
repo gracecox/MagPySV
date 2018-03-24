@@ -2,7 +2,7 @@
 """
 Created on Sun Feb 21 13:26:22 2016
 
-Testing the file io functionality of io.py.
+Testing the file IO functionality of io.py.
 
 @author: Grace
 """
@@ -12,7 +12,7 @@ import mock
 from ddt import ddt, data, unpack
 from io import StringIO  # io
 import os
-from .. import io  # magpysv.io
+from magpysv import io as mpio # magpysv.io
 from pandas.util.testing import assert_frame_equal
 import pandas as pd
 import datetime as dt
@@ -36,7 +36,7 @@ class WDCParsefileTestCase(unittest.TestCase):
 
         testfile = os.path.join(TEST_DATA_PATH, filename)
 
-        data = io.wdc_parsefile(testfile)
+        data = mpio.wdc_parsefile(testfile)
         # Observatory code
         self.assertEqual(data.code[0], code)
         self.assertEqual(len(data.code.unique()), 1)
@@ -62,7 +62,7 @@ class WDCDatetimesTestCase(unittest.TestCase):
         
     def test_wdc_datetimes(self):
 
-        df = io.wdc_datetimes(self.data)
+        df = mpio.wdc_datetimes(self.data)
 
         self.assertTrue(isinstance(df.date[0], pd.datetime))
         self.assertEqual(df.date[0], dt.datetime(day=21, month=9, year=1988, 
@@ -82,7 +82,7 @@ class HourlyMeanConversionTestCase(unittest.TestCase):
 
     def test_hourly_mean_conversion(self):
 
-        df = io.hourly_mean_conversion(self.data)
+        df = mpio.hourly_mean_conversion(self.data)
 
         self.assertAlmostEqual(df.iloc[0].hourly_mean, 55)
         self.assertAlmostEqual(df.iloc[1].hourly_mean, 20530)
@@ -104,7 +104,7 @@ class AnglesToGeographicTestCase(unittest.TestCase):
 
     def test_angles_to_geographic(self):
 
-        df = io.angles_to_geographic(self.data)
+        df = mpio.angles_to_geographic(self.data)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -125,7 +125,7 @@ class WDCXYZTestCase(unittest.TestCase):
 
     def test_wdc_xyz(self):
 
-        df = io.wdc_xyz(self.data)
+        df = mpio.wdc_xyz(self.data)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -135,14 +135,14 @@ class WDCXYZTestCase(unittest.TestCase):
     def test_wdc_xyz_is_nan_if_Z_missing(self):
         
         self.data = self.data[self.data.component != 'Z']
-        df = io.wdc_xyz(self.data)
+        df = mpio.wdc_xyz(self.data)
         self.assertTrue(np.isnan(df.iloc[1].Z))
 
     def test_wdc_xyz_is_nan_if_DHXY_missing(self):
         
         self.data = self.data[~(self.data.component.isin(['D', 'H', 'X',
                                                           'Y']))]
-        df = io.wdc_xyz(self.data)
+        df = mpio.wdc_xyz(self.data)
         
         self.assertTrue(np.isnan(df.iloc[0].X))
         self.assertTrue(np.isnan(df.iloc[0].Y))
@@ -166,7 +166,7 @@ class WDCReadTestCase(unittest.TestCase):
 
     def test_wdc_readfile(self):
         
-        df = io.wdc_readfile(self.filename)
+        df = mpio.wdc_readfile(self.filename)
 
         assert_frame_equal(df.head(), self.data)
 
@@ -183,7 +183,7 @@ class WDCAppendTestCase(unittest.TestCase):
 
     def test_append_wdc_data(self):
 
-        df = io.append_wdc_data(obs_name=self.filename, path=TEST_DATA_PATH)
+        df = mpio.append_wdc_data(obs_name=self.filename, path=TEST_DATA_PATH)
 
         self.assertEqual(self.dimensions, df.shape)
         self.assertEqual(self.value1, df['date'].head(1).values)
@@ -212,7 +212,7 @@ class WDCHourlyToCSVTestCase(unittest.TestCase):
                                            mock_append_wdc_data,
                                            mock_write_csv_data):
 
-        io.wdc_to_hourly_csv(wdc_path=self.wdc_path,
+        mpio.wdc_to_hourly_csv(wdc_path=self.wdc_path,
                              write_dir=self.write_dir,
                              obs_list=self.obs_list,
                              print_obs=self.print_obs)
@@ -227,12 +227,11 @@ class WDCHourlyToCSVTestCase(unittest.TestCase):
                                           mock_append_wdc_data,
                                           mock_write_csv_data):
 
-        io.wdc_to_hourly_csv(wdc_path=self.wdc_path,
+        mpio.wdc_to_hourly_csv(wdc_path=self.wdc_path,
                              write_dir=self.write_dir,
                              obs_list=self.obs_list,
                              print_obs=self.print_obs)
         self.assertEqual(self.obs_list[0] + '\n', mock_print.getvalue())
-
 
     @mock.patch('magpysv.io.write_csv_data')
     @mock.patch('magpysv.io.append_wdc_data')
@@ -242,10 +241,51 @@ class WDCHourlyToCSVTestCase(unittest.TestCase):
                                           mock_write_csv_data):
 
         mock_append_wdc_data.return_value = self.wdc_data
-        io.wdc_to_hourly_csv(wdc_path=self.wdc_path,
+        mpio.wdc_to_hourly_csv(wdc_path=self.wdc_path,
                              write_dir=self.write_dir,
                              obs_list=self.obs_list,
                              print_obs=self.print_obs)
         mock_write_csv_data.assert_called_with(data=self.wdc_data,
                                                write_dir=self.write_dir, 
                                                obs_name=self.obs_list[0])
+
+
+class WriteCSVDataTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.data = pd.DataFrame(columns=['date'])
+        self.data.date = pd.date_range('1883-01-01 00:30:00', freq='H',
+                                       periods=2)
+        self.write_dir = './a-test-path/to-nowhere'
+        self.obs_name = 'obs-code'
+        self.fpath = os.path.join(self.write_dir, self.obs_name + '.csv')
+        self.sep = ','
+        self.na_rep = 'NA'
+        self.header = True
+        self.index = False
+#        self.file_prefix = 
+#        self.decimal_dates = 
+#        self.header = 
+
+    @mock.patch('pandas.DataFrame.apply')
+    @mock.patch('pandas.DataFrame.to_csv')
+    def test_default_inputs_called(self, mock_to_csv, mock_apply):
+
+        mpio.write_csv_data(data=self.data, write_dir=self.write_dir,
+                       obs_name=self.obs_name)
+        mock_apply.assert_not_called()
+        mock_to_csv.assert_called_with(self.fpath, sep=self.sep,
+                                       na_rep=self.na_rep, header=self.header,
+                                       index=self.index)
+
+    def test_decimal_dates_conversion_called(self):
+
+        pass
+
+    def test_fpath_updated(self):
+
+        pass
+
+    def test_file_written_as_expected(self):
+
+        pass
