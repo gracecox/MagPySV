@@ -199,7 +199,7 @@ class WDCHourlyToCSVTestCase(unittest.TestCase):
 
     def setUp(self):
         self.wdc_path = 'data'
-        self.write_dir = './a-test-path/to-nowhere'
+        self.write_dir = os.path.join('a-test-path', '/to-nowhere')
         self.obs_list = ['ESK']
         self.print_obs = True
         self.wdc_data = pd.DataFrame()
@@ -256,16 +256,18 @@ class WriteCSVDataTestCase(unittest.TestCase):
         self.data = pd.DataFrame(columns=['date'])
         self.data.date = pd.date_range('1883-01-01 00:30:00', freq='H',
                                        periods=2)
-        self.write_dir = './a-test-path/to-nowhere'
+        self.write_dir = os.path.join('a-test-path', 'to-nowhere')
         self.obs_name = 'obs-code'
         self.fpath = os.path.join(self.write_dir, self.obs_name + '.csv')
         self.sep = ','
         self.na_rep = 'NA'
         self.header = True
         self.index = False
-#        self.file_prefix = 
-#        self.decimal_dates = 
-#        self.header = 
+        self.file_prefix = 'a-file-prefix_'
+        self.decimal_dates = True
+        self.fpath_with_prefix = os.path.join(self.write_dir,
+                                              self.file_prefix + 
+                                              self.obs_name + '.csv')
 
     @mock.patch('pandas.DataFrame.apply')
     @mock.patch('pandas.DataFrame.to_csv')
@@ -278,13 +280,23 @@ class WriteCSVDataTestCase(unittest.TestCase):
                                        na_rep=self.na_rep, header=self.header,
                                        index=self.index)
 
-    def test_decimal_dates_conversion_called(self):
+    @mock.patch('pandas.DataFrame.to_csv')
+    @mock.patch('magpysv.io.datetime_to_decimal')
+    def test_decimal_dates_conversion_called(self, mock_decimal_dates,
+                                             mock_to_csv):
 
-        pass
+        mpio.write_csv_data(data=self.data, write_dir=self.write_dir,
+                       obs_name=self.obs_name, decimal_dates=True)
+        mock_decimal_dates.assert_called()
 
-    def test_fpath_updated(self):
+    @mock.patch('pandas.DataFrame.to_csv')
+    def test_fpath_updated(self, mock_to_csv):
 
-        pass
+        mpio.write_csv_data(data=self.data, write_dir=self.write_dir,
+                       obs_name=self.obs_name, file_prefix=self.file_prefix)
+        a, b = mock_to_csv.call_args
+        # .call_args is a tuple of tuples, so needs the double slice
+        assert self.fpath_with_prefix == mock_to_csv.call_args[0][0]
 
     def test_file_written_as_expected(self):
 
