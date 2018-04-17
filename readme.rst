@@ -1,5 +1,9 @@
 Welcome to MagPySV!
 ===================================
+
+.. image:: https://api.codacy.com/project/badge/Grade/e22cd43f7e364892ab42c874ada808ad
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/app/gracecox/MagPySV?utm_source=github.com&utm_medium=referral&utm_content=gracecox/MagPySV&utm_campaign=badger
 |build-status| |docs-status| |coverage| |code-health| |license|
 
 Full documentation is hosted at http://magpysv.readthedocs.io/en/latest/
