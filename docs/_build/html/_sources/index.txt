@@ -5,7 +5,7 @@
 
 Welcome to MagPySV's documentation!
 ===================================
-|build-status| |docs-status| |coverage| |code-health| |license|
+|build-status| |docs-status| |code-health| |coverage| |license|
 
 Introduction
 ------------
@@ -16,16 +16,20 @@ The package may be run on the command line or within an interactive Jupyter note
 
 The software develops previously published denoising methods, which aim to remove external field contamination from the internal field, using principal component analysis, a method that uses the covariance matrix of the residual between the observed SV and that predicted by a global field model to create and remove a proxy for external field signal from the data. This method, based on `Wardinski & Holme (2011)`_, creates a single covariance matrix for all observatories of interest combined and applies the external field correction to all locations simultaneously, resulting in cleaner time series of the internally-generated SV.
 
-Example workflows
------------------
-
-In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. The examples directory of this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies. To open the notebooks, type ```jupyter notebook``` into the command line from the examples directory and then select the desired notebook from the list that appears in your web browser. The `Jupyter documentation`_ contains a step-by-step tutorial on installing and running notebooks, and is aimed at new users who have no familiarity with Python.
-
 Installation
 ------------
 
 MagPySV can be installed via the Python Package Index (PyPI) using the command
-```pip install magpysv```. This also installs all required dependencies, including the BGS data downloading app.
+``pip install magpysv``. This also installs all required dependencies, including the BGS data downloading app. The example Juypyter notebooks (see below) are not included in the PyPI installation and need to be downloaded from the Github project page after the software is installed.
+
+Example workflows
+-----------------
+
+In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. The examples directory of this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies.
+
+To obtain the notebooks, go to the Github project page (at https://github.com/gracecox/MagPySV) and click the green "clone or download" button. From the dropdown menu, select "download zip" and save the file to the desired location. Unzip the file and navigate to the examples folder. To open the notebooks, launch a Jupyter notebook from the examples folder (e.g. by typing ``jupyter notebook`` into the command line from the examples directory) and then select the desired notebook from the list that appears in your web browser.
+
+The `Jupyter documentation`_ contains a step-by-step tutorial on installing and running notebooks, and is aimed at new users who have no familiarity with Python.
 
 Contributing
 ------------
@@ -68,11 +72,11 @@ A manuscript describing MagPySV is currently in preparation. The paper also pres
 .. |license| image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://opensource.org/licenses/MIT
 
-.. |code-health| image:: https://landscape.io/github/gracecox/MagPySV/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/gracecox/MagPySV/master
+.. |code-health| image:: https://api.codacy.com/project/badge/Grade/741f903ebe3945b3a3a6de5e716ac1b5
+   :target: https://www.codacy.com/app/gracecox/MagPySV?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gracecox/MagPySV&amp;utm_campaign=Badge_Grade
    :alt: Code Health
 
-The project's main directory contains the readme file, license and various setup files. The `magpysv` directory contains all of the Python modules that make up the Python package, detailed descriptions of all functions contained within each module are found at the links below the contents section of this page. The code documentation can also be accessed using Python's help function by typing a command in this format: ```help(magpysv.modulename.functionname)```
+The project's main directory contains the readme file, license and various setup files. The `magpysv` directory contains all of the Python modules that make up the Python package, detailed descriptions of all functions contained within each module are found at the links below the contents section of this page. The code documentation can also be accessed using Python's help function by typing a command in this format: ``help(magpysv.modulename.functionname)``
 
 .. toctree::
    :maxdepth: 2

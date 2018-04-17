@@ -293,8 +293,7 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
     # [1, 1, 1, 9, 7, 7, 7]. The limit of half the window length is used so the
     # first ffill cannot overwrite the beginning of the next valid interval
     # (bfill values are used there instead).
-    signal_temp = signal_temp.ffill(limit=window_length / 2 + 1).bfill()
-
+    signal_temp = signal_temp.ffill(limit=int(window_length / 2 + 1)).bfill()
     # calculate the running median and median absolute standard deviation
     running_median = signal_temp.rolling(window=window_length,
                                          center=True).median().bfill().ffill()
@@ -303,10 +302,8 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
                                      center=True).median().bfill().ffill()
     # Normalise the median abolute deviation
     modified_z_score = diff / med_abs_deviation
-
     # Identify outliers
     outliers = signal_temp[modified_z_score > threshold]
-
     # Plot the outliers and original time series if required
     if plot_fig is True:
         plots.plot_outliers(dates=dates, obs_name=obs_name, signal=signal,
@@ -317,5 +314,4 @@ def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
     # Set the outliers to NaN
     idx = np.where(modified_z_score > threshold)[0]
     signal.iloc[idx] = np.nan
-
     return signal.astype('float')

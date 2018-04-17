@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="MagPySV 1.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
@@ -144,8 +147,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../tools.html#magpysv.tools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -184,7 +187,7 @@
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
-    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obs_sv</span></div>
 
@@ -203,8 +206,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
     <span class="n">model_data</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="n">model_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">dates</span><span class="p">)]</span>
-    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Calculate SV residuals (data - model prediction) for all observatories</span>
     <span class="n">residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -215,7 +218,7 @@
     <span class="k">return</span> <span class="n">residuals</span></div>
 
 
-<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../tools.html#magpysv.tools.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="n">average_date</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="data_resampling"><a class="viewcode-back" href="../../tools.html#magpysv.tools.data_resampling">[docs]</a><span class="k">def</span> <span class="nf">data_resampling</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="n">average_date</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Resample the hourly geomagnetic data to a specified frequency.</span>
 
 <span class="sd">    Args:</span>
@@ -243,18 +246,18 @@
 <span class="sd">            dataframe of datetime objects and monthly/annual means of</span>
 <span class="sd">            observatory data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">sampling</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">average_date</span> <span class="ow">is</span> <span class="bp">True</span> <span class="ow">and</span> <span class="s1">&#39;A&#39;</span> <span class="ow">in</span> <span class="n">sampling</span><span class="p">:</span>
+    <span class="n">resampled</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">sampling</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">resampled</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">average_date</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="s1">&#39;A&#39;</span> <span class="ow">in</span> <span class="n">sampling</span><span class="p">:</span>
         <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
                             <span class="n">month</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">average_date</span> <span class="ow">is</span> <span class="bp">True</span> <span class="ow">and</span> <span class="s1">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">sampling</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">average_date</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="s1">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">sampling</span><span class="p">:</span>
         <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resampled</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span>
                             <span class="n">day</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">resampled</span></div>
 
 
-<div class="viewcode-block" id="apply_Ap_threshold"><a class="viewcode-back" href="../../tools.html#magpysv.tools.apply_Ap_threshold">[docs]</a><span class="k">def</span> <span class="nf">apply_Ap_threshold</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">Ap_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_Ap_threshold"><a class="viewcode-back" href="../../tools.html#magpysv.tools.apply_Ap_threshold">[docs]</a><span class="k">def</span> <span class="nf">apply_Ap_threshold</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">Ap_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove observatory data for times with ap values above threshold value.</span>
 
 <span class="sd">    Args:</span>
@@ -271,7 +274,7 @@
     <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;Ap&#39;</span><span class="p">]</span>
     <span class="n">Ap_hourly</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Ap_file</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
                             <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;Ap&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+                            <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="c1"># Merge the two dataframes so that only dates contained within both are</span>
     <span class="c1"># retained</span>
     <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">Ap_hourly</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
@@ -280,7 +283,7 @@
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
     <span class="n">obs_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">obs_data</span><span class="o">.</span><span class="n">Ap</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obs_data</span></div>
 
@@ -354,7 +357,7 @@
     <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">/</span> <span class="n">mean_spacing</span>
     <span class="n">obs_sv</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">obs_data</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span>
             <span class="n">periods</span><span class="o">=</span><span class="n">mean_spacing</span><span class="p">)</span>
-    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">obs_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">obs_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">mean_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obs_sv</span></div>
 
@@ -378,7 +381,7 @@
     <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;index_vals&#39;</span><span class="p">]</span>
     <span class="n">index_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">index_file</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span>
                            <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;index_vals&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                           <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+                           <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">dates</span><span class="p">,</span> <span class="s1">&#39;proxy&#39;</span><span class="p">:</span> <span class="n">signal</span><span class="p">})</span>
     <span class="c1"># Merge the two dataframes so that only dates contained within both are</span>
     <span class="c1"># retained</span>
@@ -418,14 +421,14 @@
     <span class="n">obs_jumps</span> <span class="o">=</span> <span class="n">baseline_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
         <span class="n">baseline_data</span><span class="p">[</span><span class="s1">&#39;observatory&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">observatory</span><span class="p">)]</span>
 
-    <span class="k">if</span> <span class="n">print_data</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">obs_jumps</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">print_data</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">obs_jumps</span><span class="p">)</span>
     <span class="c1"># Loop over a baseline changes and make the correction</span>
     <span class="k">for</span> <span class="n">jump</span> <span class="ow">in</span> <span class="n">obs_jumps</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
         <span class="c1"># Check if a change of zero is recorded</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">x_jump</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;</span> <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">y_jump</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;</span>
                 <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">z_jump</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Baseline change of unknown magnitude: &quot;</span><span class="p">,</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Baseline change of unknown magnitude: &quot;</span><span class="p">,</span>
                   <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">jump_year</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">field_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">field_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">jump_year</span><span class="p">,</span>
