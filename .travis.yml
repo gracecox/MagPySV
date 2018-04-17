@@ -6,8 +6,9 @@ install:
 - pip install pytest
 - pip install pytest-cov
 - pip install python-coveralls
+- pip install ddt
 script:
-- py.test --cov-report term-missing --cov=magpysv
+- py.test --cov-report term-missing --cov magpysv magpysv/tests
 after_success:
 - coveralls
 notifications:

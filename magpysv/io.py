@@ -150,6 +150,7 @@ def wdc_xyz(data):
         data['Z'] = np.NaN
 
     data = data[['date', 'X', 'Y', 'Z']]
+    
     return data
 
 
@@ -258,7 +259,7 @@ def append_wdc_data(*, obs_name, path=None):
     """
     data = pd.DataFrame()
 
-    data_path = path + obs_name.lower() + '*.wdc'
+    data_path = os.path.join(path, obs_name.lower() + '*.wdc')
     # Obtain a list of all files containing the observatory name and ending
     # .wdc in the specified directory
     filenames = glob.glob(data_path)
@@ -364,7 +365,7 @@ def covobs_readfile(*, fname, data_type):
     return data
 
 
-def wdc_to_hourly_csv(*, wdc_path=None, write_path, obs_list,
+def wdc_to_hourly_csv(*, wdc_path=None, write_dir, obs_list,
                       print_obs=True):
     """Convert WDC file to X, Y and Z hourly means and save to CSV file.
 
@@ -380,7 +381,8 @@ def wdc_to_hourly_csv(*, wdc_path=None, write_path, obs_list,
 
     Args:
         wdc_path (str): path to the directory containing datafiles.
-        write_path (str): path to which the output CSV files are written.
+        write_dir (str): directory path to which the output CSV files are
+            written.
         obs_list (list): list of observatory names (as 3-digit IAGA codes).
         print_obs (bool): choose whether to print each observatory name as the
             function goes through the directories. Useful for checking progress
@@ -388,8 +390,8 @@ def wdc_to_hourly_csv(*, wdc_path=None, write_path, obs_list,
             True.
     """
     # Create the output directory if it does not exist
-    if not os.path.exists(write_path):
-        os.makedirs(write_path)
+    if not os.path.exists(write_dir):
+        os.makedirs(write_dir)
     # Iterate over each given observatory and call append_wdc_data
     for observatory in obs_list:
         if print_obs is True:
@@ -397,17 +399,18 @@ def wdc_to_hourly_csv(*, wdc_path=None, write_path, obs_list,
         wdc_data = append_wdc_data(
             obs_name=observatory,
             path=wdc_path)
-        write_csv_data(data=wdc_data, write_path=write_path,
+        write_csv_data(data=wdc_data, write_dir=write_dir,
                        obs_name=observatory)
 
 
-def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
+def write_csv_data(*, data, write_dir, obs_name, file_prefix=None,
                    decimal_dates=False, header=True):
     """Write dataframe to a CSV file.
 
     Args:
         data (pandas.DataFrame): data to be written to file.
-        write_path (str): path to which the output CSV file is written.
+        write_dir (str): directory path to which the output CSV file is
+            written.
         obs_name (str): name of observatory at which the data were obtained.
         file_prefix (str): optional string to prefix the output CSV filenames
             (useful for specifying parameters used to create the dataset etc).
@@ -416,17 +419,14 @@ def write_csv_data(*, data, write_path, obs_name, file_prefix=None,
             False.
         header (bool): option to include header in file. Defaults to True.
     """
-    # Create the output directory if it does not exist
-    if not os.path.exists(write_path):
-        os.makedirs(write_path)
 
     # Convert datetime objects to decimal dates if required
     if decimal_dates is True:
         data.date = data.date.apply(datetime_to_decimal)
     if file_prefix is not None:
-        fpath = write_path + file_prefix + obs_name + '.csv'
+        fpath = os.path.join(write_dir, file_prefix + obs_name + '.csv')
     else:
-        fpath = write_path + obs_name + '.csv'
+        fpath = os.path.join(write_dir, obs_name + '.csv')
     data.to_csv(fpath, sep=',', na_rep='NA', header=header, index=False)
 
 

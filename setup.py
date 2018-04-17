@@ -8,9 +8,9 @@ def read(fname):
 
 setup(
     name="magpysv",
-    version="0.1.beta10",
+    version="1.0beta",
     author="Grace Cox",
-    author_email="Grace.Cox@liverpool.ac.uk",
+    author_email="grace.cox@dias.ie",
     license="MIT",
     url="https://github.com/gracecox/MagPySV",
     description="Download, process and denoise geomagnetic observatory data",
