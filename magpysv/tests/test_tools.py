@@ -4,7 +4,7 @@ Created on Thu Feb  2 16:45:42 2017
 
 Testing functions for tools.py.
 
-@author: gracecox
+@author: Grace Cox and Will Brown
 """
 import unittest
 import os
@@ -12,9 +12,11 @@ from .. import tools
 import pandas as pd
 import datetime as dt
 
-class DataResamplingTestCase(unittest.TestCase):
 
+class DataResamplingTestCase(unittest.TestCase):
+    """Set up test case for data resampling"""
     def setUp(self):
+        """Specify location of test file"""
         # Directory where the test files are located
         self.path = os.path.join(os.path.dirname(__file__), 'data')
         testfile = os.path.join(self.path, 'testdaily.csv')
@@ -24,7 +26,7 @@ class DataResamplingTestCase(unittest.TestCase):
         self.averaged = tools.data_resampling(self.data)
 
     def test_data_resampling(self):
-
+        """Verify correct resampling of test file data"""
         self.assertAlmostEqual(self.averaged.daily_mean.values[0], 801.000000)
         self.assertAlmostEqual(self.averaged.daily_mean.values[7],
                                33335.750000)

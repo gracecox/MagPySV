@@ -802,7 +802,7 @@ def plot_residuals_dft_all(*, projected_residuals, dates, fig_size=(10, 8),
                            sample_length / 2)
         residual_power = (2.0 / sample_length) * np.abs(
             residual_dft[:sample_length // 2])
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=fig_size)
+        ax = plt.subplots(nrows=1, ncols=2, figsize=fig_size)[1]
         plt.subplot(2, 1, 1)
         plt.gca().xaxis_date()
         plt.plot(dates, projected_residuals[:, direction], 'b')
