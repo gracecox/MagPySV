@@ -57,7 +57,7 @@ def plot_eigenvalues(*, values, fig_size=(8, 6), font_size=12, label_size=16,
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + 'eigenvalues.pdf'
+        fpath = os.path.join(write_path, 'eigenvalues.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -108,7 +108,7 @@ def plot_eigenvectors(*, obs_names, eigenvecs, fig_size=(8, 6), font_size=12,
             # Create the output directory if it does not exist
             if not os.path.exists(write_path):
                 os.makedirs(write_path)
-            fpath = write_path + 'eigendirection%03d.pdf' % direction
+            fpath = os.path.join(write_path, 'eigendirection%03d.pdf' % direction)
             plt.savefig(fpath, bbox_inches='tight')
             plt.close()
 
@@ -176,7 +176,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + obs + '.pdf'
+        fpath = os.path.join(write_path, obs + '.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -294,7 +294,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + 'clean_' + obs + '.pdf'
+        fpath = os.path.join(write_path, 'clean_' + obs + '.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -503,7 +503,7 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + obs + '.pdf'
+        fpath = os.path.join(write_path, obs + '.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -569,8 +569,8 @@ def plot_index(*, index_file, dates, projected_residuals, fig_size=(8, 6),
             # Create the output directory if it does not exist
             if not os.path.exists(write_path):
                 os.makedirs(write_path)
-            fpath = write_path + index_name \
-                + '_eigendirection%03d.pdf' % direction
+            fpath = os.path.join(write_path, index_name \
+                + '_eigendirection%03d.pdf' % direction)
             plt.savefig(fpath, bbox_inches='tight')
             plt.close()
 
@@ -645,7 +645,7 @@ def plot_index_dft(*, index_file, dates, signal, fig_size=(8, 6), font_size=12,
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + index_name + '_dft.pdf'
+        fpath = os.path.join(write_path, index_name + '_dft.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -689,7 +689,7 @@ def plot_outliers(*, dates, signal, obs_name, outliers, signal_type='SV',
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + obs_name + '_outliers.pdf'
+        fpath = os.path.join(write_path, obs_name + '_outliers.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -760,7 +760,7 @@ def plot_residuals_dft(*, projected_residuals, dates, fig_size=(10, 8),
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + 'residuals_dft.pdf'
+        fpath = os.path.join(write_path, 'residuals_dft.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -824,8 +824,8 @@ def plot_residuals_dft_all(*, projected_residuals, dates, fig_size=(10, 8),
             # Create the output directory if it does not exist
             if not os.path.exists(write_path):
                 os.makedirs(write_path)
-            fpath = write_path \
-                + 'dft_eigendirection%03d.pdf' % direction
+            fpath = os.path.join(write_path, \
+                'dft_eigendirection%03d.pdf' % direction)
             plt.savefig(fpath, bbox_inches='tight')
             plt.close()
 
@@ -881,8 +881,8 @@ def compare_proxies(*, fname1, fname2, legend_text, fig_size=(8, 6),
         # Create the output directory if it does not exist
         if not os.path.exists(write_path):
             os.makedirs(write_path)
-        fpath = write_path + 'proxy_comparison_' + legend_text[0] + '_' \
-            + legend_text[1] + '.pdf'
+        fpath = os.path.join(write_path, 'proxy_comparison_' + legend_text[0] + '_' \
+            + legend_text[1] + '.pdf')
         plt.savefig(fpath, bbox_inches='tight')
         plt.close()
 
@@ -933,6 +933,6 @@ def rms_ratios(*, rms, fig_size=(8, 6), font_size=12, label_size=16,
             # Create the output directory if it does not exist
             if not os.path.exists(write_path):
                 os.makedirs(write_path)
-            fpath = write_path + 'rms_ratio_%s.pdf' % observatory
+            fpath = os.path.join(write_path, 'rms_ratio_%s.pdf' % observatory)
             plt.savefig(fpath, bbox_inches='tight')
             plt.close()

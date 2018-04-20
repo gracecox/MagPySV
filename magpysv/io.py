@@ -420,6 +420,10 @@ def write_csv_data(*, data, write_dir, obs_name, file_prefix=None,
         header (bool): option to include header in file. Defaults to True.
     """
 
+    # Create the output directory if it does not exist
+    if not os.path.exists(write_dir):
+        os.makedirs(write_dir)
+
     # Convert datetime objects to decimal dates if required
     if decimal_dates is True:
         data.date = data.date.apply(datetime_to_decimal)
