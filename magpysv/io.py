@@ -150,7 +150,7 @@ def wdc_xyz(data):
         data['Z'] = np.NaN
 
     data = data[['date', 'X', 'Y', 'Z']]
-    
+
     return data
 
 
