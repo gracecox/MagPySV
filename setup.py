@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name="magpysv",
-    version="1.0beta",
+    version="1.0beta1",
     author="Grace Cox",
     author_email="grace.cox@dias.ie",
     license="MIT",
