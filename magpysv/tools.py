@@ -12,6 +12,7 @@ various functions to read SV files output by geomagnetic field models.
 
 import pandas as pd
 import numpy as np
+import os
 
 
 def calculate_sv(obs_data, mean_spacing=1):
@@ -254,7 +255,7 @@ def calculate_correlation_index(*, dates, signal, index_file):
     return np.abs(coeff.data[0, 1]), merged
 
 
-def get_baseline_info(fname):
+def get_baseline_info(fname=None):
     """Read documented baseline changes from a file.
     Args:
         fname (str): location of file containing documented baseline changes.
@@ -262,6 +263,9 @@ def get_baseline_info(fname):
     Returns:
         data (pandas.DataFrame): baseline change data.
     """
+    if fname is None:
+        fname = os.path.join(os.path.dirname(__file__), 'baseline_records')
+
     col_names = ['observatory', 'jump_year', 'x_jump', 'y_jump', 'z_jump']
     data = pd.read_csv(fname, sep=',', names=col_names)
     data['jump_year'] = pd.to_datetime(dict(year=data['jump_year'],
