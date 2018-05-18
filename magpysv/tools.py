@@ -255,7 +255,7 @@ def calculate_correlation_index(*, dates, signal, index_file):
     return np.abs(coeff.data[0, 1]), merged
 
 
-def get_baseline_info(fname=None):
+def get_baseline_info(*, fname=None):
     """Read documented baseline changes from a file.
     Args:
         fname (str): location of file containing documented baseline changes.
