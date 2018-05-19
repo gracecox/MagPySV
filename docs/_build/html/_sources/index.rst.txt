@@ -20,30 +20,30 @@ Installation
 ------------
 
 MagPySV can be installed via the Python Package Index (PyPI) using the command
-``pip install magpysv``. This also installs all required dependencies, including the BGS data downloading app. The example Juypyter notebooks (see below) are not included in the PyPI installation and need to be downloaded from the Github project page after the software is installed.
+``pip install magpysv``. This also installs all required dependencies, including the BGS data downloading app. The example Juypyter notebooks (see below) are not included in the PyPI installation and need to be downloaded from a separate GitHub project page after the software is installed.
 
 Example workflows
 -----------------
 
-In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. The examples directory of this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies.
+In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. A second GitHub repository accompanying this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies. Note that MagPySV must be installed before using the notebooks (preferably using ``pip``).
 
-To obtain the notebooks, go to the Github project page (at https://github.com/gracecox/MagPySV) and click the green "clone or download" button. From the dropdown menu, select "download zip" and save the file to the desired location. Unzip the file and navigate to the examples folder. To open the notebooks, launch a Jupyter notebook from the examples folder (e.g. by typing ``jupyter notebook`` into the command line from the examples directory) and then select the desired notebook from the list that appears in your web browser.
+To obtain the notebooks, go to their GitHub project page at https://github.com/gracecox/MagPySV-examples and click the green "clone or download" button. From the dropdown menu, select "download zip" and save the file to the desired location. Unzip the file and navigate to the resulting folder. To open the notebooks, launch a Jupyter notebook from this folder (e.g. by typing ``jupyter notebook`` into the command line from the directory) and then select the desired notebook from the list that appears in your web browser.
 
 The `Jupyter documentation`_ contains a step-by-step tutorial on installing and running notebooks, and is aimed at new users who have no familiarity with Python.
 
 Contributing
 ------------
 
-We hope others in the geomagnetism community find this code useful and welcome suggestions, feedback and contributions. Requesting new features or reporting bugs can be done by creating a `Github issue`_ for the repository.
+We hope others in the geomagnetism community find this code useful and welcome suggestions, feedback and contributions. Requesting new features or reporting bugs can be done by creating a `GitHub issue`_ for the repository.
 
 If you would like to fix bugs or implement new features yourself, this is very welcome! This is done by
 
-1. Forking MagPySV's Github repository
+1. Forking MagPySV's GitHub repository
 2. Creating a branch for your changes
 3. Making your changes to the code
 4. Submitting a pull request to the repository
 
-Those unfamiliar with this process might find `Github's tutorials`_ useful. If this still looks too complicated, you are welcome to create a Github issue or get in touch with us directly for help.
+Those unfamiliar with this process might find `GitHub's tutorials`_ useful. If this still looks too complicated, you are welcome to create a GitHub issue or get in touch with us directly for help.
 
 Reference
 ---------
@@ -53,8 +53,8 @@ A manuscript describing MagPySV is currently in preparation. The paper also pres
 .. _ap index: https://www.gfz-potsdam.de/en/kp-index/
 .. _Wardinski & Holme (2011): https://doi.org/10.1111/j.1365-246X.2011.04988.x
 .. _Jupyter documentation: https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/
-.. _Github issue: https://github.com/gracecox/MagPySV/issues
-.. _Github's tutorials: https://guides.github.com/
+.. _GitHub issue: https://github.com/gracecox/MagPySV/issues
+.. _GitHub's tutorials: https://guides.github.com/
 
 
 .. |build-status| image:: https://travis-ci.org/gracecox/MagPySV.svg?branch=master

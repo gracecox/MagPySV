@@ -287,7 +287,7 @@
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
-    
+
     <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -556,6 +556,10 @@
 <span class="sd">            False.</span>
 <span class="sd">        header (bool): option to include header in file. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create the output directory if it does not exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_dir</span><span class="p">)</span>
 
     <span class="c1"># Convert datetime objects to decimal dates if required</span>
     <span class="k">if</span> <span class="n">decimal_dates</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
