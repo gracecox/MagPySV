@@ -3,9 +3,7 @@ python:
 - '3.5'
 install:
 - pip install -r requirements.txt
-- pip install pytest
-- pip install pytest-cov<2.6
-- pip install python-coveralls
+- pip install python-coverall 'coverage>=4.4's
 - pip install ddt
 script:
 - py.test --cov-report term-missing --cov magpysv magpysv/tests
