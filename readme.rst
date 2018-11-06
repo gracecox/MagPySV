@@ -22,7 +22,7 @@ MagPySV can be installed via the Python Package Index (PyPI) using the command
 Example workflows
 -----------------
 
-In the paper accompanying this software (in prep), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. A second GitHub repository accompanying this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies. Note that MagPySV must be installed before using the notebooks (preferably using ``pip``).
+In the paper accompanying this software (https://doi.org/10.1029/2018GC007714), we present two case studies of cleaned data in different geographic regions and discuss their application to geomagnetic jerks: monthly first differences for Europe, and annual differences for northern high latitude regions. A second GitHub repository accompanying this package includes two notebooks that can be used to download the relevant hourly data from BGS and reproduce the figures for these case studies. Note that MagPySV must be installed before using the notebooks (preferably using ``pip``).
 
 To obtain the notebooks, go to their GitHub project page at https://github.com/gracecox/MagPySV-examples and click the green "clone or download" button. From the dropdown menu, select "download zip" and save the file to the desired location. Unzip the file and navigate to the resulting folder. To open the notebooks, launch a Jupyter notebook from the folder (e.g. by typing ``jupyter notebook`` into the command line from that directory) and then select the desired notebook from the list that appears in your web browser.
 
@@ -45,7 +45,7 @@ Those unfamiliar with this process might find `GitHub's tutorials`_ useful. If t
 Reference
 ---------
 
-A manuscript describing MagPySV is currently in preparation. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks.
+A open access manuscript describing MagPySV is now published in *Geochemistry, Geophysics, Geosystems* (https://doi.org/10.1029/2018GC007714), please cite this if you use the code. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks - these can be recreated with the "Example Workflows" as explained above.
 
 .. _ap index: https://www.gfz-potsdam.de/en/kp-index/
 .. _Wardinski & Holme (2011): https://doi.org/10.1111/j.1365-246X.2011.04988.x
