@@ -204,8 +204,8 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
                                   allow_masked=True)
     # Calculate the eigenvalues and eigenvectors of the covariance matrix
     eig_values, eig_vectors = np.linalg.eig(covariance_matrix)
-    # Sort the eigenvalues in decreasing order
-    idx = np.argsort(eig_values)[::-1]
+    # Sort the absolute values of the eigenvalues in decreasing order
+    idx = np.argsort(np.abs(eig_values))[::-1]
     eig_values = eig_values[idx]
     # Sort the eigenvectors according to the same index
     eig_vectors = eig_vectors[:, idx]

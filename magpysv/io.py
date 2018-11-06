@@ -262,7 +262,7 @@ def append_wdc_data(*, obs_name, path=None):
     data_path = os.path.join(path, obs_name.lower() + '*.wdc')
     # Obtain a list of all files containing the observatory name and ending
     # .wdc in the specified directory
-    filenames = glob.glob(data_path)
+    filenames = sorted(glob.glob(data_path))
     # Iterate over the files and append them to previous files
     for file in filenames:
         print(file)
@@ -693,7 +693,7 @@ def append_ae_data(ae_data_path):
     data = pd.DataFrame()
     # Obtain a list of all files containing 'ae' and ending in .wdc in the
     # specified directory
-    filenames = glob.glob(ae_data_path + 'ae*.txt')
+    filenames = sorted(glob.glob(ae_data_path + 'ae*.txt'))
     # Iterate over the files and append them to previous files
     for file in filenames:
         print(file)
@@ -801,7 +801,7 @@ def append_ap_data(ap_data_path):
     data = pd.DataFrame()
     # Obtain a list of all files containing 'ap' and ending in .wdc in the
     # specified directory
-    filenames = glob.glob(ap_data_path + 'kp*.wdc')
+    filenames = sorted(glob.glob(ap_data_path + 'kp*.wdc'))
     # Iterate over all files and append data
     for file in filenames:
         print(file)

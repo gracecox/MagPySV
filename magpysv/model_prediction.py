@@ -130,8 +130,8 @@ def run_covobs(*, stations, model_path, output_path):
         p.wait()
         # Rename the output files so they contain the observatory name
         os.rename('mfpred.dat', os.path.join(output_path,
-                  'mf_%s.dat' % ob.lower()))
+                  'mf_%s.dat' % ob.upper()))
         os.rename('svpred.dat', os.path.join(output_path,
-                  'sv_%s.dat' % ob.lower()))
+                  'sv_%s.dat' % ob.upper()))
     # Return to previous working directory
     os.chdir(mycwd)

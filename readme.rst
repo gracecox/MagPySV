@@ -45,7 +45,7 @@ Those unfamiliar with this process might find `GitHub's tutorials`_ useful. If t
 Reference
 ---------
 
-A open access manuscript describing MagPySV is now published in *Geochemistry, Geophysics, Geosystems* (https://doi.org/10.1029/2018GC007714), please cite this if you use the code. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks - these can be recreated with the "Example Workflows" as explained above.
+An open access manuscript describing MagPySV is now published in *Geochemistry, Geophysics, Geosystems* (https://doi.org/10.1029/2018GC007714); please cite this if you use the code. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks - these can be recreated with the "Example Workflows" as explained above.
 
 .. _ap index: https://www.gfz-potsdam.de/en/kp-index/
 .. _Wardinski & Holme (2011): https://doi.org/10.1111/j.1365-246X.2011.04988.x
