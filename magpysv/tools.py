@@ -292,9 +292,15 @@ def correct_baseline_change(*, observatory, field_data, baseline_data,
         print(obs_jumps)
     # Loop over a baseline changes and make the correction
     for jump in obs_jumps.index:
-        # Check if a change of zero is recorded
+        # Check if a change of zero or 99999 is recorded (both values used for
+        # unknown baseline changes)
         if (obs_jumps.loc[jump].x_jump == 0 & obs_jumps.loc[jump].y_jump == 0 &
                 obs_jumps.loc[jump].z_jump == 0):
+            print("Baseline change of unknown magnitude: ",
+                  obs_jumps.loc[jump].jump_year)
+        elif (obs_jumps.loc[jump].x_jump == 99999 &
+                obs_jumps.loc[jump].y_jump == 99999 &
+                obs_jumps.loc[jump].z_jump == 99999):
             print("Baseline change of unknown magnitude: ",
                   obs_jumps.loc[jump].jump_year)
         else:

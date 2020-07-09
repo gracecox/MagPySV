@@ -194,6 +194,7 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
             SV residuals rotated into the eigendirections.
         - corrected_residuals (*array*):
             SV residuals after the denoising process.
+        - covariance_matrix (*array*): residuals covariance matrix.
     """
     # Create a masked version of the residuals array so that we can perform the
     # PCA ignoring all nan values
@@ -243,8 +244,9 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
 
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, eig_values, eig_vectors, projected_residuals,\
-        corrected_residuals.astype('float')
+    return denoised_sv, proxy, np.abs(eig_values), eig_vectors,
+    projected_residuals, corrected_residuals.astype('float'),\
+        covariance_matrix
 
 
 def detect_outliers(*, dates, signal, obs_name, window_length, threshold,
