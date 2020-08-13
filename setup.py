@@ -20,7 +20,7 @@ setup(
     package_data={"magpysv": ["baseline_records"]},
     classifiers=["Programming Language :: Python :: 3"],
     zip_safe=False,
-    install_requires=['aacgmv2>=2.5.2','cartopy==0.17.0','chaosmagpy','datetime','glob',
+    install_requires=['aacgmv2>=2.5.2','cartopy>=0.17.0','chaosmagpy','datetime','glob',
    'jupyter>=1.0.0','matplotlib>=2.0.0','notebook>=4.3.1',
     'numpy>=1.12.0','pandas>=0.19.2','requests>=2.12.4','scikit-learn<=0.21.3',
     'scipy>=0.18.1','gmdata_webinterface'],
