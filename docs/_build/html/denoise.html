@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>denoise module &mdash; MagPySV 1.0beta documentation</title>
+  <title>denoise module &mdash; MagPySV 2.0 documentation</title>
   
 
   
@@ -33,8 +33,8 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MagPySV 1.0beta documentation" href="index.html"/>
-        <link rel="next" title="io module" href="io.html"/>
+    <link rel="top" title="MagPySV 2.0 documentation" href="index.html"/>
+        <link rel="next" title="gvo_tools module" href="gvo_tools.html"/>
         <link rel="prev" title="Welcome to MagPySV’s documentation!" href="index.html"/> 
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -87,6 +87,7 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gvo_tools.html">gvo_tools module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
@@ -157,33 +158,33 @@ a point must be before it is classed as an outlier are user-specified).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
-<li><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) &#8211; array (or column from a pandas.DataFrame) containing
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
+<li><strong>signal</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; array (or column from a pandas.DataFrame) containing
 the time series of interest.</li>
-<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; states the component of interest and the three digit
+<li><strong>obs_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; states the component of interest and the three digit
 IAGA observatory name.</li>
-<li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; number of months over which to take the running
+<li><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; number of months over which to take the running
 median.</li>
-<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; the minimum number of median absolute deviations a
+<li><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) &#8211; the minimum number of median absolute deviations a
 point must be away from the median in order to be considered an
 outlier.</li>
-<li><strong>signal_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; specify whether magnetic field (&#8216;MF&#8217;) or secular
+<li><strong>signal_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; specify whether magnetic field (&#8216;MF&#8217;) or secular
 variation (&#8216;SV&#8217;) is plotted. Defaults to SV.</li>
-<li><strong>plot_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; option to plot figure of the time series and
+<li><strong>plot_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to plot figure of the time series and
 identified outliers. Defaults to False.</li>
-<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; option to save figure if plotted. Defaults to False.</li>
-<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
-<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to save figure if plotted. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
 inches.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
-<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the input signal with identified outliers removed (set to NaN).</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/signal.html#module-signal" title="(in Python v3.6)">signal</a> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/signal.html#module-signal" title="(in Python v3.8)">signal</a> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)">array</a>)</p>
 </td>
 </tr>
 </tbody>
@@ -218,16 +219,16 @@ values in the input dataframe are given as NaN values in the output.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
-<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
+<li><strong>obs_data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
 monthly/annual means of the X, Y and Z components of the secular
 variation at the observatories of interest.</li>
-<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
+<li><strong>model_data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
 model prediction of the X, Y and Z components of the secular
 variation at the same observatories as in obs_data.</li>
-<li><strong>residuals</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
+<li><strong>residuals</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
 (difference between the observed data and model prediction).</li>
-<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; directions used to create
+<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; directions used to create
 the proxy for the external signal removal. Default value is 1 (only
 the residual in the direction of the largest eigenvalue is used).
 Using n directions means that proxy is the sum of the SV residuals
@@ -236,54 +237,49 @@ in the n noisiest eigendirections.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>denoised_sv (<em>pandas.DataFrame</em>):</dt>
-<dd><p class="first last">dataframe with datetime objects in the
+<dd>dataframe with datetime objects in the
 first column and columns for the denoised X, Y and Z SV components
-at each of the observatories for which data were provided.</p>
-</dd>
+at each of the observatories for which data were provided.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>proxy (<em>array</em>):</dt>
-<dd><p class="first last">the signal that was used as a proxy for unmodelled
-external magnetic field in the denoising stage.</p>
-</dd>
+<dd>the signal that was used as a proxy for unmodelled
+external magnetic field in the denoising stage.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>eig_values (<em>array</em>):</dt>
-<dd><p class="first last">the eigenvalues of the obs_data matrix.</p>
-</dd>
+<dd>the eigenvalues of the obs_data matrix.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>eig_vectors (<em>array</em>):</dt>
-<dd><p class="first last">the eigenvectors associated with the n largest
+<dd>the eigenvectors associated with the n largest
 eigenvalues of the data matrix. For example, if the residuals
 in the two &#8216;noisiest&#8217; directions are used as the proxy for external
-signal, then these two eigenvectors are returned.</p>
-</dd>
+signal, then these two eigenvectors are returned.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>projected_residuals (<em>array</em>):</dt>
-<dd><p class="first last">SV residuals rotated into the eigendirections.</p>
-</dd>
+<dd>SV residuals rotated into the eigendirections.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>corrected_residuals (<em>array</em>):</dt>
-<dd><p class="first last">SV residuals after the denoising process.</p>
-</dd>
+<dd>SV residuals after the denoising process.</dd>
 </dl>
 </li>
+<li>covariance_matrix (<em>array</em>): residuals covariance matrix.</li>
 </ul>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
 </td>
 </tr>
 </tbody>
@@ -321,16 +317,16 @@ infill them - that is the more robust function.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
-<li><strong>obs_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
+<li><strong>obs_data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
 monthly/annual means of the X, Y and Z components of the secular
 variation at the observatories of interest.</li>
-<li><strong>model_data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
+<li><strong>model_data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
 model prediction of the X, Y and Z components of the secular
 variation at the same observatories as in obs_data.</li>
-<li><strong>residuals</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
+<li><strong>residuals</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
 (difference between the observed data and model prediction).</li>
-<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; directions used to create
+<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; the number of &#8216;noisy&#8217; directions used to create
 the proxy for the external signal removal. Default value is 1 (only
 the residual in the direction of the largest eigenvalue is used).
 Using n directions means that proxy is the sum of the SV residuals
@@ -339,55 +335,49 @@ in the n noisiest eigendirections.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>denoised_sv (<em>pandas.DataFrame</em>):</dt>
-<dd><p class="first last">dataframe with dates in the first
+<dd>dataframe with dates in the first
 column and columns for the denoised X, Y and Z secular variation
 components at each of the observatories for which data were
-provided.</p>
-</dd>
+provided.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>proxy (<em>array</em>):</dt>
-<dd><p class="first last">the signal that was used as a proxy for unmodelled
-external magnetic field in the denoising stage.</p>
-</dd>
+<dd>the signal that was used as a proxy for unmodelled
+external magnetic field in the denoising stage.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>eig_values (<em>array</em>):</dt>
-<dd><p class="first last">the singular values of the obs_data matrix.</p>
-</dd>
+<dd>the singular values of the obs_data matrix.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>eig_vectors (<em>array</em>):</dt>
-<dd><p class="first last">the eigenvectors associated with the n largest
+<dd>the eigenvectors associated with the n largest
 singular values of the data matrix. For example, if the residuals
 in the two &#8216;noisiest&#8217; directions are used as the proxy for external
-signal, then these two eigenvectors are returned.</p>
-</dd>
+signal, then these two eigenvectors are returned.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>projected_residuals (<em>array</em>):</dt>
-<dd><p class="first last">SV residuals rotated into the eigendirections.</p>
-</dd>
+<dd>SV residuals rotated into the eigendirections.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>corrected_residuals (<em>array</em>):</dt>
-<dd><p class="first last">SV residuals after the denoising process.</p>
-</dd>
+<dd>SV residuals after the denoising process.</dd>
 </dl>
 </li>
 </ul>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
 </td>
 </tr>
 </tbody>
@@ -403,7 +393,7 @@ signal, then these two eigenvectors are returned.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="io.html" class="btn btn-neutral float-right" title="io module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="gvo_tools.html" class="btn btn-neutral float-right" title="gvo_tools module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Welcome to MagPySV’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -415,7 +405,7 @@ signal, then these two eigenvectors are returned.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Grace Cox.
+        &copy; Copyright 2020, Grace Cox.
 
     </p>
   </div>
@@ -437,7 +427,7 @@ signal, then these two eigenvectors are returned.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0beta',
+            VERSION:'2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>magpysv.tools &mdash; MagPySV 1.0beta documentation</title>
+  <title>magpysv.tools &mdash; MagPySV 2.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="MagPySV 1.0beta documentation" href="../../index.html"/>
+    <link rel="top" title="MagPySV 2.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -86,6 +86,7 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gvo_tools.html">gvo_tools module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots.html">plots module</a></li>
@@ -149,6 +150,7 @@
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 
 <div class="viewcode-block" id="calculate_sv"><a class="viewcode-back" href="../../tools.html#magpysv.tools.calculate_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_sv</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -391,7 +393,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">coeff</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">merged</span></div>
 
 
-<div class="viewcode-block" id="get_baseline_info"><a class="viewcode-back" href="../../tools.html#magpysv.tools.get_baseline_info">[docs]</a><span class="k">def</span> <span class="nf">get_baseline_info</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="get_baseline_info"><a class="viewcode-back" href="../../tools.html#magpysv.tools.get_baseline_info">[docs]</a><span class="k">def</span> <span class="nf">get_baseline_info</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read documented baseline changes from a file.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        fname (str): location of file containing documented baseline changes.</span>
@@ -399,6 +401,9 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        data (pandas.DataFrame): baseline change data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;baseline_records&#39;</span><span class="p">)</span>
+
     <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;observatory&#39;</span><span class="p">,</span> <span class="s1">&#39;jump_year&#39;</span><span class="p">,</span> <span class="s1">&#39;x_jump&#39;</span><span class="p">,</span> <span class="s1">&#39;y_jump&#39;</span><span class="p">,</span> <span class="s1">&#39;z_jump&#39;</span><span class="p">]</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">col_names</span><span class="p">)</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;jump_year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;jump_year&#39;</span><span class="p">],</span>
@@ -425,9 +430,15 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">obs_jumps</span><span class="p">)</span>
     <span class="c1"># Loop over a baseline changes and make the correction</span>
     <span class="k">for</span> <span class="n">jump</span> <span class="ow">in</span> <span class="n">obs_jumps</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="c1"># Check if a change of zero is recorded</span>
+        <span class="c1"># Check if a change of zero or 99999 is recorded (both values used for</span>
+        <span class="c1"># unknown baseline changes)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">x_jump</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;</span> <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">y_jump</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;</span>
                 <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">z_jump</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Baseline change of unknown magnitude: &quot;</span><span class="p">,</span>
+                  <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">jump_year</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">x_jump</span> <span class="o">==</span> <span class="mi">99999</span> <span class="o">&amp;</span>
+                <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">y_jump</span> <span class="o">==</span> <span class="mi">99999</span> <span class="o">&amp;</span>
+                <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">z_jump</span> <span class="o">==</span> <span class="mi">99999</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Baseline change of unknown magnitude: &quot;</span><span class="p">,</span>
                   <span class="n">obs_jumps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">jump</span><span class="p">]</span><span class="o">.</span><span class="n">jump_year</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -454,7 +465,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Grace Cox.
+        &copy; Copyright 2020, Grace Cox.
 
     </p>
   </div>
@@ -476,7 +487,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.0beta',
+            VERSION:'2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to MagPySV’s documentation! &mdash; MagPySV 1.0beta documentation</title>
+  <title>Welcome to MagPySV’s documentation! &mdash; MagPySV 2.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MagPySV 1.0beta documentation" href="#"/>
+    <link rel="top" title="MagPySV 2.0 documentation" href="#"/>
         <link rel="next" title="denoise module" href="denoise.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -86,6 +86,7 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gvo_tools.html">gvo_tools module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
@@ -142,6 +143,7 @@
 <p>MagPySV is an open-source Python package designed to provide a consistent, and automated as far as possible, means of generating high resolution SV time series from raw observatory hourly means distributed by the World Data Centre (WDC) for Geomagnetism at the British Geological Survey (BGS), Edinburgh. It uses a second Python package developed by BGS to download data for a given time range and list of observatories.</p>
 <p>The package may be run on the command line or within an interactive Jupyter notebook, and allows the user to obtain data in WDC format from BGS servers for a user-specified time period and list of observatories. It produces time series of the X, Y and Z components of the internally-generated magnetic field and secular variation (SV) at the desired frequency (typically monthly or annual means), and applies corrections for all documented baseline changes. Optionally, the user may exclude data using the <a class="reference external" href="https://www.gfz-potsdam.de/en/kp-index/">ap index</a>, which removes effects from documented high solar activity periods such as geomagnetic storms. Robust statistics are used to identify and remove outliers.</p>
 <p>The software develops previously published denoising methods, which aim to remove external field contamination from the internal field, using principal component analysis, a method that uses the covariance matrix of the residual between the observed SV and that predicted by a global field model to create and remove a proxy for external field signal from the data. This method, based on <a class="reference external" href="https://doi.org/10.1111/j.1365-246X.2011.04988.x">Wardinski &amp; Holme (2011)</a>, creates a single covariance matrix for all observatories of interest combined and applies the external field correction to all locations simultaneously, resulting in cleaner time series of the internally-generated SV.</p>
+<p>Added in August 2020: a new module called GVO_tools, which was used to denoise Geomagnetic Virtual Observatories (GVOs) made from Swarm satellite data. This work was performed under a European Space Agency (ESA) Swarm DISC project on GVOs. More information on this project can be found at <a class="reference external" href="https://www.space.dtu.dk/english/research/projects/project-descriptions/geomagnetic-virtual-observatories">https://www.space.dtu.dk/english/research/projects/project-descriptions/geomagnetic-virtual-observatories</a></p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -168,12 +170,13 @@
 </div>
 <div class="section" id="reference">
 <h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
-<p>A manuscript describing MagPySV is currently in preparation. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks.</p>
+<p>An open access manuscript describing MagPySV is now published in <em>Geochemistry, Geophysics, Geosystems</em> (<a class="reference external" href="https://doi.org/10.1029/2018GC007714">https://doi.org/10.1029/2018GC007714</a>); please cite this if you use the code. The paper also presents two case studies of cleaned data at European and high latitude observatories, and their application to geomagnetic jerks.</p>
 <p>The project&#8217;s main directory contains the readme file, license and various setup files. The <cite>magpysv</cite> directory contains all of the Python modules that make up the Python package, detailed descriptions of all functions contained within each module are found at the links below the contents section of this page. The code documentation can also be accessed using Python&#8217;s help function by typing a command in this format: <code class="docutils literal"><span class="pre">help(magpysv.modulename.functionname)</span></code></p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gvo_tools.html">gvo_tools module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
@@ -208,7 +211,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Grace Cox.
+        &copy; Copyright 2020, Grace Cox.
 
     </p>
   </div>
@@ -230,7 +233,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0beta',
+            VERSION:'2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

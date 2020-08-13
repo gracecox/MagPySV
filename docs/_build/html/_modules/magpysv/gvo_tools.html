@@ -1,0 +1,1278 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>magpysv.gvo_tools &mdash; MagPySV 2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="MagPySV 2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> MagPySV
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../denoise.html">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gvo_tools.html">gvo_tools module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">io module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_prediction.html">model_prediction module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots.html">plots module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">tools module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">MagPySV</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>magpysv.gvo_tools</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for magpysv.gvo_tools</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#    Copyright (C) 2020  Grace Cox and Will Brown (British Geological Survey)</span>
+<span class="c1">#</span>
+<span class="c1">#    Released under the MIT license, a copy of which is located at the root of</span>
+<span class="c1">#    this project.</span>
+<span class="sd">&quot;&quot;&quot;Module containing functions to apply the Principal Component Analysis (PCA)</span>
+<span class="sd">denoising method to Geomagnetic Virtual Observatories (GVOs). These functions</span>
+<span class="sd">were used in the European Space Agency&#39;s Swarm DISC GVO project and are called</span>
+<span class="sd">in the PCA part of the operational script (maintained at the British Geological</span>
+<span class="sd">Survey) that produces Swarm GVOs on a regular basis.</span>
+
+<span class="sd">Details of the European Space Agency&#39;s Swarm DISC GVO project are at:</span>
+<span class="sd">https://www.space.dtu.dk/english/research/projects/project-descriptions/geomagnetic-virtual-observatories</span>
+
+<span class="sd">Note that some of the input/output functions use data file formats that were</span>
+<span class="sd">used internally within the project.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">aacgmv2</span>
+<span class="kn">import</span> <span class="nn">cartopy</span>
+<span class="kn">from</span> <span class="nn">chaosmagpy</span> <span class="kn">import</span> <span class="n">load_CHAOS_shcfile</span>
+<span class="kn">from</span> <span class="nn">chaosmagpy.data_utils</span> <span class="kn">import</span> <span class="n">mjd_to_dyear</span><span class="p">,</span> <span class="n">mjd2000</span>
+<span class="kn">from</span> <span class="nn">magpysv.tools</span> <span class="kn">import</span> <span class="n">calculate_sv</span>
+
+
+<div class="viewcode-block" id="load_vo_txt_raw"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.load_vo_txt_raw">[docs]</a><span class="k">def</span> <span class="nf">load_vo_txt_raw</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;1M&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load internal Swarm DISC GVO files and return raw contents.</span>
+
+<span class="sd">    Files contain co-latitude in degrees (theta), longitude in degrees (phi)</span>
+<span class="sd">    year, month, time (MJD2000), radius in km (r), the magnetic field</span>
+<span class="sd">    components (Br, Btheta, Bphi), where Bphi is equivalent to the Y component,</span>
+<span class="sd">    errors for the magnetic field in nT (sigma_r, sigma_theta,</span>
+<span class="sd">    sigma_phi) and the number of data used for produce the GVO (N_data)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fname (str): filename to GVO text file</span>
+<span class="sd">        sampling (str): sampling rate of the GVOs. Should be either &#39;1M&#39; for</span>
+<span class="sd">            monthly or &#39;4M&#39; for four-monthly. Defaults to &#39;1M&#39;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        df (pandas.Dataframe): dataframe containing raw contents of the file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the day of month for time series depending on the MF sampling rate</span>
+    <span class="k">if</span> <span class="n">sampling</span> <span class="o">==</span> <span class="s1">&#39;1M&#39;</span><span class="p">:</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="k">elif</span> <span class="n">sampling</span> <span class="o">==</span> <span class="s1">&#39;4M&#39;</span><span class="p">:</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Positions given in degrees - co-latitude (0 to 180), longitude (</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="s2">&quot;Month&quot;</span><span class="p">,</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;Br&quot;</span><span class="p">,</span> <span class="s2">&quot;Btheta&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma_r&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma_theta&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;sigma_phi&quot;</span><span class="p">,</span> <span class="s2">&quot;N_data&quot;</span><span class="p">],</span> <span class="n">usecols</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">))</span>
+
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mjd2000&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mjd2000</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Year&quot;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Month&quot;</span><span class="p">],</span> <span class="n">day</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;dyear&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mjd_to_dyear</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;mjd2000&quot;</span><span class="p">],</span> <span class="n">leap_year</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Btheta&quot;</span><span class="p">]</span>  <span class="c1"># -theta component</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Br&quot;</span><span class="p">]</span>  <span class="c1"># -radial component</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Btheta&quot;</span><span class="p">,</span> <span class="s2">&quot;Br&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># To 00:00 on 1st or 15th each month</span>
+    <span class="c1"># Multiplication by 10000 and 100 are needed to convert to datetime</span>
+    <span class="c1"># (see documentation for pandas.datetime)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Year&quot;</span><span class="p">]</span><span class="o">*</span><span class="mi">10000</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Month&quot;</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="o">+</span><span class="n">day</span><span class="p">,</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="load_vo_txt"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.load_vo_txt">[docs]</a><span class="k">def</span> <span class="nf">load_vo_txt</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;1M&#39;</span><span class="p">,</span> <span class="n">sv_spacing</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load interim GVOs output in the Swarm DISC project (internal files).</span>
+
+<span class="sd">    Load the contents of internal Swarm DISC GVO files and return time series</span>
+<span class="sd">    of magnetic field, secular variation, uncertainties (sigmas) and positions</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fname (str): filename to GVO text file</span>
+<span class="sd">        sampling (str): sampling rate of the GVOs. Should be either &#39;1M&#39; for</span>
+<span class="sd">            monthly or &#39;4M&#39; for four-monthly. Defaults to &#39;1M&#39;</span>
+<span class="sd">        sv_spacing (int): specifies how to calculate SV for monthly (&#39;1M&#39;) MF</span>
+<span class="sd">            data. Use 12 for annual differences of monthly means or 1 for</span>
+<span class="sd">            monthly first differences</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - df_mf_pos (pandas.Dataframe): dataframe containing the MF timeseries\</span>
+<span class="sd">         at each position</span>
+<span class="sd">        - df_sv_pos (pandas.Dataframe): dateframe containing the SV timeseries\</span>
+<span class="sd">         at each position</span>
+<span class="sd">        - positions (list): list of GVO positions [r, theta, phi] in km,\</span>
+<span class="sd">         degrees</span>
+<span class="sd">        - dates (list): list of GVO timeseries dates in decimal years</span>
+<span class="sd">        - df_sigma (pandas.Dataframe): dataframe containing data uncertainties\</span>
+<span class="sd">         and data numbers [&#39;sigma_r&#39;,&#39;sigma_theta&#39;,&#39;sigma_phi&#39;,&#39;N_data&#39;] in nT</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load GVO MF and sigmas from txt file</span>
+    <span class="n">df_mf</span> <span class="o">=</span> <span class="n">load_vo_txt_raw</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">)</span>
+    <span class="n">df_sigma</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;sigma_r&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;sigma_r&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;sigma_theta&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;sigma_theta&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;sigma_phi&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;sigma_phi&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;N_data&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;N_data&#39;</span><span class="p">]})</span>
+
+    <span class="c1"># Rearrange to dataframe of timeseries at each GVO location</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>  <span class="c1"># timeseries for all GVO</span>
+    <span class="c1"># dates_mjd2000 = df_mf[&quot;mjd2000&quot;].unique()</span>
+
+    <span class="c1"># Array of GVO positions [t, p, r]</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">df_mf</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">])</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span>
+                                 <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+                                           <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">))))</span>  <span class="c1"># txt file</span>
+
+    <span class="n">df_mf_pos</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">dates</span><span class="p">})</span>
+    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)):</span>
+        <span class="n">df_mf_pos</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">positions</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span>
+                                           <span class="o">==</span> <span class="n">positions</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="mi">1</span><span class="p">])]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">df_mf_pos</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">positions</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span>
+                                           <span class="o">==</span> <span class="n">positions</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="mi">1</span><span class="p">])]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">df_mf_pos</span><span class="p">[</span><span class="s2">&quot;Z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;Z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">positions</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_mf</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span>
+                                           <span class="o">==</span> <span class="n">positions</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="mi">1</span><span class="p">])]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1"># Get SV, then rename SV columns</span>
+        <span class="k">if</span> <span class="n">sampling</span> <span class="o">==</span> <span class="s1">&#39;1M&#39;</span><span class="p">:</span>
+            <span class="n">df_sv</span> <span class="o">=</span> <span class="n">calculate_sv</span><span class="p">(</span><span class="n">df_mf_pos</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="n">sv_spacing</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sampling</span> <span class="o">==</span> <span class="s1">&#39;4M&#39;</span><span class="p">:</span>
+            <span class="c1"># Calculate SV as annual differences of four-monthly GVO MF and set</span>
+            <span class="c1"># the SV date to be between the two MF dates</span>
+            <span class="n">df_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+            <span class="n">df_sv</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf_pos</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> \
+                <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span><span class="n">months</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+            <span class="n">df_sv</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf_pos</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">df_sv</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf_pos</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">df_sv</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mf_pos</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">periods</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">df_sv</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df_sv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df_sv</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># keep date and data columns in first instance</span>
+            <span class="n">df_sv_pos</span> <span class="o">=</span> <span class="n">df_sv</span>
+            <span class="n">df_sv_pos</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dx&quot;</span><span class="p">:</span> <span class="s2">&quot;dx_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                                      <span class="s2">&quot;dy&quot;</span><span class="p">:</span> <span class="s2">&quot;dy_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                                      <span class="s2">&quot;dz&quot;</span><span class="p">:</span> <span class="s2">&quot;dz_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)},</span>
+                             <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># only keep data columns otherwise</span>
+            <span class="n">df_sv_pos</span><span class="p">[[</span><span class="s2">&quot;dx_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                       <span class="s2">&quot;dy_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                       <span class="s2">&quot;dz_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)]]</span> <span class="o">=</span> <span class="n">df_sv</span><span class="p">[[</span><span class="s2">&quot;dx&quot;</span><span class="p">,</span> <span class="s2">&quot;dy&quot;</span><span class="p">,</span> <span class="s2">&quot;dz&quot;</span><span class="p">]]</span>
+
+        <span class="c1"># Rename MF columns starting from GVO 000</span>
+        <span class="n">df_mf_pos</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;X_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                                  <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;Y_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                                  <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_mf_pos</span><span class="p">,</span> <span class="n">df_sv_pos</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">df_sigma</span></div>
+
+
+<div class="viewcode-block" id="load_validation_vo_txt"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.load_validation_vo_txt">[docs]</a><span class="k">def</span> <span class="nf">load_validation_vo_txt</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">sv_spacing</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a text file containing monthly MF and SV data at a validation GVO.</span>
+
+<span class="sd">    Validation GVO are located 490km above a ground observatory (these files</span>
+<span class="sd">    were internal to the Swarm DISC GVO project).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fname (str): filename to validation GVO text file</span>
+<span class="sd">        sv_spacing (int): specifies how to calculate SV for monthly (&#39;1M&#39;) MF</span>
+<span class="sd">            data. Use 12 for annual differences of monthly means or 1 for</span>
+<span class="sd">            monthly first differences</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - df_mf (pandas.Dataframe): dataframe containing MF [&#39;date&#39;,&#39;X&#39;,&#39;Y&#39;,\</span>
+<span class="sd">         &#39;Z&#39;] in nT</span>
+<span class="sd">        - df_sv (pandas.Dataframe): dataframe containing [&#39;date&#39;,&#39;dx&#39;,&#39;dy&#39;,</span>
+<span class="sd">         dz&#39;] in nT/year</span>
+<span class="sd">        - position (list): array of position coordinates [theta,phi,r] in\</span>
+<span class="sd">         degrees, km</span>
+<span class="sd">        - obs (str): observatory name</span>
+<span class="sd">        - df_sigma (pandas.Dataframe): dataframe containing data uncertainties\</span>
+<span class="sd">         and data numbers [&#39;sigma_r&#39;,&#39;sigma_theta&#39;,&#39;sigma_phi&#39;,&#39;N_data&#39;] in nT</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df_mf</span> <span class="o">=</span> <span class="n">load_vo_txt_raw</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="s1">&#39;1M&#39;</span><span class="p">)</span>
+    <span class="c1"># Pull the corresponding ground station name out of the file name</span>
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">fname</span><span class="p">[</span><span class="o">-</span><span class="mi">19</span><span class="p">:</span><span class="o">-</span><span class="mi">15</span><span class="p">]</span>
+    <span class="n">df_sigma</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;sigma_r&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;sigma_r&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;sigma_theta&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;sigma_theta&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;sigma_phi&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;sigma_phi&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;N_data&#39;</span><span class="p">:</span> <span class="n">df_mf</span><span class="p">[</span><span class="s1">&#39;N_data&#39;</span><span class="p">]})</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="mf">6.3712</span><span class="o">+</span><span class="mf">0.49</span><span class="p">)</span><span class="o">*</span><span class="mf">1e3</span>  <span class="c1"># For GVOs at 490km above Earth&#39;s surface</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_mf</span><span class="o">.</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">df_mf</span><span class="o">.</span><span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">radius</span><span class="p">]</span>
+    <span class="n">df_mf</span> <span class="o">=</span> <span class="n">df_mf</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]]</span>
+    <span class="c1"># Calculate SV</span>
+    <span class="n">df_sv</span> <span class="o">=</span> <span class="n">calculate_sv</span><span class="p">(</span><span class="n">df_mf</span><span class="p">,</span> <span class="n">mean_spacing</span><span class="o">=</span><span class="n">sv_spacing</span><span class="p">)</span>
+    <span class="c1"># Rename MF and SV columns to include GVO number</span>
+    <span class="n">df_mf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;X_&quot;</span><span class="o">+</span><span class="n">obs</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;Y_&quot;</span><span class="o">+</span><span class="n">obs</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_&quot;</span><span class="o">+</span><span class="n">obs</span><span class="p">},</span>
+                 <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_sv</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dx&quot;</span><span class="p">:</span> <span class="s2">&quot;dx_&quot;</span><span class="o">+</span><span class="n">obs</span><span class="p">,</span> <span class="s2">&quot;dy&quot;</span><span class="p">:</span> <span class="s2">&quot;dy_&quot;</span><span class="o">+</span><span class="n">obs</span><span class="p">,</span> <span class="s2">&quot;dz&quot;</span><span class="p">:</span> <span class="s2">&quot;dz_&quot;</span><span class="o">+</span><span class="n">obs</span><span class="p">},</span>
+                 <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_mf</span><span class="p">,</span> <span class="n">df_sv</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">df_sigma</span></div>
+
+
+<div class="viewcode-block" id="read_all_validation_txt"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.read_all_validation_txt">[docs]</a><span class="k">def</span> <span class="nf">read_all_validation_txt</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">file_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load and concatenate all validation GVO dataframes.</span>
+
+<span class="sd">    Produces dataframe of timeseries to match regular GVO dataframes. The</span>
+<span class="sd">    validation GVOs are located at satellite altitude above a ground magnetic</span>
+<span class="sd">    observatory and were used to validate the Swarm DISC GVO project. These</span>
+<span class="sd">    internal data files were provided as one GVO per file, unlike the regular</span>
+<span class="sd">    GVOs which had a single file for the entire GVO grid</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_dir (str): Directory path containing validation GVO files</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - mf (pandas.Dataframe):</span>
+<span class="sd">         dataframe containing MF data</span>
+<span class="sd">        - sv (pandas.Dataframe):</span>
+<span class="sd">         dataframe containing SV data</span>
+<span class="sd">        - positions (list):</span>
+<span class="sd">         list of all validation positions [r,theta,phi]</span>
+<span class="sd">        - names (list):</span>
+<span class="sd">         list of all associated GO position IAGA codes</span>
+<span class="sd">        - sigmas (pandas.dataframe):</span>
+<span class="sd">         dataframe containing data uncertainties and numbers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initialise the validation dataframes using first validation GVO file</span>
+    <span class="n">mf</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">load_validation_vo_txt</span><span class="p">(</span>
+        <span class="n">fname</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">file_dir</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">positions</span><span class="p">]</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">names</span><span class="p">]</span>
+    <span class="c1"># Loop over the remaining files and append to the first</span>
+    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">file_dir</span><span class="p">))[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">mf_single</span><span class="p">,</span> <span class="n">sv_single</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sigma_single</span> <span class="o">=</span> \
+            <span class="n">load_validation_vo_txt</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">)</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">mf</span><span class="p">,</span> <span class="n">mf_single</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">sv</span><span class="p">,</span> <span class="n">sv_single</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">sigma</span><span class="p">,</span> <span class="n">sigma_single</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">positions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">position</span><span class="p">])</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mf</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">sigma</span></div>
+
+
+<div class="viewcode-block" id="select_validation_sv_by_index"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.select_validation_sv_by_index">[docs]</a><span class="k">def</span> <span class="nf">select_validation_sv_by_index</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">vo_sv</span><span class="p">,</span> <span class="n">model_sv</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">validation_names</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract validation GVO SV and core model SV for specified locations.</span>
+
+<span class="sd">    Validation GVOs are at 490km altitude above a ground magnetic observatory</span>
+<span class="sd">    (used for validating the Swarm DISC GVO project). The validation GVO name</span>
+<span class="sd">    is set as the IAGA ground station name.</span>
+
+<span class="sd">    Model SV is converted from [Br,Btheta,Bphi] input to [X,Y,Z] output.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vo_sv (pandas.Dataframe): GVO SV timeseries for all validation GVOs</span>
+<span class="sd">        model_sv (tuple): core model SV timeseries for all validation GVOs</span>
+<span class="sd">            vo_sv</span>
+<span class="sd">        idx (list): indices required in list of all validation GVOs (i.e.</span>
+<span class="sd">            the GVOs located in a particular magnetic region)</span>
+<span class="sd">        validation_names (list): list of all validation GVO names</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - vo_sv_selected (pandas.Dataframe):</span>
+<span class="sd">         columns of vo_sv matching given validation names</span>
+<span class="sd">        - model_sv_selected (pandas.Dataframe):</span>
+<span class="sd">         columns of model_sv matching given idx</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract relevant input for validation GVOs and model SV prediction</span>
+    <span class="n">vo_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">vo_sv</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">values</span><span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span>
+        <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">vo_sv</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+        <span class="c1"># Get the name of the validation GVO matching the current index and</span>
+        <span class="c1"># extract data</span>
+        <span class="n">col_names</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vo_sv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">regex</span><span class="o">=</span><span class="n">validation_names</span><span class="p">[</span><span class="n">position</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">vo_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">vo_sv_selected</span><span class="p">,</span> <span class="n">vo_sv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">regex</span><span class="o">=</span><span class="n">validation_names</span><span class="p">[</span><span class="n">position</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Extract model SV predictions for the same validation GVO</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">stacked</span><span class="p">,</span> <span class="o">-</span><span class="n">model_sv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">position</span><span class="p">]])</span> \
+            <span class="k">if</span> <span class="n">stacked</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="o">-</span><span class="n">model_sv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">position</span><span class="p">]</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">stacked</span><span class="p">,</span> <span class="n">model_sv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">position</span><span class="p">]])</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">stacked</span><span class="p">,</span> <span class="o">-</span><span class="n">model_sv</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">position</span><span class="p">]])</span>
+    <span class="c1"># Rename the columns</span>
+    <span class="n">vo_sv_selected</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">col_names</span>
+    <span class="n">model_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">model_sv_selected</span><span class="p">,</span>
+                                   <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">stacked</span><span class="o">.</span><span class="n">transpose</span><span class="p">())],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">model_sv_selected</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">vo_sv_selected</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">return</span> <span class="n">vo_sv_selected</span><span class="p">,</span> <span class="n">model_sv_selected</span></div>
+
+
+<div class="viewcode-block" id="calculate_magnetic_latitudes"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.calculate_magnetic_latitudes">[docs]</a><span class="k">def</span> <span class="nf">calculate_magnetic_latitudes</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate mean magnetic latitude for GVO series.</span>
+
+<span class="sd">    Note that some low latitudes are not defined in the AAGCM2 model, which</span>
+<span class="sd">    produces a runtime warning.</span>
+<span class="sd">    Calculates magnetic latitude for each time sample and returns the mean</span>
+<span class="sd">    magnetic latitude over the series.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dates (list): list of datetimes for GVO timeseries</span>
+<span class="sd">        positions (list): list of GVO positions for which to return geomagnetic</span>
+<span class="sd">            latitudes [theta,phi,r] in degrees, km</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        mlat_means (list):</span>
+<span class="sd">            list of mean magnetic latitudes, one for each given position</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mlat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">)],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx_date</span><span class="p">,</span> <span class="n">date</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dates</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">idx_pos</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+            <span class="n">mlat</span><span class="p">[</span><span class="n">idx_pos</span><span class="p">,</span> <span class="n">idx_date</span><span class="p">],</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> \
+                <span class="n">aacgmv2</span><span class="o">.</span><span class="n">get_aacgm_coord</span><span class="p">(</span><span class="mi">90</span><span class="o">-</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mf">6371.2</span><span class="p">,</span>
+                                        <span class="n">date</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GEOCENTRIC&quot;</span><span class="p">)</span>
+    <span class="c1"># AACGM not defined at various locations around geomag equator, returns NaN</span>
+    <span class="c1"># Fill the NaN with zero, assuming we want to select these locations as low</span>
+    <span class="c1"># magnetic latitude</span>
+    <span class="n">mlat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mlat</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c1"># Calculate the mean magnetic latitude over the time series</span>
+    <span class="n">mlat_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">mlat</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mlat_means</span></div>
+
+
+<div class="viewcode-block" id="calculate_model_sv"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.calculate_model_sv">[docs]</a><span class="k">def</span> <span class="nf">calculate_model_sv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">model_file</span><span class="p">,</span> <span class="n">vo_sv</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate reference field model SV at given positions.</span>
+
+<span class="sd">    Model max spherical harmonic degree set to 13.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model_file (str): path to model .shc format file with coefficients in</span>
+<span class="sd">            nT and time in decimal years</span>
+<span class="sd">        vo_sv (pandas.Dataframe): dataframe of GVO SV series</span>
+<span class="sd">        positions (list): list of GVO positions [theta,phi,r] in degrees, km</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dB_rtp_core (tuple):</span>
+<span class="sd">            model core field SV at times of vo_sv in locations given in positions,</span>
+<span class="sd">            as Br, Btheta, Bphi in nT/yr</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate model SV predictions at each GVO</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">load_CHAOS_shcfile</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+
+    <span class="c1"># Datetime to MJD2000 for SV times</span>
+    <span class="n">date_mjd2000</span> <span class="o">=</span> <span class="n">vo_sv</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">date_mjd2000</span> <span class="o">=</span> <span class="n">date_mjd2000</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="p">)</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># Reshape to use NumPy broadcasting</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">date_mjd2000</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># 1 x Nt</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># Np x 1</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># Np x 1</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># Np x 1</span>
+
+    <span class="c1"># Compute SV field components of shape 3xNpxNt</span>
+    <span class="c1"># Despite the warning, chaosmagpy is correct (i.e. non-NaN/zero) at the</span>
+    <span class="c1"># geographic poles, unlike the Matlab version of the CHAOS code</span>
+    <span class="n">dB_rtp_core</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">synth_values_tdep</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span>
+                                          <span class="n">nmax</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dB_rtp_core</span></div>
+
+
+<div class="viewcode-block" id="correlation_with_indices"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.correlation_with_indices">[docs]</a><span class="k">def</span> <span class="nf">correlation_with_indices</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">index_filename</span><span class="p">,</span> <span class="n">pc_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Correlate principal component with SV of magnetic index read from file.</span>
+
+<span class="sd">    SV of indices AE, Dst, PC, Em must be precalculated and written to file.</span>
+<span class="sd">    Index files are only read here, not calculated. The SV for the magnetic</span>
+<span class="sd">    indices should be the same temporal resolution as for the principal</span>
+<span class="sd">    component (e.g. annual differences or first differences for monthly data)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index_filename (str): path to index SV file</span>
+<span class="sd">        pc_df (pandas.Dataframe): principal component to correlate to index SV</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - index_cols (pandas.Dataframe): SV of geomagnetic index merged to\</span>
+<span class="sd">        pc_df times</span>
+<span class="sd">        - coeffs (numpy.array): correlation coefficients between pc_df and \</span>
+<span class="sd">        each column of index_cols</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">index_filename</span><span class="p">,</span>
+                           <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Keep only data common to both time series</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">pc_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">index_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span>
+                      <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+
+    <span class="n">index_cols</span> <span class="o">=</span> <span class="n">merged</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;AE|AO|AU|AL|Dst|PCN|PCS|Em&#39;</span><span class="p">,</span>
+                               <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">index_cols</span><span class="p">:</span>
+        <span class="c1"># Calculate correlation coefficient between principal component and</span>
+        <span class="c1"># index</span>
+        <span class="n">coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">merged</span><span class="o">.</span><span class="n">proxy</span><span class="p">,</span> <span class="n">merged</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">coeffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coeff</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">index_cols</span><span class="p">,</span> <span class="n">coeffs</span></div>
+
+
+<div class="viewcode-block" id="calculate_residuals"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.calculate_residuals">[docs]</a><span class="k">def</span> <span class="nf">calculate_residuals</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">vo_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate SV residuals between GVO values and core model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vo_data (pandas.Dataframe): GVO SV timeseries</span>
+<span class="sd">        model_data (pandas.Dataframe): core field model SV timeseries matching</span>
+<span class="sd">            vo_data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        residuals (pandas.Dataframe):</span>
+<span class="sd">            residual SV between vo_data and model_data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Drop the dates and then add back after residuals calculation</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">vo_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="n">vo_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">vo_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">model_data</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Calculate residuals as data minus model values</span>
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">vo_data</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">vo_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">model_data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">residuals</span></div>
+
+
+<div class="viewcode-block" id="plot_eigenvalues_percentage"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.plot_eigenvalues_percentage">[docs]</a><span class="k">def</span> <span class="nf">plot_eigenvalues_percentage</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+                                <span class="n">label_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">write_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot % variance explained by eigenvalues of residuals covariance matrix.</span>
+
+<span class="sd">    Produces a plot of the eigenvalues as percentage variance explained by each</span>
+<span class="sd">    principal component of SV residual covariance matrix. The largest</span>
+<span class="sd">    eigenvalues represent the eigendirections (principal components) with the</span>
+<span class="sd">    largest contributions to the SV residuals. Also plots the cumulative</span>
+<span class="sd">    percentage variance.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        values (array): the eigenvalues obtained from the principal component</span>
+<span class="sd">            analysis of the SV residuals.</span>
+<span class="sd">        fig_size (array): figure size in inches. Defaults to 8 inches by 6</span>
+<span class="sd">            inches.</span>
+<span class="sd">        font_size (int): font size for axes. Defaults to 12 pt.</span>
+<span class="sd">        label_size (int): font size for axis labels. Defaults to 16 pt.</span>
+<span class="sd">        save_fig (bool): option to save figure. Defaults to False.</span>
+<span class="sd">        write_path (str): output path for figure if saved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">)</span>
+    <span class="c1"># Calculate the percentage variance from the eigenvalues</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">values</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Variance $\lambda_i$&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">values</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">values</span><span class="p">))),</span> <span class="s1">&#39;^-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Cum. sum variance&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Percentage variance explained by $\lambda_i$&#39;</span><span class="p">,</span>
+               <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$i$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Create the output directory if it does not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span> <span class="s1">&#39;eigenvalues.png&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="select_vo_sv_by_index"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.select_vo_sv_by_index">[docs]</a><span class="k">def</span> <span class="nf">select_vo_sv_by_index</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">vo_sv</span><span class="p">,</span> <span class="n">model_sv</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select GVO data and core model predictions SV by location index.</span>
+
+<span class="sd">    Model SV is converted from [Br,Btheta,Bphi] input to [X,Y,Z] output.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vo_sv (pandas.Dataframe): GVO SV timeseries</span>
+<span class="sd">        model_sv (tuple): core model SV timeseries at matching GVO positions to</span>
+<span class="sd">            vo_sv</span>
+<span class="sd">        idx (list): GVO position numbers to select from vo_sv</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - vo_sv_selected (pandas.Dataframe):</span>
+<span class="sd">         columns of vo_sv matching idx</span>
+<span class="sd">        - model_sv_selected (pandas.Dataframe):</span>
+<span class="sd">         columns of model_sv matching idx</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initialise variables</span>
+    <span class="n">vo_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">vo_sv</span><span class="o">.</span><span class="n">date</span><span class="p">})</span>
+    <span class="n">model_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">vo_sv</span><span class="o">.</span><span class="n">date</span><span class="p">})</span>
+    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+    <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+        <span class="c1"># Extract relevant GVO data</span>
+        <span class="n">vo_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">vo_sv_selected</span><span class="p">,</span> <span class="n">vo_sv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">regex</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Extract relevant model data, converting to x, y and z components</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">stacked</span><span class="p">,</span> <span class="o">-</span><span class="n">model_sv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">position</span><span class="p">]])</span>\
+            <span class="k">if</span> <span class="n">stacked</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="o">-</span><span class="n">model_sv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">position</span><span class="p">]</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">stacked</span><span class="p">,</span> <span class="n">model_sv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">position</span><span class="p">]])</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">stacked</span><span class="p">,</span> <span class="o">-</span><span class="n">model_sv</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">position</span><span class="p">]])</span>
+    <span class="n">model_sv_selected</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">model_sv_selected</span><span class="p">,</span>
+                                   <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">stacked</span><span class="o">.</span><span class="n">transpose</span><span class="p">())],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">model_sv_selected</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">vo_sv_selected</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">return</span> <span class="n">vo_sv_selected</span><span class="p">,</span> <span class="n">model_sv_selected</span></div>
+
+
+<div class="viewcode-block" id="plot_comparison"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.plot_comparison">[docs]</a><span class="k">def</span> <span class="nf">plot_comparison</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">vo_denoised</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span>
+                    <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">label_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+                    <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot comparison of pre-and post-PCA denoising SV or MF at a single GVO.</span>
+
+<span class="sd">    Produces a plot of the X, Y and Z components of the GVO data (SV or MF),</span>
+<span class="sd">    the PCA denoised SV or MF and the field model prediction for a single GVO.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dates (datetime.datetime): dates of time series measurements</span>
+<span class="sd">        vo (time series): X, Y and Z components of uncorrected SV or MF at a</span>
+<span class="sd">            single VO location</span>
+<span class="sd">        vo_denoised (time series): X, Y and Z components of the denoised SV or</span>
+<span class="sd">            MF at the same VO location</span>
+<span class="sd">        derive (int): specify whether the given data are MF (deriv=0) or SV</span>
+<span class="sd">            (deriv=1). Defaults to 1</span>
+<span class="sd">        model_data (time series): X, Y and Z components of the SV or MF</span>
+<span class="sd">            predicted by a field model for the same location as the data.</span>
+<span class="sd">        position (str): GVO location name</span>
+<span class="sd">        fig_size (array): figure size in inches. Defaults to 8 inches by 6</span>
+<span class="sd">            inches.</span>
+<span class="sd">        font_size (int): font size for axes. Defaults to 12 pt.</span>
+<span class="sd">        label_size (int): font size for axis labels. Defaults to 16 pt.</span>
+<span class="sd">        save_fig (bool): option to save figure. Defaults to False.</span>
+<span class="sd">        write_path (str): output path for figure if saved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Choose labels for plots (either for MF or SV)</span>
+    <span class="k">if</span> <span class="n">deriv</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X_&#39;</span><span class="p">,</span> <span class="s1">&#39;Y_&#39;</span><span class="p">,</span> <span class="s1">&#39;Z_&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;X (nT)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;Y (nT)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;Z (nT)&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">deriv</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dx_&#39;</span><span class="p">,</span> <span class="s1">&#39;dy_&#39;</span><span class="p">,</span> <span class="s1">&#39;dz_&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;dX/dt (nT/yr)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;dY/dt (nT/yr)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;dZ/dt (nT/yr)&#39;</span><span class="p">]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">]</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">vo</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
+                 <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">vo_denoised</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">regex</span><span class="o">=</span><span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">model_data</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">regex</span><span class="o">=</span><span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;GVO &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">,</span>
+             <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Create the output directory if it does not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span> <span class="s1">&#39;GVO_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span>\
+                             <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="eigenvalue_analysis"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.eigenvalue_analysis">[docs]</a><span class="k">def</span> <span class="nf">eigenvalue_analysis</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">model_data</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
+                        <span class="n">proxy_number</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove external signal from SV data using principal Component Analysis.</span>
+
+<span class="sd">    Perform principal component analysis (PCA) on secular variation</span>
+<span class="sd">    residuals (the difference between the observed SV and that predicted by a</span>
+<span class="sd">    geomagnetic field model) calculated from annual differences of monthly</span>
+<span class="sd">    means at several observatories. Uses masked arrays to discount missing data</span>
+<span class="sd">    points and calculates the Principal Components (PCs, also known as the</span>
+<span class="sd">    eigenvalues/vectors) of the (3nx3n) covariance matrix for n observatories.</span>
+<span class="sd">    The residuals are rotated into the eigendirections and denoised using the</span>
+<span class="sd">    method detailed in Cox et al (2018, Geochemistry, Geophysics, Geosystems</span>
+<span class="sd">    (https://doi.org/10.1029/2018GC007714). The SV residuals projected into the</span>
+<span class="sd">    dominant PCs component are used as a proxy for the unmodelled contaminating</span>
+<span class="sd">    signals such as external magnetic fields and, for satellite data, local</span>
+<span class="sd">    time sampling biases arising from orbital dynamics. The denoised data are</span>
+<span class="sd">    then rotated back into geographic coordinates. The PCA algorithm outputs</span>
+<span class="sd">    the eigenvalues sorted from largest to smallest (absolute values), so the</span>
+<span class="sd">    corresponding eigenvector matrix has the dominant PC in the first column</span>
+<span class="sd">    (accounts for the most variance in the residuals).</span>
+
+<span class="sd">    This algorithm masks missing data so that they are not taken into account</span>
+<span class="sd">    during the PCA. Missing values are not infilled or estimated, so NaN</span>
+<span class="sd">    values in the input dataframe are given as NaN values in the output.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dates (datetime.datetime): dates of the time series measurements.</span>
+<span class="sd">        obs_data (pandas.DataFrame): dataframe containing columns for</span>
+<span class="sd">            monthly/annual means of the X, Y and Z components of the secular</span>
+<span class="sd">            variation at the magnetic observatories of interest.</span>
+<span class="sd">        model_data (pandas.DataFrame): dataframe containing columns for field</span>
+<span class="sd">            model prediction of the X, Y and Z components of the secular</span>
+<span class="sd">            variation at the same observatories as in obs_data.</span>
+<span class="sd">        residuals (pandas.DataFrame): dataframe containing the SV residuals</span>
+<span class="sd">            (difference between the observed data and model prediction).</span>
+<span class="sd">        proxy_number (int): the number of Principal Components used to create</span>
+<span class="sd">            the proxy for the external signal removal. Default value is 1 (only</span>
+<span class="sd">            the residual in the direction of the largest eigenvalue (i.e. the</span>
+<span class="sd">            dominant PC &quot;PC0&quot;) is used). Using m directions means that proxy</span>
+<span class="sd">            is the sum of the SV residuals in the m largest PCs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+<span class="sd">        - denoised_sv (*pandas.DataFrame*):</span>
+<span class="sd">         dataframe with datetime objects in the</span>
+<span class="sd">         first column and columns for the denoised X, Y and Z SV components</span>
+<span class="sd">         at each of the observatories for which data were provided.</span>
+<span class="sd">        - proxy (*array*):</span>
+<span class="sd">         the signal that was used as a proxy for unmodelled</span>
+<span class="sd">         external magnetic field in the denoising stage.</span>
+<span class="sd">        - eig_values (*array*):</span>
+<span class="sd">         the eigenvalues of the obs_data matrix.</span>
+<span class="sd">        - eig_vectors (*array*):</span>
+<span class="sd">         the eigenvectors associated with the n largest</span>
+<span class="sd">         eigenvalues of the data matrix. For example, if the residuals</span>
+<span class="sd">         in the two largest PCs are used as the proxy for external</span>
+<span class="sd">         signal, then these two eigenvectors are returned.</span>
+<span class="sd">        - projected_residuals (*array*):</span>
+<span class="sd">         SV residuals rotated into the PCs (eigendirections).</span>
+<span class="sd">        - corrected_residuals (*array*):</span>
+<span class="sd">         SV residuals after the denoising process.</span>
+<span class="sd">        - covariance_matrix (*array*):</span>
+<span class="sd">         the residuals covariance matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create a masked version of the residuals array so that we can perform the</span>
+    <span class="c1"># PCA ignoring all nan values</span>
+    <span class="n">masked_residuals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span>
+
+    <span class="c1"># Calculate the covariance matrix of the masked residuals array</span>
+    <span class="n">covariance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">masked_residuals</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">allow_masked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Calculate the eigenvalues and eigenvectors of the covariance matrix</span>
+    <span class="n">eig_values</span><span class="p">,</span> <span class="n">eig_vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">)</span>
+    <span class="c1"># Sort the eigenvalues in decreasing order</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eig_values</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">eig_values</span> <span class="o">=</span> <span class="n">eig_values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="c1"># Sort the eigenvectors according to the same index</span>
+    <span class="n">eig_vectors</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span>
+
+    <span class="c1"># Project the residuals onto the eigenvectors</span>
+    <span class="n">projected_residuals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">masked_residuals</span><span class="p">,</span> <span class="n">eig_vectors</span><span class="p">)</span>
+
+    <span class="c1"># Use the method of Cox et al (2018) to remove unmodelled external</span>
+    <span class="c1"># signal in the SV residuals. The variable &#39;proxy&#39; contains the sum</span>
+    <span class="c1"># of the SV residuals projected into the number of dominant PCs</span>
+    <span class="c1"># specified by proxy_number</span>
+
+    <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">proxy_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proxy</span><span class="p">)):</span>
+            <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">masked_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">proxy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">)</span>
+    <span class="c1"># Apply the denoising algorithm to each of the PCs specified</span>
+    <span class="k">elif</span> <span class="n">proxy_number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">noisy_direction</span> <span class="o">=</span> <span class="n">eig_vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">]</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">proxy_number</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])):</span>
+            <span class="n">corrected</span> <span class="o">=</span> <span class="n">masked_residuals</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">proxy_number</span><span class="p">):</span>
+                <span class="n">corrected</span> <span class="o">=</span> <span class="n">corrected</span> <span class="o">-</span> <span class="n">projected_residuals</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">direction</span><span class="p">]</span> \
+                    <span class="o">*</span> <span class="n">noisy_direction</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">]</span>
+            <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corrected</span><span class="p">)</span>
+
+    <span class="n">corrected_residuals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corrected_residuals</span><span class="p">,</span>
+                                       <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="c1"># Re-form the SV from the denoised residuals</span>
+    <span class="n">denoised_sv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">model_data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">obs_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">denoised_sv</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">denoised_sv</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eig_values</span><span class="p">),</span> <span class="n">eig_vectors</span><span class="p">,</span>\
+        <span class="n">projected_residuals</span><span class="p">,</span> <span class="n">corrected_residuals</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">),</span>\
+        <span class="n">covariance_matrix</span></div>
+
+
+<div class="viewcode-block" id="format_and_write"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.format_and_write">[docs]</a><span class="k">def</span> <span class="nf">format_and_write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">df_sigma</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write denoised GVO data to output files.</span>
+
+<span class="sd">    The files are written out in the same format as the internal files used in</span>
+<span class="sd">    the Swarm DISC GVO project. See `load_vo_txt_raw` for a description</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fname (str): name of output file</span>
+<span class="sd">        header (str): header text to write to file</span>
+<span class="sd">        data (pandas.Dataframe): denoised MF or SV GVO data to write</span>
+<span class="sd">        df_sigma (pandas.Dataframe): associated uncertainties for data</span>
+<span class="sd">        positions (list): data positions [theta,phi,r]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Reorder to all positions at each timesample a la .txt file format</span>
+    <span class="n">row_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">idx_date</span><span class="p">,</span> <span class="n">date_val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">idx_pos</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+            <span class="n">dict_row</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">df_sigma</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>  <span class="c1"># assume MF has uncertainties</span>
+                <span class="n">dict_row</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;theta&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                     <span class="s1">&#39;phi&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                     <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="n">date_val</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                     <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="n">date_val</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                     <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="n">mjd2000</span><span class="p">(</span><span class="n">date_val</span><span class="p">),</span>
+                     <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                     <span class="c1"># -Z = B_r</span>
+                     <span class="s1">&#39;B_r&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_date</span><span class="p">]</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                         <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;Z_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx_pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                     <span class="c1"># -X = B_theta</span>
+                     <span class="s1">&#39;B_theta&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_date</span><span class="p">]</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                         <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;X_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx_pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                     <span class="c1"># Y = B_phi</span>
+                     <span class="s1">&#39;B_phi&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_date</span><span class="p">]</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                         <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;Y_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx_pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                     <span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># assume SV has empty df instead of uncertainties</span>
+                <span class="n">dict_row</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;theta&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                     <span class="s1">&#39;phi&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                     <span class="s1">&#39;Year&#39;</span><span class="p">:</span> <span class="n">date_val</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                     <span class="s1">&#39;Month&#39;</span><span class="p">:</span> <span class="n">date_val</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                     <span class="s1">&#39;Time&#39;</span><span class="p">:</span> <span class="n">mjd2000</span><span class="p">(</span><span class="n">date_val</span><span class="p">),</span>
+                     <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                     <span class="c1"># -Z = B_r</span>
+                     <span class="s1">&#39;B_r&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_date</span><span class="p">]</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                         <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;dz_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx_pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                     <span class="c1"># -X = B_theta</span>
+                     <span class="s1">&#39;B_theta&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_date</span><span class="p">]</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                         <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;dx_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx_pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                     <span class="c1"># Y = B_phi</span>
+                     <span class="s1">&#39;B_phi&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_date</span><span class="p">]</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                         <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;dy_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx_pos</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                     <span class="p">})</span>
+            <span class="n">row_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dict_row</span><span class="p">)</span>
+    <span class="n">data_to_write</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">row_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">df_sigma</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">data_to_write</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data_to_write</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                                   <span class="n">df_sigma</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="c1"># data_to_write.to_csv(fname, na_rep=&#39;NaN&#39;,</span>
+        <span class="c1">#                      index=False, header=False,</span>
+        <span class="c1">#                      mode=&#39;a&#39;, sep=&#39;\t&#39;)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data_to_write</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">df_sigma</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                    <span class="s1">&#39;</span><span class="si">%9.5f%13.5f%9d%5d%14.4f%12.2f%15.5f%15.5f%15.5f%10.4f%10.4f%10.4f%12.0f</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;phi&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">],</span>
+                       <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;B_r&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;B_theta&#39;</span><span class="p">],</span>
+                       <span class="n">row</span><span class="p">[</span><span class="s1">&#39;B_phi&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;sigma_r&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;sigma_theta&#39;</span><span class="p">],</span>
+                       <span class="n">row</span><span class="p">[</span><span class="s1">&#39;sigma_phi&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;N_data&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                    <span class="s1">&#39;</span><span class="si">%9.5f%13.5f%9d%5d%14.4f%12.2f%15.5f%15.5f%15.5f</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;phi&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">],</span>
+                       <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;B_r&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;B_theta&#39;</span><span class="p">],</span>
+                       <span class="n">row</span><span class="p">[</span><span class="s1">&#39;B_phi&#39;</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="create_headers"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.create_headers">[docs]</a><span class="k">def</span> <span class="nf">create_headers</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">magnetic_regions</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create output file header strings (format internal to GVO DISC project)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        magnetic_regions (dict): dict containing denoising region latitude</span>
+<span class="sd">            limits, region name, and number of PC removed</span>
+<span class="sd">        model_name (str): name of model used to detrend SV</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): tuple containing:</span>
+
+<span class="sd">        - header_mf (str):</span>
+<span class="sd">         MF GVO file header text</span>
+<span class="sd">        - header_sv (str):</span>
+<span class="sd">         SV GVO file header text</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">date_str</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%b-%Y&quot;</span><span class="p">)</span>
+
+    <span class="n">header_mf</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;% Geomagnetic Virtual Observatory Model, file created on: </span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% PID_OBA_SUB</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;</span><span class="si">% G</span><span class="s2">rid solution: EQ</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Swarm data used</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Data time used: all</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Include external field correction: yes</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Crustal field corrections used</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Potential spatial degree: cubic</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Search radius: 700</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Target point altitude: 490</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Inversion limit: 30</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% </span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% PCA:</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% SV detrended using </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% QD lat min | QD lat max | # PC removed</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% </span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% theta    |    phi    |  Year  Month |   Time       |     r    |    B_r         B_theta       B_phi         | sigma_r  sigma_theta  sigma_phi  | N_</span><span class="si">{data}</span><span class="s2">  |</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% [deg]    |   [deg]   |              |  [mjd2000]   |    [km]  |          Predicted field - [nT]            |       Estimated error [nT]       |  # data   |</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">header_sv</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;% Geomagnetic Virtual Observatory Model, file created on: </span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% PID_OBA_SUB</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;</span><span class="si">% G</span><span class="s2">rid solution: EQ</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Swarm data used</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Data time used: all</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Include external field correction: yes</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Crustal field corrections used</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Potential spatial degree: cubic</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Search radius: 700</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Target point altitude: 490</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% Inversion limit: 30</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% </span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% PCA:</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% SV detrended using </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% QD lat min | QD lat max | # PC removed</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;% </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">][</span><span class="s1">&#39;min_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">][</span><span class="s1">&#39;max_mag_lat&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">magnetic_regions</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">][</span><span class="s1">&#39;proxy_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% </span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% theta    |    phi    |  Year  Month |   Time       |     r    |    dB_r         dB_theta       dB_phi      | sigma_r  sigma_theta  sigma_phi  | N_</span><span class="si">{data}</span><span class="s2">  |</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% [deg]    |   [deg]   |              |  [mjd2000]   |    [km]  |          Predicted field - [nT/yr]         |       Estimated error [nT/yr]    |  # data   |</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="s2">&quot;% </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">header_mf</span><span class="p">,</span> <span class="n">header_sv</span></div>
+
+
+<div class="viewcode-block" id="plot_residuals_dft_all"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.plot_residuals_dft_all">[docs]</a><span class="k">def</span> <span class="nf">plot_residuals_dft_all</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">projected_residuals</span><span class="p">,</span> <span class="n">dates</span><span class="p">,</span> <span class="n">sampling</span><span class="p">,</span>
+                           <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+                           <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">label_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+                           <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compare the DFTs of the projected residuals with each other.</span>
+
+<span class="sd">    Calculates the Discrete Fourier Transform (DFT) of the projected residuals</span>
+<span class="sd">    in each Principal Component given and plots it alongside the projected</span>
+<span class="sd">    residuals themselves. Produces a separate figure per PC. The length of the</span>
+<span class="sd">    time series are padded with zeroes up to the next power of two.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dates (datetime.datetime): dates of time series measurements.</span>
+<span class="sd">        projected_residuals (time series): difference between modelled and</span>
+<span class="sd">            SV rotated into the PCs obtained during denoising</span>
+<span class="sd">            (PC). The proxy for unmodelled contaminating</span>
+<span class="sd">            signal is the residual projected in the dominant PC(s).</span>
+<span class="sd">        sampling (int): sampling rate of GVOs in months. Typically 1 or 4</span>
+<span class="sd">        fig_size (array): figure size in inches. Defaults to 8 inches by 6</span>
+<span class="sd">            inches.</span>
+<span class="sd">        font_size (int): font size for axes. Defaults to 12 pt.</span>
+<span class="sd">        label_size (int): font size for axis labels. Defaults to 16 pt.</span>
+<span class="sd">        plot_legend (bool): option to include a legend on the plot. Defaults to</span>
+<span class="sd">            True.</span>
+<span class="sd">        save_fig (bool): option to save figure. Defaults to False.</span>
+<span class="sd">        write_path (str): output path for figure if saved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sampling_period</span> <span class="o">=</span> <span class="n">sampling</span> <span class="o">/</span> <span class="mf">12.0</span>   <span class="c1"># Sampling time in years</span>
+
+    <span class="n">sample_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">projected_residuals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))))</span>
+
+    <span class="c1"># Iterate over the eigendirections (PCs) and produce a figure for each</span>
+    <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">projected_residuals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">residual_dft</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">projected_residuals</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">],</span> <span class="n">sample_length</span><span class="p">)</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">sampling_period</span><span class="p">),</span>
+                           <span class="n">sample_length</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">residual_power</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">sample_length</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+            <span class="n">residual_dft</span><span class="p">[:</span><span class="n">sample_length</span> <span class="o">//</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">projected_residuals</span><span class="p">[:,</span> <span class="n">direction</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Residuals (nT/yr)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Frequency domain</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">residual_power</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (cycles/yr)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;DFT PC</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">direction</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Create the output directory if it does not exist</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span>
+                                 <span class="s1">&#39;dft_eigendirection</span><span class="si">%03d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">direction</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_eigenvectors"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.plot_eigenvectors">[docs]</a><span class="k">def</span> <span class="nf">plot_eigenvectors</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">obs_names</span><span class="p">,</span> <span class="n">eigenvecs</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+                      <span class="n">label_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot eigenvectors (PCs) of the covariance matrix of SV residuals.</span>
+
+<span class="sd">    Produces a plot of the eigenvectors (PCs) corresponding to the n largest</span>
+<span class="sd">    eigenvalues of the covariance matrix obtained during PCA of SV residuals,</span>
+<span class="sd">    where n is the number of PCs used as a proxy for unmodelled</span>
+<span class="sd">    contaminating signals. The n eigenvectors corresponding to the n largest</span>
+<span class="sd">    eigenvalues represent the directions with the largest contribution</span>
+<span class="sd">    to the residuals (the &quot;dominant PCs&quot;)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obs_names (list): list of observatory names given as three digit IAGA</span>
+<span class="sd">            codes or GVO numbers.</span>
+<span class="sd">        eigenvecs (array): the eigenvalues obtained from the principal</span>
+<span class="sd">        component analysis of the SV residuals.</span>
+<span class="sd">        fig_size (array): figure size in inches. Defaults to 8 inches by 6</span>
+<span class="sd">            inches.</span>
+<span class="sd">        font_size (int): font size for axes. Defaults to 12 pt.</span>
+<span class="sd">        label_size (int): font size for axis labels. Defaults to 16 pt.</span>
+<span class="sd">        save_fig (bool): option to save figure. Defaults to False.</span>
+<span class="sd">        write_path (str): output path for figure if saved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Loop over directions and plot each eigenvector on a separate figure</span>
+    <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">eigenvecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvecs</span><span class="p">[::</span><span class="mi">3</span><span class="p">,</span> <span class="n">direction</span><span class="p">]),</span> <span class="s1">&#39;bx&#39;</span><span class="p">,</span>
+                 <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvecs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">,</span> <span class="n">direction</span><span class="p">]),</span> <span class="s1">&#39;rx&#39;</span><span class="p">,</span>
+                 <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvecs</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">,</span> <span class="n">direction</span><span class="p">]),</span> <span class="s1">&#39;cx&#39;</span><span class="p">,</span>
+                 <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obs_names</span><span class="p">)),</span> <span class="n">obs_names</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\mathbf{{v}}_{</span><span class="si">%03d</span><span class="s1">}$&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">direction</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;$r$ direction&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\theta$ direction&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;$\phi$ direction&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Create the output directory if it does not exist</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span>
+                                 <span class="s1">&#39;eigendirection</span><span class="si">%03d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">direction</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_eigenvector_map"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.plot_eigenvector_map">[docs]</a><span class="k">def</span> <span class="nf">plot_eigenvector_map</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">eigenvecs</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+                         <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                         <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot map of eigenvector (PC) of SV residuals covariance matrix.</span>
+
+<span class="sd">    Produces a map of the contribution to a single eigenvector (PC)</span>
+<span class="sd">    of the covariance matrix obtained during PCA of SV residuals.</span>
+
+<span class="sd">    The eigenvector is split into (X, Y, Z) contributions from each GVO</span>
+<span class="sd">    considered in the PCA, and these are mapped onto a Maxwell colour triangle</span>
+<span class="sd">    so that these individual (X, Y, Z) contributions to the eigenvector are</span>
+<span class="sd">    represented by an (R, G, B) triplet. The contribution at each GVO is</span>
+<span class="sd">    plotted as a colour coded circle on a map. E.g. a purely X vector is red, a</span>
+<span class="sd">    purely Y vector is green and a purely Z vector is blue. Combinations of</span>
+<span class="sd">    these colours represent the relative contributions of X, Y and Z.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        eigenvecs (array): the eigenvalues obtained from the principal</span>
+<span class="sd">        component analysis of the SV residuals.</span>
+<span class="sd">        positions (list): all GVO positions [theta,phi,r] in degrees, km</span>
+<span class="sd">        idx (list): indices of the desired GVO locations in the positions list</span>
+<span class="sd">        marker_size (float: marker size on map. Defaults to 80</span>
+<span class="sd">        linewidth (float): width of marker border. Defaults to 0.2</span>
+<span class="sd">        fig_size (array): figure size in inches. Defaults to 8 inches by 6</span>
+<span class="sd">            inches.</span>
+<span class="sd">        save_fig (bool): option to save figure. Defaults to False.</span>
+<span class="sd">        write_path (str): output path for figure if saved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Loop over directions and plot each eigenvector on a separate figure</span>
+
+    <span class="c1"># Extract x, y and z components</span>
+    <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">eigenvecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvecs</span><span class="p">[::</span><span class="mi">3</span><span class="p">,</span> <span class="n">direction</span><span class="p">])</span>
+        <span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvecs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">,</span> <span class="n">direction</span><span class="p">])</span>
+        <span class="n">z_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvecs</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">,</span> <span class="n">direction</span><span class="p">])</span>
+        <span class="c1"># Map setup</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_global</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">LAND</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgray&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Loop over each GVO location used in PCA and plot its contribution</span>
+        <span class="c1"># to the current eigenvector (PC)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">location</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+            <span class="c1"># Get locations for the selected GVO indices</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">location</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">positions</span><span class="p">[</span><span class="n">location</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Plot the colour coded symbol</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">x_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="n">x_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">total</span><span class="p">,</span>
+                        <span class="n">y_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">total</span><span class="p">,</span> <span class="n">z_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">total</span><span class="p">],</span>
+                        <span class="n">s</span><span class="o">=</span><span class="n">marker_size</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">linewidth</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_fig</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Create the output directory if it does not exist</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">write_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span> <span class="s1">&#39;map_PC</span><span class="si">%03d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">direction</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="denoised_sv_to_mf"><a class="viewcode-back" href="../../gvo_tools.html#magpysv.gvo_tools.denoised_sv_to_mf">[docs]</a><span class="k">def</span> <span class="nf">denoised_sv_to_mf</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">vo_mf</span><span class="p">,</span> <span class="n">denoised_sv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Integrate PCA denoised annual differences SV to get denoised monthly MF.</span>
+
+<span class="sd">    Re-integrate monthly MF from cleaned SV (orginally calculated as annual</span>
+<span class="sd">    differences of monthly field values), using initial year of raw MF samples</span>
+<span class="sd">    to level denoised MF. Denoised MF will start 1 year later than raw MF as a</span>
+<span class="sd">    result.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vo_mf (pandas.Dataframe): dataframe containing raw GVO monthly MF</span>
+<span class="sd">        denoised_sv (pandas.Dataframe): dataframe containing denoised GVO SV</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        denoised_mf (pandas.Dataframe):</span>
+<span class="sd">            dataframe containing re-integrated MF rom denoised SV</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">denoised_mf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">vo_mf</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                               <span class="n">columns</span><span class="o">=</span><span class="n">vo_mf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">denoised_mf</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vo_mf</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="c1"># Get the first and last valid (non-NaN) indices of the time series</span>
+    <span class="c1"># Index 1 means X_000 is used - chosen to avoid the date column</span>
+    <span class="n">first_valid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vo_mf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">first_valid_index</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">last_valid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vo_mf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">last_valid_index</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">col_mf</span><span class="p">,</span> <span class="n">col_sv</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">denoised_mf</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(),</span>
+                                <span class="n">denoised_sv</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()):</span>
+        <span class="c1"># first non-NaN MF/SV row to last non-NaN SV row</span>
+        <span class="c1"># Annual differences of monthly means formulation</span>
+        <span class="k">for</span> <span class="n">idx_date</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">first_valid</span><span class="p">,</span> <span class="n">last_valid</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># First year is uncorrected MF, then denoised SV added to preceding</span>
+            <span class="c1"># MF</span>
+            <span class="k">if</span> <span class="n">idx_date</span> <span class="o">==</span> <span class="n">first_valid</span><span class="p">:</span>
+                <span class="n">denoised_mf</span><span class="p">[</span><span class="n">col_mf</span><span class="p">][</span><span class="n">idx_date</span><span class="p">:</span><span class="n">idx_date</span><span class="o">+</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">vo_mf</span><span class="p">[</span><span class="n">col_mf</span><span class="p">][</span><span class="n">idx_date</span><span class="p">:</span><span class="n">idx_date</span><span class="o">+</span><span class="mi">12</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">idx_date</span> <span class="o">&gt;=</span> <span class="n">first_valid</span> <span class="o">+</span> <span class="mi">12</span><span class="p">:</span>
+                <span class="n">denoised_mf</span><span class="p">[</span><span class="n">col_mf</span><span class="p">][</span><span class="n">idx_date</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">denoised_mf</span><span class="p">[</span><span class="n">col_mf</span><span class="p">][</span><span class="n">idx_date</span><span class="o">-</span><span class="mi">12</span><span class="p">]</span> <span class="o">+</span> \
+                    <span class="n">denoised_sv</span><span class="p">[</span><span class="n">col_sv</span><span class="p">][</span><span class="n">idx_date</span><span class="o">-</span><span class="mi">12</span><span class="p">]</span>
+
+    <span class="c1"># Cut original MF values from denoised MF df</span>
+    <span class="n">denoised_mf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">first_valid</span><span class="p">:</span><span class="n">first_valid</span><span class="o">+</span><span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">denoised_mf</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Grace Cox.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

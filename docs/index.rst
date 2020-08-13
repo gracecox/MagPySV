@@ -16,6 +16,8 @@ The package may be run on the command line or within an interactive Jupyter note
 
 The software develops previously published denoising methods, which aim to remove external field contamination from the internal field, using principal component analysis, a method that uses the covariance matrix of the residual between the observed SV and that predicted by a global field model to create and remove a proxy for external field signal from the data. This method, based on `Wardinski & Holme (2011)`_, creates a single covariance matrix for all observatories of interest combined and applies the external field correction to all locations simultaneously, resulting in cleaner time series of the internally-generated SV.
 
+Added in August 2020: a new module called GVO_tools, which was used to denoise Geomagnetic Virtual Observatories (GVOs) made from Swarm satellite data. This work was performed under a European Space Agency (ESA) Swarm DISC project on GVOs. More information on this project can be found at https://www.space.dtu.dk/english/research/projects/project-descriptions/geomagnetic-virtual-observatories
+  
 Installation
 ------------
 
@@ -83,6 +85,7 @@ The project's main directory contains the readme file, license and various setup
    :caption: Contents:
 
    denoise
+   gvo_tools
    io
    model_prediction
    plots

@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; MagPySV 1.0beta documentation</title>
+  <title>Index &mdash; MagPySV 2.0 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MagPySV 1.0beta documentation" href="index.html"/> 
+    <link rel="top" title="MagPySV 2.0 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -86,6 +86,7 @@
                 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gvo_tools.html">gvo_tools module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
@@ -120,7 +121,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li></li>
+    <li>Index</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -140,8 +141,10 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -178,25 +181,37 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tools.html#magpysv.tools.calculate_correlation_index">calculate_correlation_index() (in module magpysv.tools)</a>
 </li>
-      <li><a href="tools.html#magpysv.tools.calculate_residuals">calculate_residuals() (in module magpysv.tools)</a>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.calculate_magnetic_latitudes">calculate_magnetic_latitudes() (in module magpysv.gvo_tools)</a>
 </li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.calculate_model_sv">calculate_model_sv() (in module magpysv.gvo_tools)</a>
+</li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.calculate_residuals">calculate_residuals() (in module magpysv.gvo_tools)</a>
+
+      <ul>
+        <li><a href="tools.html#magpysv.tools.calculate_residuals">(in module magpysv.tools)</a>
+</li>
+      </ul></li>
       <li><a href="tools.html#magpysv.tools.calculate_sv">calculate_sv() (in module magpysv.tools)</a>
 </li>
       <li><a href="tools.html#magpysv.tools.calculate_sv_index">calculate_sv_index() (in module magpysv.tools)</a>
 </li>
-      <li><a href="io.html#magpysv.io.combine_csv_data">combine_csv_data() (in module magpysv.io)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="io.html#magpysv.io.combine_csv_data">combine_csv_data() (in module magpysv.io)</a>
+</li>
       <li><a href="plots.html#magpysv.plots.compare_proxies">compare_proxies() (in module magpysv.plots)</a>
 </li>
       <li><a href="tools.html#magpysv.tools.correct_baseline_change">correct_baseline_change() (in module magpysv.tools)</a>
+</li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.correlation_with_indices">correlation_with_indices() (in module magpysv.gvo_tools)</a>
 </li>
       <li><a href="io.html#magpysv.io.covobs_datetimes">covobs_datetimes() (in module magpysv.io)</a>
 </li>
       <li><a href="io.html#magpysv.io.covobs_parsefile">covobs_parsefile() (in module magpysv.io)</a>
 </li>
       <li><a href="io.html#magpysv.io.covobs_readfile">covobs_readfile() (in module magpysv.io)</a>
+</li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.create_headers">create_headers() (in module magpysv.gvo_tools)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -206,9 +221,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tools.html#magpysv.tools.data_resampling">data_resampling() (in module magpysv.tools)</a>
 </li>
+      <li><a href="io.html#magpysv.io.datetime_to_decimal">datetime_to_decimal() (in module magpysv.io)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="io.html#magpysv.io.datetime_to_decimal">datetime_to_decimal() (in module magpysv.io)</a>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.denoised_sv_to_mf">denoised_sv_to_mf() (in module magpysv.gvo_tools)</a>
 </li>
       <li><a href="denoise.html#magpysv.denoise.detect_outliers">detect_outliers() (in module magpysv.denoise)</a>
 </li>
@@ -219,10 +236,22 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="denoise.html#magpysv.denoise.eigenvalue_analysis">eigenvalue_analysis() (in module magpysv.denoise)</a>
+
+      <ul>
+        <li><a href="gvo_tools.html#magpysv.gvo_tools.eigenvalue_analysis">(in module magpysv.gvo_tools)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="denoise.html#magpysv.denoise.eigenvalue_analysis_impute">eigenvalue_analysis_impute() (in module magpysv.denoise)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.format_and_write">format_and_write() (in module magpysv.gvo_tools)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -247,10 +276,26 @@
   </ul></td>
 </tr></table>
 
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.load_validation_vo_txt">load_validation_vo_txt() (in module magpysv.gvo_tools)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.load_vo_txt">load_vo_txt() (in module magpysv.gvo_tools)</a>
+</li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.load_vo_txt_raw">load_vo_txt_raw() (in module magpysv.gvo_tools)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="denoise.html#module-magpysv.denoise">magpysv.denoise (module)</a>
+</li>
+      <li><a href="gvo_tools.html#module-magpysv.gvo_tools">magpysv.gvo_tools (module)</a>
 </li>
       <li><a href="io.html#module-magpysv.io">magpysv.io (module)</a>
 </li>
@@ -268,24 +313,38 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.plot_comparison">plot_comparison() (in module magpysv.gvo_tools)</a>
+</li>
       <li><a href="plots.html#magpysv.plots.plot_eigenvalues">plot_eigenvalues() (in module magpysv.plots)</a>
 </li>
-      <li><a href="plots.html#magpysv.plots.plot_eigenvectors">plot_eigenvectors() (in module magpysv.plots)</a>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.plot_eigenvalues_percentage">plot_eigenvalues_percentage() (in module magpysv.gvo_tools)</a>
 </li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.plot_eigenvector_map">plot_eigenvector_map() (in module magpysv.gvo_tools)</a>
+</li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.plot_eigenvectors">plot_eigenvectors() (in module magpysv.gvo_tools)</a>
+
+      <ul>
+        <li><a href="plots.html#magpysv.plots.plot_eigenvectors">(in module magpysv.plots)</a>
+</li>
+      </ul></li>
       <li><a href="plots.html#magpysv.plots.plot_index">plot_index() (in module magpysv.plots)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plots.html#magpysv.plots.plot_index_dft">plot_index_dft() (in module magpysv.plots)</a>
 </li>
       <li><a href="plots.html#magpysv.plots.plot_mf">plot_mf() (in module magpysv.plots)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plots.html#magpysv.plots.plot_outliers">plot_outliers() (in module magpysv.plots)</a>
 </li>
       <li><a href="plots.html#magpysv.plots.plot_residuals_dft">plot_residuals_dft() (in module magpysv.plots)</a>
 </li>
-      <li><a href="plots.html#magpysv.plots.plot_residuals_dft_all">plot_residuals_dft_all() (in module magpysv.plots)</a>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.plot_residuals_dft_all">plot_residuals_dft_all() (in module magpysv.gvo_tools)</a>
+
+      <ul>
+        <li><a href="plots.html#magpysv.plots.plot_residuals_dft_all">(in module magpysv.plots)</a>
 </li>
+      </ul></li>
       <li><a href="plots.html#magpysv.plots.plot_sv">plot_sv() (in module magpysv.plots)</a>
 </li>
       <li><a href="plots.html#magpysv.plots.plot_sv_comparison">plot_sv_comparison() (in module magpysv.plots)</a>
@@ -296,12 +355,14 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="io.html#magpysv.io.read_csv_data">read_csv_data() (in module magpysv.io)</a>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.read_all_validation_txt">read_all_validation_txt() (in module magpysv.gvo_tools)</a>
 </li>
-      <li><a href="tools.html#magpysv.tools.remove_selected_points">remove_selected_points() (in module magpysv.tools)</a>
+      <li><a href="io.html#magpysv.io.read_csv_data">read_csv_data() (in module magpysv.io)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools.html#magpysv.tools.remove_selected_points">remove_selected_points() (in module magpysv.tools)</a>
+</li>
       <li><a href="plots.html#magpysv.plots.rms_ratios">rms_ratios() (in module magpysv.plots)</a>
 </li>
       <li><a href="model_prediction.html#magpysv.model_prediction.run_covobs">run_covobs() (in module magpysv.model_prediction)</a>
@@ -312,10 +373,14 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="io.html#magpysv.io.separate_hourly_vals">separate_hourly_vals() (in module magpysv.io)</a>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.select_validation_sv_by_index">select_validation_sv_by_index() (in module magpysv.gvo_tools)</a>
+</li>
+      <li><a href="gvo_tools.html#magpysv.gvo_tools.select_vo_sv_by_index">select_vo_sv_by_index() (in module magpysv.gvo_tools)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="io.html#magpysv.io.separate_hourly_vals">separate_hourly_vals() (in module magpysv.io)</a>
+</li>
       <li><a href="io.html#magpysv.io.separate_hourly_vals_ae">separate_hourly_vals_ae() (in module magpysv.io)</a>
 </li>
       <li><a href="io.html#magpysv.io.separate_three_hourly_vals">separate_three_hourly_vals() (in module magpysv.io)</a>
@@ -354,7 +419,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Grace Cox.
+        &copy; Copyright 2020, Grace Cox.
 
     </p>
   </div>
@@ -376,7 +441,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0beta',
+            VERSION:'2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

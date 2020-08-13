@@ -8,9 +8,9 @@ def read(fname):
 
 setup(
     name="magpysv",
-    version="1.1",
+    version="2.0",
     author="Grace Cox",
-    author_email="gracecox@cp.dias.ie",
+    author_email="grace.alex.cox@gmail.com",
     license="MIT",
     url="https://github.com/gracecox/MagPySV",
     description="Download, process and denoise geomagnetic observatory data",
@@ -20,11 +20,12 @@ setup(
     package_data={"magpysv": ["baseline_records"]},
     classifiers=["Programming Language :: Python :: 3"],
     zip_safe=False,
-    install_requires=['jupyter>=1.0.0','matplotlib>=2.0.0','notebook>=4.3.1',
-    'numpy>=1.12.0','pandas>=0.19.2','requests>=2.12.4','scikit-learn>=0.18.1',
+    install_requires=['aacgmv2>=2.5.2','cartopy','chaosmagpy','datetime','glob',
+   'jupyter>=1.0.0','matplotlib>=2.0.0','notebook>=4.3.1',
+    'numpy>=1.12.0','pandas>=0.19.2','requests>=2.12.4','scikit-learn<=0.21.3',
     'scipy>=0.18.1','gmdata_webinterface'],
     extras_require={'develop': ['jupyter>=1.0.0','matplotlib>=2.0.0','notebook>=4.3.1',
-    'numpy>=1.12.0','pandas>=0.19.2','requests>=2.12.4','scikit-learn>=0.18.1',
+    'numpy>=1.12.0','pandas>=0.19.2','requests>=2.12.4','scikit-learn<=0.21.3',
     'scipy>=0.18.1','prospector>=0.12.7','pytest>=3.0.6',
     'pytest-cov<2.6','Sphinx>=1.5.1','sphinx-rtd-theme>=0.1.9','gmdata_webinterface']}
 )

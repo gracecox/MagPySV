@@ -1,0 +1,925 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gvo_tools module &mdash; MagPySV 2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="MagPySV 2.0 documentation" href="index.html"/>
+        <link rel="next" title="io module" href="io.html"/>
+        <link rel="prev" title="denoise module" href="denoise.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MagPySV
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="denoise.html">denoise module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">gvo_tools module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">io module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_prediction.html">model_prediction module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">plots module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">tools module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">MagPySV</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>gvo_tools module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/gvo_tools.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-magpysv.gvo_tools">
+<span id="gvo-tools-module"></span><h1>gvo_tools module<a class="headerlink" href="#module-magpysv.gvo_tools" title="Permalink to this headline">¶</a></h1>
+<p>Module containing functions to apply the Principal Component Analysis (PCA)
+denoising method to Geomagnetic Virtual Observatories (GVOs). These functions
+were used in the European Space Agency&#8217;s Swarm DISC GVO project and are called
+in the PCA part of the operational script (maintained at the British Geological
+Survey) that produces Swarm GVOs on a regular basis.</p>
+<p>Details of the European Space Agency&#8217;s Swarm DISC GVO project are at:
+<a class="reference external" href="https://www.space.dtu.dk/english/research/projects/project-descriptions/geomagnetic-virtual-observatories">https://www.space.dtu.dk/english/research/projects/project-descriptions/geomagnetic-virtual-observatories</a></p>
+<p>Note that some of the input/output functions use data file formats that were
+used internally within the project.</p>
+<dl class="function">
+<dt id="magpysv.gvo_tools.calculate_magnetic_latitudes">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">calculate_magnetic_latitudes</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>positions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#calculate_magnetic_latitudes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.calculate_magnetic_latitudes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate mean magnetic latitude for GVO series.</p>
+<p>Note that some low latitudes are not defined in the AAGCM2 model, which
+produces a runtime warning.
+Calculates magnetic latitude for each time sample and returns the mean
+magnetic latitude over the series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; list of datetimes for GVO timeseries</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; list of GVO positions for which to return geomagnetic
+latitudes [theta,phi,r] in degrees, km</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of mean magnetic latitudes, one for each given position</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">mlat_means (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.calculate_model_sv">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">calculate_model_sv</code><span class="sig-paren">(</span><em>*</em>, <em>model_file</em>, <em>vo_sv</em>, <em>positions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#calculate_model_sv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.calculate_model_sv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate reference field model SV at given positions.</p>
+<p>Model max spherical harmonic degree set to 13.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; path to model .shc format file with coefficients in
+nT and time in decimal years</li>
+<li><strong>vo_sv</strong> (<em>pandas.Dataframe</em>) &#8211; dataframe of GVO SV series</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; list of GVO positions [theta,phi,r] in degrees, km</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">model core field SV at times of vo_sv in locations given in positions,
+as Br, Btheta, Bphi in nT/yr</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dB_rtp_core (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.calculate_residuals">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">calculate_residuals</code><span class="sig-paren">(</span><em>*</em>, <em>vo_data</em>, <em>model_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#calculate_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.calculate_residuals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate SV residuals between GVO values and core model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vo_data</strong> (<em>pandas.Dataframe</em>) &#8211; GVO SV timeseries</li>
+<li><strong>model_data</strong> (<em>pandas.Dataframe</em>) &#8211; core field model SV timeseries matching
+vo_data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">residual SV between vo_data and model_data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">residuals (pandas.Dataframe)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.correlation_with_indices">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">correlation_with_indices</code><span class="sig-paren">(</span><em>*</em>, <em>index_filename</em>, <em>pc_df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#correlation_with_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.correlation_with_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correlate principal component with SV of magnetic index read from file.</p>
+<p>SV of indices AE, Dst, PC, Em must be precalculated and written to file.
+Index files are only read here, not calculated. The SV for the magnetic
+indices should be the same temporal resolution as for the principal
+component (e.g. annual differences or first differences for monthly data)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>index_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; path to index SV file</li>
+<li><strong>pc_df</strong> (<em>pandas.Dataframe</em>) &#8211; principal component to correlate to index SV</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
+<ul class="simple">
+<li>index_cols (pandas.Dataframe): SV of geomagnetic index merged to        pc_df times</li>
+<li>coeffs (numpy.array): correlation coefficients between pc_df and         each column of index_cols</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.create_headers">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">create_headers</code><span class="sig-paren">(</span><em>*</em>, <em>magnetic_regions</em>, <em>model_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#create_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.create_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create output file header strings (format internal to GVO DISC project)
+:param magnetic_regions: dict containing denoising region latitude</p>
+<blockquote>
+<div>limits, region name, and number of PC removed</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; name of model used to detrend SV</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
+<li>header_mf (str):</li>
+</ul>
+<blockquote>
+<div>MF GVO file header text</div></blockquote>
+<ul class="simple">
+<li>header_sv (str):</li>
+</ul>
+<blockquote>
+<div>SV GVO file header text</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.denoised_sv_to_mf">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">denoised_sv_to_mf</code><span class="sig-paren">(</span><em>*</em>, <em>vo_mf</em>, <em>denoised_sv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#denoised_sv_to_mf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.denoised_sv_to_mf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate PCA denoised annual differences SV to get denoised monthly MF.</p>
+<p>Re-integrate monthly MF from cleaned SV (orginally calculated as annual
+differences of monthly field values), using initial year of raw MF samples
+to level denoised MF. Denoised MF will start 1 year later than raw MF as a
+result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vo_mf</strong> (<em>pandas.Dataframe</em>) &#8211; dataframe containing raw GVO monthly MF</li>
+<li><strong>denoised_sv</strong> (<em>pandas.Dataframe</em>) &#8211; dataframe containing denoised GVO SV</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing re-integrated MF rom denoised SV</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">denoised_mf (pandas.Dataframe)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.eigenvalue_analysis">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">eigenvalue_analysis</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>obs_data</em>, <em>model_data</em>, <em>residuals</em>, <em>proxy_number=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#eigenvalue_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.eigenvalue_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove external signal from SV data using principal Component Analysis.</p>
+<p>Perform principal component analysis (PCA) on secular variation
+residuals (the difference between the observed SV and that predicted by a
+geomagnetic field model) calculated from annual differences of monthly
+means at several observatories. Uses masked arrays to discount missing data
+points and calculates the Principal Components (PCs, also known as the
+eigenvalues/vectors) of the (3nx3n) covariance matrix for n observatories.
+The residuals are rotated into the eigendirections and denoised using the
+method detailed in Cox et al (2018, Geochemistry, Geophysics, Geosystems
+(<a class="reference external" href="https://doi.org/10.1029/2018GC007714">https://doi.org/10.1029/2018GC007714</a>). The SV residuals projected into the
+dominant PCs component are used as a proxy for the unmodelled contaminating
+signals such as external magnetic fields and, for satellite data, local
+time sampling biases arising from orbital dynamics. The denoised data are
+then rotated back into geographic coordinates. The PCA algorithm outputs
+the eigenvalues sorted from largest to smallest (absolute values), so the
+corresponding eigenvector matrix has the dominant PC in the first column
+(accounts for the most variance in the residuals).</p>
+<p>This algorithm masks missing data so that they are not taken into account
+during the PCA. Missing values are not infilled or estimated, so NaN
+values in the input dataframe are given as NaN values in the output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><em>datetime.datetime</em></a>) &#8211; dates of the time series measurements.</li>
+<li><strong>obs_data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for
+monthly/annual means of the X, Y and Z components of the secular
+variation at the magnetic observatories of interest.</li>
+<li><strong>model_data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing columns for field
+model prediction of the X, Y and Z components of the secular
+variation at the same observatories as in obs_data.</li>
+<li><strong>residuals</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.0)"><em>pandas.DataFrame</em></a>) &#8211; dataframe containing the SV residuals
+(difference between the observed data and model prediction).</li>
+<li><strong>proxy_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; the number of Principal Components used to create
+the proxy for the external signal removal. Default value is 1 (only
+the residual in the direction of the largest eigenvalue (i.e. the
+dominant PC &#8220;PC0&#8221;) is used). Using m directions means that proxy
+is the sum of the SV residuals in the m largest PCs.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:
+- denoised_sv (<em>pandas.DataFrame</em>):</p>
+<blockquote>
+<div><p>dataframe with datetime objects in the
+first column and columns for the denoised X, Y and Z SV components
+at each of the observatories for which data were provided.</p>
+</div></blockquote>
+<ul class="simple">
+<li>proxy (<em>array</em>):</li>
+</ul>
+<blockquote>
+<div><p>the signal that was used as a proxy for unmodelled
+external magnetic field in the denoising stage.</p>
+</div></blockquote>
+<ul class="simple">
+<li>eig_values (<em>array</em>):</li>
+</ul>
+<blockquote>
+<div><p>the eigenvalues of the obs_data matrix.</p>
+</div></blockquote>
+<ul class="simple">
+<li>eig_vectors (<em>array</em>):</li>
+</ul>
+<blockquote>
+<div><p>the eigenvectors associated with the n largest
+eigenvalues of the data matrix. For example, if the residuals
+in the two largest PCs are used as the proxy for external
+signal, then these two eigenvectors are returned.</p>
+</div></blockquote>
+<ul class="simple">
+<li>projected_residuals (<em>array</em>):</li>
+</ul>
+<blockquote>
+<div><p>SV residuals rotated into the PCs (eigendirections).</p>
+</div></blockquote>
+<ul class="simple">
+<li>corrected_residuals (<em>array</em>):</li>
+</ul>
+<blockquote>
+<div><p>SV residuals after the denoising process.</p>
+</div></blockquote>
+<ul class="simple">
+<li>covariance_matrix (<em>array</em>):</li>
+</ul>
+<blockquote>
+<div><p>the residuals covariance matrix</p>
+</div></blockquote>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.format_and_write">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">format_and_write</code><span class="sig-paren">(</span><em>*</em>, <em>fname</em>, <em>header</em>, <em>data</em>, <em>df_sigma</em>, <em>positions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#format_and_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.format_and_write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write denoised GVO data to output files.</p>
+<p>The files are written out in the same format as the internal files used in
+the Swarm DISC GVO project. See <cite>load_vo_txt_raw</cite> for a description</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; name of output file</li>
+<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; header text to write to file</li>
+<li><strong>data</strong> (<em>pandas.Dataframe</em>) &#8211; denoised MF or SV GVO data to write</li>
+<li><strong>df_sigma</strong> (<em>pandas.Dataframe</em>) &#8211; associated uncertainties for data</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; data positions [theta,phi,r]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.load_validation_vo_txt">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">load_validation_vo_txt</code><span class="sig-paren">(</span><em>*</em>, <em>fname</em>, <em>sv_spacing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#load_validation_vo_txt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.load_validation_vo_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a text file containing monthly MF and SV data at a validation GVO.</p>
+<p>Validation GVO are located 490km above a ground observatory (these files
+were internal to the Swarm DISC GVO project).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; filename to validation GVO text file</li>
+<li><strong>sv_spacing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; specifies how to calculate SV for monthly (&#8216;1M&#8217;) MF
+data. Use 12 for annual differences of monthly means or 1 for
+monthly first differences</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
+<ul class="simple">
+<li>df_mf (pandas.Dataframe): dataframe containing MF [&#8216;date&#8217;,&#8217;X&#8217;,&#8217;Y&#8217;,         &#8216;Z&#8217;] in nT</li>
+<li>df_sv (pandas.Dataframe): dataframe containing [&#8216;date&#8217;,&#8217;dx&#8217;,&#8217;dy&#8217;,</li>
+</ul>
+<blockquote>
+<div><p>dz&#8217;] in nT/year</p>
+</div></blockquote>
+<ul class="simple">
+<li>position (list): array of position coordinates [theta,phi,r] in         degrees, km</li>
+<li>obs (str): observatory name</li>
+<li>df_sigma (pandas.Dataframe): dataframe containing data uncertainties         and data numbers [&#8216;sigma_r&#8217;,&#8217;sigma_theta&#8217;,&#8217;sigma_phi&#8217;,&#8217;N_data&#8217;] in nT</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.load_vo_txt">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">load_vo_txt</code><span class="sig-paren">(</span><em>*</em>, <em>fname</em>, <em>sampling='1M'</em>, <em>sv_spacing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#load_vo_txt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.load_vo_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load interim GVOs output in the Swarm DISC project (internal files).</p>
+<p>Load the contents of internal Swarm DISC GVO files and return time series
+of magnetic field, secular variation, uncertainties (sigmas) and positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; filename to GVO text file</li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; sampling rate of the GVOs. Should be either &#8216;1M&#8217; for
+monthly or &#8216;4M&#8217; for four-monthly. Defaults to &#8216;1M&#8217;</li>
+<li><strong>sv_spacing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; specifies how to calculate SV for monthly (&#8216;1M&#8217;) MF
+data. Use 12 for annual differences of monthly means or 1 for
+monthly first differences</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
+<ul class="simple">
+<li>df_mf_pos (pandas.Dataframe): dataframe containing the MF timeseries         at each position</li>
+<li>df_sv_pos (pandas.Dataframe): dateframe containing the SV timeseries         at each position</li>
+<li>positions (list): list of GVO positions [r, theta, phi] in km,         degrees</li>
+<li>dates (list): list of GVO timeseries dates in decimal years</li>
+<li>df_sigma (pandas.Dataframe): dataframe containing data uncertainties         and data numbers [&#8216;sigma_r&#8217;,&#8217;sigma_theta&#8217;,&#8217;sigma_phi&#8217;,&#8217;N_data&#8217;] in nT</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.load_vo_txt_raw">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">load_vo_txt_raw</code><span class="sig-paren">(</span><em>*</em>, <em>fname</em>, <em>sampling='1M'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#load_vo_txt_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.load_vo_txt_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load internal Swarm DISC GVO files and return raw contents.</p>
+<p>Files contain co-latitude in degrees (theta), longitude in degrees (phi)
+year, month, time (MJD2000), radius in km (r), the magnetic field
+components (Br, Btheta, Bphi), where Bphi is equivalent to the Y component,
+errors for the magnetic field in nT (sigma_r, sigma_theta,
+sigma_phi) and the number of data used for produce the GVO (N_data)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; filename to GVO text file</li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; sampling rate of the GVOs. Should be either &#8216;1M&#8217; for
+monthly or &#8216;4M&#8217; for four-monthly. Defaults to &#8216;1M&#8217;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dataframe containing raw contents of the file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">df (pandas.Dataframe)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.plot_comparison">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">plot_comparison</code><span class="sig-paren">(</span><em>*</em>, <em>dates</em>, <em>vo</em>, <em>vo_denoised</em>, <em>position</em>, <em>model_data</em>, <em>fig_size=(15</em>, <em>5)</em>, <em>font_size=12</em>, <em>label_size=14</em>, <em>save_fig=False</em>, <em>write_path=None</em>, <em>deriv=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#plot_comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.plot_comparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot comparison of pre-and post-PCA denoising SV or MF at a single GVO.</p>
+<p>Produces a plot of the X, Y and Z components of the GVO data (SV or MF),
+the PCA denoised SV or MF and the field model prediction for a single GVO.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements</li>
+<li><strong>vo</strong> (<em>time series</em>) &#8211; X, Y and Z components of uncorrected SV or MF at a
+single VO location</li>
+<li><strong>vo_denoised</strong> (<em>time series</em>) &#8211; X, Y and Z components of the denoised SV or
+MF at the same VO location</li>
+<li><strong>derive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; specify whether the given data are MF (deriv=0) or SV
+(deriv=1). Defaults to 1</li>
+<li><strong>model_data</strong> (<em>time series</em>) &#8211; X, Y and Z components of the SV or MF
+predicted by a field model for the same location as the data.</li>
+<li><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; GVO location name</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.plot_eigenvalues_percentage">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">plot_eigenvalues_percentage</code><span class="sig-paren">(</span><em>*</em>, <em>values</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#plot_eigenvalues_percentage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.plot_eigenvalues_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot % variance explained by eigenvalues of residuals covariance matrix.</p>
+<p>Produces a plot of the eigenvalues as percentage variance explained by each
+principal component of SV residual covariance matrix. The largest
+eigenvalues represent the eigendirections (principal components) with the
+largest contributions to the SV residuals. Also plots the cumulative
+percentage variance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal component
+analysis of the SV residuals.</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.plot_eigenvector_map">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">plot_eigenvector_map</code><span class="sig-paren">(</span><em>*</em>, <em>eigenvecs</em>, <em>positions</em>, <em>idx</em>, <em>marker_size=80</em>, <em>linewidth=0.2</em>, <em>fig_size=(10</em>, <em>10)</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#plot_eigenvector_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.plot_eigenvector_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot map of eigenvector (PC) of SV residuals covariance matrix.</p>
+<p>Produces a map of the contribution to a single eigenvector (PC)
+of the covariance matrix obtained during PCA of SV residuals.</p>
+<p>The eigenvector is split into (X, Y, Z) contributions from each GVO
+considered in the PCA, and these are mapped onto a Maxwell colour triangle
+so that these individual (X, Y, Z) contributions to the eigenvector are
+represented by an (R, G, B) triplet. The contribution at each GVO is
+plotted as a colour coded circle on a map. E.g. a purely X vector is red, a
+purely Y vector is green and a purely Z vector is blue. Combinations of
+these colours represent the relative contributions of X, Y and Z.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eigenvecs</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal</li>
+<li><strong>analysis of the SV residuals.</strong> (<em>component</em>) &#8211; </li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; all GVO positions [theta,phi,r] in degrees, km</li>
+<li><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; indices of the desired GVO locations in the positions list</li>
+<li><strong></strong><strong>(</strong><strong>float</strong> (<em>marker_size</em>) &#8211; marker size on map. Defaults to 80</li>
+<li><strong>linewidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) &#8211; width of marker border. Defaults to 0.2</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.plot_eigenvectors">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">plot_eigenvectors</code><span class="sig-paren">(</span><em>*</em>, <em>obs_names</em>, <em>eigenvecs</em>, <em>fig_size=(8</em>, <em>6)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#plot_eigenvectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.plot_eigenvectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot eigenvectors (PCs) of the covariance matrix of SV residuals.</p>
+<p>Produces a plot of the eigenvectors (PCs) corresponding to the n largest
+eigenvalues of the covariance matrix obtained during PCA of SV residuals,
+where n is the number of PCs used as a proxy for unmodelled
+contaminating signals. The n eigenvectors corresponding to the n largest
+eigenvalues represent the directions with the largest contribution
+to the residuals (the &#8220;dominant PCs&#8221;)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obs_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; list of observatory names given as three digit IAGA
+codes or GVO numbers.</li>
+<li><strong>eigenvecs</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; the eigenvalues obtained from the principal</li>
+<li><strong>analysis of the SV residuals.</strong> (<em>component</em>) &#8211; </li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.plot_residuals_dft_all">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">plot_residuals_dft_all</code><span class="sig-paren">(</span><em>*</em>, <em>projected_residuals</em>, <em>dates</em>, <em>sampling</em>, <em>fig_size=(10</em>, <em>8)</em>, <em>font_size=12</em>, <em>label_size=16</em>, <em>save_fig=False</em>, <em>write_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#plot_residuals_dft_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.plot_residuals_dft_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the DFTs of the projected residuals with each other.</p>
+<p>Calculates the Discrete Fourier Transform (DFT) of the projected residuals
+in each Principal Component given and plots it alongside the projected
+residuals themselves. Produces a separate figure per PC. The length of the
+time series are padded with zeroes up to the next power of two.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dates</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)"><em>datetime.datetime</em></a>) &#8211; dates of time series measurements.</li>
+<li><strong>projected_residuals</strong> (<em>time series</em>) &#8211; difference between modelled and
+SV rotated into the PCs obtained during denoising
+(PC). The proxy for unmodelled contaminating
+signal is the residual projected in the dominant PC(s).</li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; sampling rate of GVOs in months. Typically 1 or 4</li>
+<li><strong>fig_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.8)"><em>array</em></a>) &#8211; figure size in inches. Defaults to 8 inches by 6
+inches.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axes. Defaults to 12 pt.</li>
+<li><strong>label_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) &#8211; font size for axis labels. Defaults to 16 pt.</li>
+<li><strong>plot_legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to include a legend on the plot. Defaults to
+True.</li>
+<li><strong>save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) &#8211; option to save figure. Defaults to False.</li>
+<li><strong>write_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; output path for figure if saved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.read_all_validation_txt">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">read_all_validation_txt</code><span class="sig-paren">(</span><em>*</em>, <em>file_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#read_all_validation_txt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.read_all_validation_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and concatenate all validation GVO dataframes.</p>
+<p>Produces dataframe of timeseries to match regular GVO dataframes. The
+validation GVOs are located at satellite altitude above a ground magnetic
+observatory and were used to validate the Swarm DISC GVO project. These
+internal data files were provided as one GVO per file, unlike the regular
+GVOs which had a single file for the entire GVO grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) &#8211; Directory path containing validation GVO files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
+<li>mf (pandas.Dataframe):</li>
+</ul>
+<blockquote>
+<div>dataframe containing MF data</div></blockquote>
+<ul class="simple">
+<li>sv (pandas.Dataframe):</li>
+</ul>
+<blockquote>
+<div>dataframe containing SV data</div></blockquote>
+<ul class="simple">
+<li>positions (list):</li>
+</ul>
+<blockquote>
+<div>list of all validation positions [r,theta,phi]</div></blockquote>
+<ul class="simple">
+<li>names (list):</li>
+</ul>
+<blockquote>
+<div>list of all associated GO position IAGA codes</div></blockquote>
+<ul class="simple">
+<li>sigmas (pandas.dataframe):</li>
+</ul>
+<blockquote>
+<div>dataframe containing data uncertainties and numbers</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.select_validation_sv_by_index">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">select_validation_sv_by_index</code><span class="sig-paren">(</span><em>*</em>, <em>vo_sv</em>, <em>model_sv</em>, <em>idx</em>, <em>validation_names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#select_validation_sv_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.select_validation_sv_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract validation GVO SV and core model SV for specified locations.</p>
+<p>Validation GVOs are at 490km altitude above a ground magnetic observatory
+(used for validating the Swarm DISC GVO project). The validation GVO name
+is set as the IAGA ground station name.</p>
+<p>Model SV is converted from [Br,Btheta,Bphi] input to [X,Y,Z] output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vo_sv</strong> (<em>pandas.Dataframe</em>) &#8211; GVO SV timeseries for all validation GVOs</li>
+<li><strong>model_sv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) &#8211; core model SV timeseries for all validation GVOs
+vo_sv</li>
+<li><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; indices required in list of all validation GVOs (i.e.
+the GVOs located in a particular magnetic region)</li>
+<li><strong>validation_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; list of all validation GVO names</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
+<ul class="simple">
+<li>vo_sv_selected (pandas.Dataframe):</li>
+</ul>
+<blockquote>
+<div><p>columns of vo_sv matching given validation names</p>
+</div></blockquote>
+<ul class="simple">
+<li>model_sv_selected (pandas.Dataframe):</li>
+</ul>
+<blockquote>
+<div><p>columns of model_sv matching given idx</p>
+</div></blockquote>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="magpysv.gvo_tools.select_vo_sv_by_index">
+<code class="descclassname">magpysv.gvo_tools.</code><code class="descname">select_vo_sv_by_index</code><span class="sig-paren">(</span><em>*</em>, <em>vo_sv</em>, <em>model_sv</em>, <em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magpysv/gvo_tools.html#select_vo_sv_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#magpysv.gvo_tools.select_vo_sv_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select GVO data and core model predictions SV by location index.</p>
+<p>Model SV is converted from [Br,Btheta,Bphi] input to [X,Y,Z] output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vo_sv</strong> (<em>pandas.Dataframe</em>) &#8211; GVO SV timeseries</li>
+<li><strong>model_sv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) &#8211; core model SV timeseries at matching GVO positions to
+vo_sv</li>
+<li><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) &#8211; GVO position numbers to select from vo_sv</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>tuple containing:</p>
+<ul class="simple">
+<li>vo_sv_selected (pandas.Dataframe):</li>
+</ul>
+<blockquote>
+<div><p>columns of vo_sv matching idx</p>
+</div></blockquote>
+<ul class="simple">
+<li>model_sv_selected (pandas.Dataframe):</li>
+</ul>
+<blockquote>
+<div><p>columns of model_sv matching idx</p>
+</div></blockquote>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="io.html" class="btn btn-neutral float-right" title="io module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="denoise.html" class="btn btn-neutral" title="denoise module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Grace Cox.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
