@@ -1,5 +1,5 @@
 aacgmv2
-cartopy
+cartopy==0.17.0
 chaosmagpy
 datetime
 git+https://github.com/willjbrown88/geomag_wdc_web_app_interface.git
