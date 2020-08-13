@@ -2,12 +2,10 @@ aacgmv2
 chaosmagpy
 datetime
 git+https://github.com/willjbrown88/geomag_wdc_web_app_interface.git
-glob
 jupyter
 matplotlib
 notebook
 numpy
-os
 pandas
 requests
 scikit-learn==0.21.3
