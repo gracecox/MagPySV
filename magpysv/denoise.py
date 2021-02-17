@@ -19,7 +19,7 @@ from sklearn.decomposition import PCA as sklearnPCA
 try:
     from sklearn.preprocessing import Imputer
 except ImportError:
-    from sklearn.imput import SimpleImputer as Imputer
+    from sklearn.impute import SimpleImputer as Imputer
 
 
 def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
