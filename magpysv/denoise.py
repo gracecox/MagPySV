@@ -16,7 +16,10 @@ import pandas as pd
 import magpysv.plots as plots
 import numpy as np
 from sklearn.decomposition import PCA as sklearnPCA
-from sklearn.preprocessing import Imputer
+try:
+    from sklearn.preprocessing import Imputer
+except ImportError:
+    from sklearn.impute import SimpleImputer as Imputer
 
 
 def eigenvalue_analysis_impute(*, dates, obs_data, model_data, residuals,
