@@ -1,0 +1,22 @@
+name: Liverpool_MagPySV
+channels:
+  - defaults
+dependencies:
+  - python>=3
+  - numpy
+  - scipy # chaosmagpy
+  - pandas # chaosmagpy
+  - cython # chaosmagpy
+  - cartopy # chaosmagpy
+  - matplotlib # chaosmagpy
+  - h5py # chaosmagpy
+  - scikit-learn
+  - pip
+  - pip: # Packages installed from PyPI
+    - aacgmv2 # QD latitudes, IGRF-13 included (apexpy only to IGRF-12)
+    - cdflib # chaosmagpy
+    - hdf5storage # chaosmagpy
+    - chaosmagpy
+    - aacgmv2
+    - ./
+

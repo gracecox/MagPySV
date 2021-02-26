@@ -9,5 +9,5 @@ notebook
 numpy
 pandas
 requests
-scikit-learn==0.21.3
+scikit-learn
 scipy
