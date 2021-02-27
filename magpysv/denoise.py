@@ -247,8 +247,8 @@ def eigenvalue_analysis(*, dates, obs_data, model_data, residuals,
 
     denoised_sv.insert(0, 'date', dates)
 
-    return denoised_sv, proxy, np.abs(eig_values), eig_vectors,
-    projected_residuals, corrected_residuals.astype('float'),\
+    return denoised_sv, proxy, np.abs(eig_values), eig_vectors,\
+        projected_residuals, corrected_residuals.astype('float'),\
         covariance_matrix
 
 
