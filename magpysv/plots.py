@@ -143,7 +143,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
     plt.subplot(3, 1, 1)
     plt.title(obs, fontsize=label_size)
     plt.gca().xaxis_date()
-    plt.plot(dates, mf.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
+    plt.plot(dates, mf.iloc[:, 0], 'b', dates, model.iloc[:, 0], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -152,7 +152,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
     # Y component
     plt.subplot(3, 1, 2)
     plt.gca().xaxis_date()
-    plt.plot(dates, mf.ix[:, 1], 'b', dates, model.ix[:, 1], 'r')
+    plt.plot(dates, mf.iloc[:, 1], 'b', dates, model.iloc[:, 1], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -161,7 +161,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
     # Z component
     plt.subplot(3, 1, 3)
     plt.gca().xaxis_date()
-    plt.plot(dates, mf.ix[:, 2], 'b', dates, model.ix[:, 2], 'r')
+    plt.plot(dates, mf.iloc[:, 2], 'b', dates, model.iloc[:, 2], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -220,9 +220,9 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 0], 'b', dates, sv.ix[:, 0].rolling(
+        plt.plot(dates, sv.iloc[:, 0], 'b', dates, sv.iloc[:, 0].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'r', dates, model.ix[:, 0], 'k')
+            'r', dates, model.iloc[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -231,9 +231,9 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 1], 'b', dates, sv.ix[:, 1].rolling(
+        plt.plot(dates, sv.iloc[:, 1], 'b', dates, sv.iloc[:, 1].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'r', dates, model.ix[:, 1], 'k')
+            'r', dates, model.iloc[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -242,9 +242,9 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 2], 'b', dates, sv.ix[:, 2].rolling(
+        plt.plot(dates, sv.iloc[:, 2], 'b', dates, sv.iloc[:, 2].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'r', dates, model.ix[:, 2], 'k')
+            'r', dates, model.iloc[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -261,7 +261,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
+        plt.plot(dates, sv.iloc[:, 0], 'b', dates, model.iloc[:, 0], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -270,7 +270,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 1], 'b', dates, model.ix[:, 1], 'r')
+        plt.plot(dates, sv.iloc[:, 1], 'b', dates, model.iloc[:, 1], 'r')
         plt.gcf().autofmt_xdate()
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -279,7 +279,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 2], 'b', dates, model.ix[:, 2], 'r')
+        plt.plot(dates, sv.iloc[:, 2], 'b', dates, model.iloc[:, 2], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -360,25 +360,25 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
 
     if plot_rms is True:
         # Calculate the rms before and after denoising
-        rms_x_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 0])))
+        rms_x_noisy = np.sqrt(np.nanmean(np.square(residuals.iloc[:, 0])))
         rms_x_denoised = np.sqrt(np.nanmean(np.square(
-            corrected_residuals.ix[:, 0])))
-        rms_y_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 1])))
+            corrected_residuals.iloc[:, 0])))
+        rms_y_noisy = np.sqrt(np.nanmean(np.square(residuals.iloc[:, 1])))
         rms_y_denoised = np.sqrt(np.nanmean(np.square(
-            corrected_residuals.ix[:, 1])))
-        rms_z_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 2])))
+            corrected_residuals.iloc[:, 1])))
+        rms_z_noisy = np.sqrt(np.nanmean(np.square(residuals.iloc[:, 2])))
         rms_z_denoised = np.sqrt(np.nanmean(np.square(
-            corrected_residuals.ix[:, 2])))
+            corrected_residuals.iloc[:, 2])))
 
     if plot_average is True:
         # X component
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
-                 'r', dates, denoised_sv.ix[:, 0].rolling(window=window_length,
+        plt.plot(dates, noisy_sv.iloc[:, 0], 'b', dates, denoised_sv.iloc[:, 0],
+                 'r', dates, denoised_sv.iloc[:, 0].rolling(window=window_length,
                  center=True, min_periods=min_samples).mean(), 'c',
-                 dates, model.ix[:, 0], 'k')
+                 dates, model.iloc[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -395,10 +395,10 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 1], 'b', dates, denoised_sv.ix[:, 1],
-                 'r', dates, denoised_sv.ix[:, 1].rolling(window=window_length,
+        plt.plot(dates, noisy_sv.iloc[:, 1], 'b', dates, denoised_sv.iloc[:, 1],
+                 'r', dates, denoised_sv.iloc[:, 1].rolling(window=window_length,
                  center=True, min_periods=min_samples).mean(), 'c',
-                 dates, model.ix[:, 1], 'k')
+                 dates, model.iloc[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -415,10 +415,10 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 2], 'b', dates, denoised_sv.ix[:, 2],
-                 'r', dates, denoised_sv.ix[:, 2].rolling(window=window_length,
+        plt.plot(dates, noisy_sv.iloc[:, 2], 'b', dates, denoised_sv.iloc[:, 2],
+                 'r', dates, denoised_sv.iloc[:, 2].rolling(window=window_length,
                  center=True, min_periods=min_samples).mean(), 'c',
-                 dates, model.ix[:, 2], 'k')
+                 dates, model.iloc[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -442,8 +442,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
-                 'r', dates, model.ix[:, 0], 'k')
+        plt.plot(dates, noisy_sv.iloc[:, 0], 'b', dates, denoised_sv.iloc[:, 0],
+                 'r', dates, model.iloc[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -460,8 +460,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 1], 'b', dates, denoised_sv.ix[:, 1],
-                 'r', dates, model.ix[:, 1], 'k')
+        plt.plot(dates, noisy_sv.iloc[:, 1], 'b', dates, denoised_sv.iloc[:, 1],
+                 'r', dates, model.iloc[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -478,8 +478,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 2], 'b', dates, denoised_sv.ix[:, 2],
-                 'r', dates, model.ix[:, 2], 'k')
+        plt.plot(dates, noisy_sv.iloc[:, 2], 'b', dates, denoised_sv.iloc[:, 2],
+                 'r', dates, model.iloc[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -838,7 +838,7 @@ def compare_proxies(*, fname1, fname2, legend_text, fig_size=(8, 6),
     Calculates the correlation coefficients of two given proxies for unmodelled
     external signals and includes it on a plot of the two series. Each
     proxy is formed of the SV residuals projected into the eigendirection(s) of
-    the largest eigenvalues of the residual covariance matrix. The proxies are
+    the largest eigenvalues of the residual covariance matriloc. The proxies are
     reduced to zero-mean and unit-variance on the plots (zscore).
 
     Args:
