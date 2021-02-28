@@ -16,7 +16,7 @@ import numpy as np
 import os
 import pandas as pd
 import scipy as sp
-from scipy.fft import fft  # yes, scipy is here twice, scipy import names are broken!
+from numpy.fft import fft  # scipy.fft.fft 1.6.1 now complains "Key Error: 'ALIGNED'"
 import magpysv.tools as tools
 
 # Setup matplotlib to use latex fonts in figure labels if needed
@@ -605,14 +605,15 @@ def plot_index_dft(*, index_file, dates, signal, fig_size=(8, 6), font_size=12,
     """
     coeff, df = tools.calculate_correlation_index(
         dates=dates, signal=signal, index_file=index_file)
-    sampling_period = 1 / 12.0   # Sampling time in years
+    sampling_period = 1.0 / 12.0   # Sampling time in years
 
     # Find the next power of two higher than the length of the time series and
     # perform the DFT with the series padded with zeroes to this length
     sample_length = int(pow(2, np.ceil(np.log2(len(df.proxy)))))
     index_dft = fft(df.index_vals, sample_length)
     proxy_dft = fft(df.proxy, sample_length)
-    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
+    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
+        num=(sample_length // 2))
     index_power = (2.0 / sample_length) * np.abs(
         index_dft[:sample_length // 2])
     proxy_power = (2.0 / sample_length) * np.abs(
@@ -726,14 +727,14 @@ def plot_residuals_dft(*, projected_residuals, dates, fig_size=(10, 8),
     fig, ax = plt.subplots(nrows=projected_residuals.shape[1], ncols=2,
                            sharex=True, sharey=True, figsize=fig_size)
 
-    sampling_period = 1 / 12.0   # Sampling time in years
+    sampling_period = 1.0 / 12.0   # Sampling time in years
     sample_length = int(pow(2, np.ceil(np.log2(projected_residuals.shape[0]))))
 
     # Iterate over the eigendirections and produce a figure for each
     for direction in range(projected_residuals.shape[1]):
         residual_dft = fft(projected_residuals[:, direction], sample_length)
         freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
-                           sample_length / 2)
+                           num=(sample_length // 2))
         residual_power = (2.0 / sample_length) * np.abs(
             residual_dft[:sample_length // 2])
         plt.subplot(projected_residuals.shape[1], 2, direction + fig_count)
@@ -800,7 +801,7 @@ def plot_residuals_dft_all(*, projected_residuals, dates, fig_size=(10, 8),
     for direction in range(projected_residuals.shape[1]):
         residual_dft = fft(projected_residuals[:, direction], sample_length)
         freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
-                           sample_length / 2)
+                           num=(sample_length // 2))
         residual_power = (2.0 / sample_length) * np.abs(
             residual_dft[:sample_length // 2])
         ax = plt.subplots(nrows=1, ncols=2, figsize=fig_size)[1]
