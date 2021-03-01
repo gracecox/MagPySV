@@ -8,12 +8,12 @@ Testing the file io functionality of io.py.
 """
 
 import unittest
-import mock
+from unittest import mock
 from ddt import ddt, data, unpack
 from io import StringIO  # io
 import os
 from .. import io  # magpysv.io
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 import pandas as pd
 import datetime as dt
 import numpy as np
@@ -65,7 +65,7 @@ class WDCDatetimesTestCase(unittest.TestCase):
         """Verify correct datetime creation from mock data"""
         df = io.wdc_datetimes(self.data)
 
-        self.assertTrue(isinstance(df.date[0], pd.datetime))
+        self.assertTrue(isinstance(df.date[0], dt.datetime))
         self.assertEqual(df.date[0], dt.datetime(day=21, month=9, year=1988,
                                                  hour=2, minute=30))
 
@@ -131,6 +131,9 @@ class WDCXYZTestCase(unittest.TestCase):
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
         self.assertAlmostEqual(df.iloc[0].Z, 30430.000000000000)
+        """This now requires pd.pivot_table() to be forced to keep NaNs,
+        new versions drop them by default, but this test checks they are
+        kept."""
         self.assertTrue(np.isnan(df.iloc[1].X))
 
     def test_wdc_xyz_is_nan_if_Z_missing(self):
@@ -168,7 +171,7 @@ class WDCReadTestCase(unittest.TestCase):
         """Verify correct reading of test file by comparing with mock data"""
         df = io.wdc_readfile(self.filename)
 
-        assert_frame_equal(df.head(), self.data)
+        assert_frame_equal(df.head(5), self.data)
 
 
 class WDCAppendTestCase(unittest.TestCase):

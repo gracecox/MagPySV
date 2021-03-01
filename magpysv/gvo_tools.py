@@ -890,7 +890,7 @@ def plot_residuals_dft_all(*, projected_residuals, dates, sampling,
     for direction in range(projected_residuals.shape[1]):
         residual_dft = sp.fft(projected_residuals[:, direction], sample_length)
         freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
-                           sample_length // 2)
+                           num=(sample_length // 2))
 
         residual_power = (2.0 / sample_length) * np.abs(
             residual_dft[:sample_length // 2])

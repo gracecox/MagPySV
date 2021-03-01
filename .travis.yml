@@ -1,18 +1,37 @@
 language: python
+
 python:
-- '3.5'
+- '3.6'
+- '3.7'
+
+before_install:
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+
 install:
-- conda install cartopy
-- pip install -r requirements.txt
-- pip install pytest
-- pip install pytest-cov
-- pip install python-coveralls
-- pip install coverage==4.4
-- pip install ddt
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+  - conda activate test-environment
+
+  - conda install --channel conda-forge cartopy
+  - pip install -r requirements.txt
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install python-coveralls
+  - pip install coverage
+  - pip install ddt
+
 script:
 - py.test --cov-report term-missing --cov magpysv magpysv/tests
+
 after_success:
 - coveralls
+
 notifications:
   slack:
     secure: eF7FwbRnJv3NQOAuTl3v76IErgn24P25zlxNBFPuYyed4HSfclZFO9wUt0Whoyue1716S2TtqqV5fY+8XsDMnDb6b2TtFO2IV9CB1qPWDg5xGulYKPoZ4VS3V1EnxQWwo1pfsTCvUKqnIB+TsGKoCtXtkxOSx89TP2uZ2MX+RKSl4icY2NAUYDl6khP1VkmEEZyGeREY6yudkTga7oUMUhXEDZXKvIhJaqWUGhRnt2O1/adAFaDehWyTB7CLNHyxvJQM4U53l34GNulIpGVkWxPMkD8MZyPccvUf+GebElMOo0QBmtzNZcZ05r6YV+ORAL60LLgVZ9NbDUDiPasS40/gCckafdB11KQ8WsXt8vLe1gd2wxO5eLqJAIBAUlxadoP7bHEmfTElPxvX5/QQ45F1WXK41F6OiP/fDad2Ukb2k2YVAdxLePIdY7EFmjS2RolYlxcvjRD1hPjFeoiA3Q/QdsThPugRKhqA8FTsxQcknyYzb55C4HAeVwJQzn9RuSc7nLuhXqQOmsV67hcQfl7wPMpsrJ3nksNcc+8ULAoahbto3RCBKvZmFyVhNqQXSTIl2awvaltDxxIC7S/gut7jCSalBnweDPs8bW5Ao/Nzi9mApELDT9HE84HGB63SdTbUTRrF7uDNenDJrBdSFsvVGZqGLwaPxtknJhhWo/Y=

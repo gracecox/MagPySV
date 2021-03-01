@@ -132,8 +132,10 @@ def wdc_xyz(data):
     data = data.groupby('component').apply(hourly_mean_conversion)
     data.reset_index(drop=True, inplace=True)
     data.drop(['base', 'hourly_mean_temp'], axis=1, inplace=True)
+    """In older versions pd.pivot_table() kept NaNs by default, but we
+    test for the NaN being present so must force them to be kept."""
     data = data.pivot_table(index='date', columns='component',
-                            values='hourly_mean')
+                            values='hourly_mean', dropna=False)
     data.reset_index(inplace=True)
 
     # Call helper function to convert D and H components to X and Y

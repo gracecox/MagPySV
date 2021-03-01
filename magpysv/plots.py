@@ -16,6 +16,7 @@ import numpy as np
 import os
 import pandas as pd
 import scipy as sp
+from numpy.fft import fft  # scipy.fft.fft 1.6.1 now complains "Key Error: 'ALIGNED'"
 import magpysv.tools as tools
 
 # Setup matplotlib to use latex fonts in figure labels if needed
@@ -143,7 +144,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
     plt.subplot(3, 1, 1)
     plt.title(obs, fontsize=label_size)
     plt.gca().xaxis_date()
-    plt.plot(dates, mf.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
+    plt.plot(dates, mf.iloc[:, 0], 'b', dates, model.iloc[:, 0], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -152,7 +153,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
     # Y component
     plt.subplot(3, 1, 2)
     plt.gca().xaxis_date()
-    plt.plot(dates, mf.ix[:, 1], 'b', dates, model.ix[:, 1], 'r')
+    plt.plot(dates, mf.iloc[:, 1], 'b', dates, model.iloc[:, 1], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -161,7 +162,7 @@ def plot_mf(*, dates, mf, model, obs, model_name, fig_size=(8, 6),
     # Z component
     plt.subplot(3, 1, 3)
     plt.gca().xaxis_date()
-    plt.plot(dates, mf.ix[:, 2], 'b', dates, model.ix[:, 2], 'r')
+    plt.plot(dates, mf.iloc[:, 2], 'b', dates, model.iloc[:, 2], 'r')
     plt.gcf().autofmt_xdate()
     plt.axis('tight')
     plt.xticks(fontsize=font_size)
@@ -220,9 +221,9 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 0], 'b', dates, sv.ix[:, 0].rolling(
+        plt.plot(dates, sv.iloc[:, 0], 'b', dates, sv.iloc[:, 0].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'r', dates, model.ix[:, 0], 'k')
+            'r', dates, model.iloc[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -231,9 +232,9 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 1], 'b', dates, sv.ix[:, 1].rolling(
+        plt.plot(dates, sv.iloc[:, 1], 'b', dates, sv.iloc[:, 1].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'r', dates, model.ix[:, 1], 'k')
+            'r', dates, model.iloc[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -242,9 +243,9 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 2], 'b', dates, sv.ix[:, 2].rolling(
+        plt.plot(dates, sv.iloc[:, 2], 'b', dates, sv.iloc[:, 2].rolling(
             window=window_length, center=True, min_periods=min_samples).mean(),
-            'r', dates, model.ix[:, 2], 'k')
+            'r', dates, model.iloc[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -261,7 +262,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 0], 'b', dates, model.ix[:, 0], 'r')
+        plt.plot(dates, sv.iloc[:, 0], 'b', dates, model.iloc[:, 0], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -270,7 +271,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 1], 'b', dates, model.ix[:, 1], 'r')
+        plt.plot(dates, sv.iloc[:, 1], 'b', dates, model.iloc[:, 1], 'r')
         plt.gcf().autofmt_xdate()
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -279,7 +280,7 @@ def plot_sv(*, dates, sv, model, obs, model_name, fig_size=(8, 6),
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, sv.ix[:, 2], 'b', dates, model.ix[:, 2], 'r')
+        plt.plot(dates, sv.iloc[:, 2], 'b', dates, model.iloc[:, 2], 'r')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -360,25 +361,25 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
 
     if plot_rms is True:
         # Calculate the rms before and after denoising
-        rms_x_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 0])))
+        rms_x_noisy = np.sqrt(np.nanmean(np.square(residuals.iloc[:, 0])))
         rms_x_denoised = np.sqrt(np.nanmean(np.square(
-            corrected_residuals.ix[:, 0])))
-        rms_y_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 1])))
+            corrected_residuals.iloc[:, 0])))
+        rms_y_noisy = np.sqrt(np.nanmean(np.square(residuals.iloc[:, 1])))
         rms_y_denoised = np.sqrt(np.nanmean(np.square(
-            corrected_residuals.ix[:, 1])))
-        rms_z_noisy = np.sqrt(np.nanmean(np.square(residuals.ix[:, 2])))
+            corrected_residuals.iloc[:, 1])))
+        rms_z_noisy = np.sqrt(np.nanmean(np.square(residuals.iloc[:, 2])))
         rms_z_denoised = np.sqrt(np.nanmean(np.square(
-            corrected_residuals.ix[:, 2])))
+            corrected_residuals.iloc[:, 2])))
 
     if plot_average is True:
         # X component
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
-                 'r', dates, denoised_sv.ix[:, 0].rolling(window=window_length,
+        plt.plot(dates, noisy_sv.iloc[:, 0], 'b', dates, denoised_sv.iloc[:, 0],
+                 'r', dates, denoised_sv.iloc[:, 0].rolling(window=window_length,
                  center=True, min_periods=min_samples).mean(), 'c',
-                 dates, model.ix[:, 0], 'k')
+                 dates, model.iloc[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -395,10 +396,10 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 1], 'b', dates, denoised_sv.ix[:, 1],
-                 'r', dates, denoised_sv.ix[:, 1].rolling(window=window_length,
+        plt.plot(dates, noisy_sv.iloc[:, 1], 'b', dates, denoised_sv.iloc[:, 1],
+                 'r', dates, denoised_sv.iloc[:, 1].rolling(window=window_length,
                  center=True, min_periods=min_samples).mean(), 'c',
-                 dates, model.ix[:, 1], 'k')
+                 dates, model.iloc[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -415,10 +416,10 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 2], 'b', dates, denoised_sv.ix[:, 2],
-                 'r', dates, denoised_sv.ix[:, 2].rolling(window=window_length,
+        plt.plot(dates, noisy_sv.iloc[:, 2], 'b', dates, denoised_sv.iloc[:, 2],
+                 'r', dates, denoised_sv.iloc[:, 2].rolling(window=window_length,
                  center=True, min_periods=min_samples).mean(), 'c',
-                 dates, model.ix[:, 2], 'k')
+                 dates, model.iloc[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -442,8 +443,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         plt.subplot(3, 1, 1)
         plt.title(obs, fontsize=label_size)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 0], 'b', dates, denoised_sv.ix[:, 0],
-                 'r', dates, model.ix[:, 0], 'k')
+        plt.plot(dates, noisy_sv.iloc[:, 0], 'b', dates, denoised_sv.iloc[:, 0],
+                 'r', dates, model.iloc[:, 0], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -460,8 +461,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Y component
         plt.subplot(3, 1, 2)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 1], 'b', dates, denoised_sv.ix[:, 1],
-                 'r', dates, model.ix[:, 1], 'k')
+        plt.plot(dates, noisy_sv.iloc[:, 1], 'b', dates, denoised_sv.iloc[:, 1],
+                 'r', dates, model.iloc[:, 1], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -478,8 +479,8 @@ def plot_sv_comparison(*, dates, noisy_sv, denoised_sv, model, obs, model_name,
         # Z component
         plt.subplot(3, 1, 3)
         plt.gca().xaxis_date()
-        plt.plot(dates, noisy_sv.ix[:, 2], 'b', dates, denoised_sv.ix[:, 2],
-                 'r', dates, model.ix[:, 2], 'k')
+        plt.plot(dates, noisy_sv.iloc[:, 2], 'b', dates, denoised_sv.iloc[:, 2],
+                 'r', dates, model.iloc[:, 2], 'k')
         plt.gcf().autofmt_xdate()
         plt.axis('tight')
         plt.xticks(fontsize=font_size)
@@ -604,14 +605,15 @@ def plot_index_dft(*, index_file, dates, signal, fig_size=(8, 6), font_size=12,
     """
     coeff, df = tools.calculate_correlation_index(
         dates=dates, signal=signal, index_file=index_file)
-    sampling_period = 1 / 12.0   # Sampling time in years
+    sampling_period = 1.0 / 12.0   # Sampling time in years
 
     # Find the next power of two higher than the length of the time series and
     # perform the DFT with the series padded with zeroes to this length
     sample_length = int(pow(2, np.ceil(np.log2(len(df.proxy)))))
-    index_dft = sp.fft(df.index_vals, sample_length)
-    proxy_dft = sp.fft(df.proxy, sample_length)
-    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period), sample_length / 2)
+    index_dft = fft(df.index_vals, sample_length)
+    proxy_dft = fft(df.proxy, sample_length)
+    freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
+        num=(sample_length // 2))
     index_power = (2.0 / sample_length) * np.abs(
         index_dft[:sample_length // 2])
     proxy_power = (2.0 / sample_length) * np.abs(
@@ -725,14 +727,14 @@ def plot_residuals_dft(*, projected_residuals, dates, fig_size=(10, 8),
     fig, ax = plt.subplots(nrows=projected_residuals.shape[1], ncols=2,
                            sharex=True, sharey=True, figsize=fig_size)
 
-    sampling_period = 1 / 12.0   # Sampling time in years
+    sampling_period = 1.0 / 12.0   # Sampling time in years
     sample_length = int(pow(2, np.ceil(np.log2(projected_residuals.shape[0]))))
 
     # Iterate over the eigendirections and produce a figure for each
     for direction in range(projected_residuals.shape[1]):
-        residual_dft = sp.fft(projected_residuals[:, direction], sample_length)
+        residual_dft = fft(projected_residuals[:, direction], sample_length)
         freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
-                           sample_length / 2)
+                           num=(sample_length // 2))
         residual_power = (2.0 / sample_length) * np.abs(
             residual_dft[:sample_length // 2])
         plt.subplot(projected_residuals.shape[1], 2, direction + fig_count)
@@ -797,9 +799,9 @@ def plot_residuals_dft_all(*, projected_residuals, dates, fig_size=(10, 8),
 
     # Iterate over the eigendirections and produce a figure for each
     for direction in range(projected_residuals.shape[1]):
-        residual_dft = sp.fft(projected_residuals[:, direction], sample_length)
+        residual_dft = fft(projected_residuals[:, direction], sample_length)
         freq = np.linspace(0.0, 1.0 / (2.0 * sampling_period),
-                           sample_length / 2)
+                           num=(sample_length // 2))
         residual_power = (2.0 / sample_length) * np.abs(
             residual_dft[:sample_length // 2])
         ax = plt.subplots(nrows=1, ncols=2, figsize=fig_size)[1]
@@ -838,7 +840,7 @@ def compare_proxies(*, fname1, fname2, legend_text, fig_size=(8, 6),
     Calculates the correlation coefficients of two given proxies for unmodelled
     external signals and includes it on a plot of the two series. Each
     proxy is formed of the SV residuals projected into the eigendirection(s) of
-    the largest eigenvalues of the residual covariance matrix. The proxies are
+    the largest eigenvalues of the residual covariance matriloc. The proxies are
     reduced to zero-mean and unit-variance on the plots (zscore).
 
     Args:
