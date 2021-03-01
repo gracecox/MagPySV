@@ -127,11 +127,13 @@ class WDCXYZTestCase(unittest.TestCase):
     def test_wdc_xyz(self):
         """Verify correct conversion to X, Y and Z components from mock data"""
         df = io.wdc_xyz(self.data)
-        print(df)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
         self.assertAlmostEqual(df.iloc[0].Z, 30430.000000000000)
+        """This now requires pd.pivot_table() to be forced to keep NaNs,
+        new versions drop them by default, but this test checks they are
+        kept."""
         self.assertTrue(np.isnan(df.iloc[1].X))
 
     def test_wdc_xyz_is_nan_if_Z_missing(self):
@@ -168,10 +170,8 @@ class WDCReadTestCase(unittest.TestCase):
     def test_wdc_readfile(self):
         """Verify correct reading of test file by comparing with mock data"""
         df = io.wdc_readfile(self.filename)
-        print(df.head(5))
-        print(self.data)
-        assert_frame_equal(df.head(5), self.data,
-                           check_exact=False, atol=0.01)
+
+        assert_frame_equal(df.head(5), self.data)
 
 
 class WDCAppendTestCase(unittest.TestCase):
