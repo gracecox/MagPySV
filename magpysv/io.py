@@ -139,7 +139,7 @@ def wdc_xyz(data):
     # Call helper function to convert D and H components to X and Y
     if 'D' in data.columns and 'H' in data.columns:
         data = angles_to_geographic(data)
-
+    print(data)
     # Make sure that the dataframe contains columns for X, Y and Z components,
     # and create a column of NaN values if a component is missing
     if 'X' not in data.columns:
@@ -148,7 +148,7 @@ def wdc_xyz(data):
         data['Y'] = np.NaN
     if 'Z' not in data.columns:
         data['Z'] = np.NaN
-
+    print(data)
     data = data[['date', 'X', 'Y', 'Z']]
 
     return data

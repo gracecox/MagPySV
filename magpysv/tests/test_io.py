@@ -168,7 +168,8 @@ class WDCReadTestCase(unittest.TestCase):
     def test_wdc_readfile(self):
         """Verify correct reading of test file by comparing with mock data"""
         df = io.wdc_readfile(self.filename)
-
+        print(df.head(5))
+        print(self.data)
         assert_frame_equal(df.head(5), self.data,
                            check_exact=False, atol=0.01)
 
