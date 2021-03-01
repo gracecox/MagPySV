@@ -1,9 +1,11 @@
 *.bak
 *.pyc
+*.egg-info/
 __pycache__/
 .coverage
 .cache
 .DS_Store
 magpysv/data/
-examples/data/
-examples/.ipynb_checkpoints/
+examples/
+MagPySV-examples/
+.ipynb_checkpoints/
