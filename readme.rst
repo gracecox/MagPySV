@@ -18,8 +18,18 @@ Added in August 2020: a new module called GVO_tools, which was used to denoise G
 Installation
 ------------
 
-MagPySV can be installed via the Python Package Index (PyPI) using the command
-``pip install magpysv``. This also installs all required dependencies, including the BGS data downloading app. The example Juypyter notebooks (see below) are not included in the PyPI installation and need to be downloaded from a separate GitHub project page after the software is installed.
+The MagPySV v1.0 release which accompanied our paper can be installed via the Python Package Index (PyPI) using the command
+``pip install magpysv``. This also installs all required dependencies, including the BGS data downloading app. The example Juypyter notebooks (see below) are not included in the PyPI installation and need to be downloaded from a separate GitHub project page after the software is installed (see "Example workflows", below).
+
+To install the latest version of MagPySV from Github, we recommend:
+
+ - Download the latest version of the master branch: https://github.com/gracecox/MagPySV/archive/master.zip
+.. code:: bash
+    unzip MagPySV-master.zip
+    cd MagPySV-master
+    conda env create -f environment.yml
+    conda activate MagPySV_v2.1
+
 
 Example workflows
 -----------------
