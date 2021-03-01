@@ -13,7 +13,7 @@ from ddt import ddt, data, unpack
 from io import StringIO  # io
 import os
 from .. import io  # magpysv.io
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 import pandas as pd
 import datetime as dt
 import numpy as np
@@ -65,7 +65,7 @@ class WDCDatetimesTestCase(unittest.TestCase):
         """Verify correct datetime creation from mock data"""
         df = io.wdc_datetimes(self.data)
 
-        self.assertTrue(isinstance(df.date[0], pd.datetime))
+        self.assertTrue(isinstance(df.date[0], dt.datetime))
         self.assertEqual(df.date[0], dt.datetime(day=21, month=9, year=1988,
                                                  hour=2, minute=30))
 
