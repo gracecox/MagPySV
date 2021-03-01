@@ -8,7 +8,7 @@ Testing the file io functionality of io.py.
 """
 
 import unittest
-import mock
+from unittest import mock
 from ddt import ddt, data, unpack
 from io import StringIO  # io
 import os
