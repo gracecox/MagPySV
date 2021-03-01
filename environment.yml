@@ -1,4 +1,4 @@
-name: Liverpool_MagPySV
+name: MagPySV_v2.1
 channels:
   - defaults
 dependencies:
