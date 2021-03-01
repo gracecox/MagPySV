@@ -23,13 +23,15 @@ The MagPySV v1.0 release which accompanied our paper can be installed via the Py
 
 To install the latest version of MagPySV from Github, we recommend:
 
- - Download the latest version of the master branch: https://github.com/gracecox/MagPySV/archive/master.zip
-.. code:: bash
-    unzip MagPySV-master.zip
-    cd MagPySV-master
-    conda env create -f environment.yml
-    conda activate MagPySV_v2.1
+- Download the latest version of the master branch: https://github.com/gracecox/MagPySV/archive/master.zip
 
+    ``unzip MagPySV-master.zip``
+    
+    ``cd MagPySV-master``
+    
+    ``conda env create -f environment.yml``
+    
+    ``conda activate MagPySV_v2.1``
 
 Example workflows
 -----------------
