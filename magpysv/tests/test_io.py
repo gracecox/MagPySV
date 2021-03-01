@@ -127,6 +127,7 @@ class WDCXYZTestCase(unittest.TestCase):
     def test_wdc_xyz(self):
         """Verify correct conversion to X, Y and Z components from mock data"""
         df = io.wdc_xyz(self.data)
+        print(df)
 
         self.assertAlmostEqual(df.iloc[0].X, 11775.524238286978)
         self.assertAlmostEqual(df.iloc[0].Y, 16817.191469253001)
@@ -168,7 +169,8 @@ class WDCReadTestCase(unittest.TestCase):
         """Verify correct reading of test file by comparing with mock data"""
         df = io.wdc_readfile(self.filename)
 
-        assert_frame_equal(df.head(), self.data)
+        assert_frame_equal(df.head(5), self.data,
+                           check_exact=False, atol=0.01)
 
 
 class WDCAppendTestCase(unittest.TestCase):
