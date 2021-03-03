@@ -21,11 +21,10 @@ Installation
 The MagPySV v1.0 release which accompanied our paper can be installed via the Python Package Index (PyPI) using the command
 ``pip install magpysv``. This also installs all required dependencies, including the BGS data downloading app. The example Juypyter notebooks (see below) are not included in the PyPI installation and need to be downloaded from a separate GitHub project page after the software is installed (see "Example workflows", below).
 
-To install the latest version of MagPySV from Github, we recommend:
+To use the latest version of MagPySV from Github, we recommend you download and locally install the latest version of the master branch:
+    ``wget https://github.com/gracecox/MagPySV/archive/master.zip``
 
-- Download the latest version of the master branch: https://github.com/gracecox/MagPySV/archive/master.zip
-
-    ``unzip MagPySV-master.zip``
+    ``unzip master.zip``
     
     ``cd MagPySV-master``
     
