@@ -86,10 +86,16 @@ def run_covobs(*, stations, model_path, output_path):
     sv_obs.dat for magnetic field and secular variation predictions
     respectively (e.g. mf_ngk.dat and sv_ngk.dat for Niemegk.)
 
-    Assumes that the user has compiled the fortran source code and called the
-    executable "a.out".  No modification to the fortran source code is
-    required (code can be downloaded from
+    Assumes that the user has compiled the fortran source code and
+    called the executable "a.out", e.g. has run
+        $ gfortran cov-obs-coefs.f
+    No modification to the fortran source code is required (code can be
+    downloaded from
     http://www.spacecenter.dk/files/magnetic-models/COV-OBSx1/).
+    The file variables set as `parameter` in `cov-obs.x1-prog2CF/param.dat`
+    should be altered to the time range and sampling rate desired, and
+    importantly, `IFUNC=2` should be set to ouput time series values at
+    a location.
 
     The COV-OBS code can also be used to run other field models if modified to
     accept a different spline file as input, rather than the supplied
@@ -102,8 +108,6 @@ def run_covobs(*, stations, model_path, output_path):
         output_path (str): path to the directory in which the model output
             should be stored.
     """
-    mycwd = os.getcwd()
-    os.chdir(model_path)
     # Create the output directory if it does not exist
     if not os.path.exists(output_path):
         os.makedirs(output_path)
@@ -123,7 +127,7 @@ def run_covobs(*, stations, model_path, output_path):
         model_inputs = "%s\n%s\n%s\n" % (str(altitude), str(colatitude),
                                          str(longitude))
         # Create a process so python can interact with the model executable
-        p = Popen('./a.out', stdin=PIPE,
+        p = Popen(os.path.join(model_path,'a.out'), stdin=PIPE,
                   stdout=PIPE)
         # Pass the altitude, colatitude and longitude to the field model
         p.communicate(model_inputs.encode())
@@ -133,5 +137,3 @@ def run_covobs(*, stations, model_path, output_path):
                   'mf_%s.dat' % ob.upper()))
         os.rename('svpred.dat', os.path.join(output_path,
                   'sv_%s.dat' % ob.upper()))
-    # Return to previous working directory
-    os.chdir(mycwd)
